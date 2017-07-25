@@ -11,7 +11,4 @@
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <DebugType>none</DebugType>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="System.Collections.Concurrent" Version="4.3.0" />
-  </ItemGroup>
 </Project>
