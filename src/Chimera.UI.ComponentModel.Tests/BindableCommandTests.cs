@@ -6,92 +6,80 @@ namespace Chimera.UI.ComponentModel.Tests
 {
     public sealed class BindableCommandTests
     {
-        static BindableCommandTests()
-        {
-            BindableCommand.RegisterFactory(() => new TestBindableCommand());
-        }
-
-        [Fact]
-        public void RegisterFactoryWhenFactoryIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(
-                () => BindableCommand.RegisterFactory(null));
-        }
-
         [Fact]
         public void CreateWithActionWhenActionIsNull()
         {
             Assert.Throws<ArgumentNullException>(
-                () => BindableCommand.Create(null));
+                () => new BindableCommand(default(Action<object>), default(Predicate<object>), default(SynchronizationContext)));
         }
 
         [Fact]
         public void CreateWithActionAndContextWhenActionIsNull()
         {
             Assert.Throws<ArgumentNullException>(
-                () => BindableCommand.Create(null, new SynchronizationContext()));
+                () => new BindableCommand(default(Action<object>), default(Predicate<object>), new SynchronizationContext()));
         }
 
         [Fact]
         public void CreateWithActionAndPredicateWhenActionIsNull()
         {
             Assert.Throws<ArgumentNullException>(
-                () => BindableCommand.Create(null, o => true));
+                () => new BindableCommand(default(Action<object>), o => true, default(SynchronizationContext)));
         }
 
         [Fact]
         public void CreateWithActionAndPredicateAndContextWhenActionIsNull()
         {
             Assert.Throws<ArgumentNullException>(
-                () => BindableCommand.Create(null, o => true, new SynchronizationContext()));
+                () => new BindableCommand(default(Action<object>), o => true, new SynchronizationContext()));
         }
 
         [Fact]
         public void CreateWithObjectAndActionWhenObjectIsNull()
         {
             Assert.Throws<ArgumentNullException>(
-                () => BindableCommand.Create((TestBindableObject)null, o => { }));
+                () => new BindableCommand(default(IBindableObject), o => { }));
         }
 
         [Fact]
         public void CreateWithObjectAndActionWhenActionIsNull()
         {
             Assert.Throws<ArgumentNullException>(
-                () => BindableCommand.Create(new TestBindableObject(), null));
+                () => new BindableCommand(new TestBindableObject(), null));
         }
 
         [Fact]
         public void CreateWithObjectAndActionAndPredicateWhenObjectIsNull()
         {
             Assert.Throws<ArgumentNullException>(
-                () => BindableCommand.Create((TestBindableObject)null, o => { }, o => true));
+                () => new BindableCommand(default(IBindableObject), o => { }, o => true));
         }
 
         [Fact]
         public void CreateWithObjectAndActionAndPredicateWhenActionIsNull()
         {
             Assert.Throws<ArgumentNullException>(
-                () => BindableCommand.Create(new TestBindableObject(), null, o => true));
+                () => new BindableCommand(new TestBindableObject(), null, o => true));
         }
 
         [Fact]
         public void CreateWithObjectAndActionAndPredicateAndContextWhenObjectIsNull()
         {
             Assert.Throws<ArgumentNullException>(
-                () => BindableCommand.Create((TestBindableObject)null, o => { }, o => true, new SynchronizationContext()));
+                () => new BindableCommand(default(IBindableObject), o => { }, o => true, new SynchronizationContext()));
         }
 
         [Fact]
         public void CreateWithObjectAndActionAndPredicateAndContextWhenActionIsNull()
         {
             Assert.Throws<ArgumentNullException>(
-                () => BindableCommand.Create(new TestBindableObject(), null, o => true, new SynchronizationContext()));
+                () => new BindableCommand(new TestBindableObject(), null, o => true, new SynchronizationContext()));
         }
 
         [Fact]
         public void TrackPropertyWhenPropertyNameIsNull()
         {
-            var command = new TestBindableCommand();
+            var command = new BindableCommand(o => { });
 
             Assert.Throws<ArgumentNullException>(
                 () => command.StartTrackingProperty(null));
@@ -101,7 +89,7 @@ namespace Chimera.UI.ComponentModel.Tests
         public void TrackPropertyWhenBindableObjectIsUndefined()
         {
             var @object = new TestBusinessObject();
-            var command = BindableCommand.Create(o => { });
+            var command = new BindableCommand(o => { });
 
             Assert.Throws<InvalidOperationException>(
                 () => command.StartTrackingProperty(nameof(@object.Value)));
@@ -110,7 +98,7 @@ namespace Chimera.UI.ComponentModel.Tests
         [Fact]
         public void UntrackPropertyWhenPropertyNameIsNull()
         {
-            var command = new TestBindableCommand();
+            var command = new BindableCommand(o => { });
 
             Assert.Throws<ArgumentNullException>(
                 () => command.StopTrackingProperty(null));
@@ -120,7 +108,7 @@ namespace Chimera.UI.ComponentModel.Tests
         public void UntrackPropertyWhenBindableObjectIsUndefined()
         {
             var @object = new TestBusinessObject();
-            var command = new TestBindableCommand();
+            var command = new BindableCommand(o => { });
 
             Assert.Throws<InvalidOperationException>(
                 () => command.StopTrackingProperty(nameof(@object.Value)));
@@ -129,7 +117,7 @@ namespace Chimera.UI.ComponentModel.Tests
         [Fact]
         public void ExecuteDisposed()
         {
-            var command = (BindableCommand)BindableCommand.Create(o => { });
+            var command = new BindableCommand(o => { });
 
             command.Dispose();
 
@@ -142,7 +130,7 @@ namespace Chimera.UI.ComponentModel.Tests
         {
             var invoked = false;
 
-            using (var command = (BindableCommand)BindableCommand.Create(o => invoked = true))
+            using (var command = new BindableCommand(o => invoked = true))
             {
                 Assert.True(command.CanExecute(null));
 
@@ -157,7 +145,7 @@ namespace Chimera.UI.ComponentModel.Tests
         {
             var invoked = false;
 
-            using (var command = (BindableCommand)BindableCommand.Create(o => invoked = true, SynchronizationContext.Current))
+            using (var command = new BindableCommand(o => invoked = true, default(Predicate<object>), SynchronizationContext.Current))
             {
                 Assert.True(command.CanExecute(null));
 
@@ -172,7 +160,7 @@ namespace Chimera.UI.ComponentModel.Tests
         {
             var invoked = false;
 
-            using (var command = (BindableCommand)BindableCommand.Create(o => invoked = true, o => true))
+            using (var command = new BindableCommand(o => invoked = true, o => true))
             {
                 Assert.True(command.CanExecute(null));
 
@@ -187,7 +175,7 @@ namespace Chimera.UI.ComponentModel.Tests
         {
             var invoked = false;
 
-            using (var command = (BindableCommand)BindableCommand.Create(o => invoked = true, o => true, SynchronizationContext.Current))
+            using (var command = new BindableCommand(o => invoked = true, o => true, SynchronizationContext.Current))
             {
                 Assert.True(command.CanExecute(null));
 
@@ -203,7 +191,7 @@ namespace Chimera.UI.ComponentModel.Tests
             var @object = new TestBindableObject();
             var invocations = 0;
 
-            using (var command = (BindableCommand)BindableCommand.Create(@object, o => { }))
+            using (var command = new BindableCommand(@object, o => { }))
             {
                 command.CanExecuteChanged += (sender, e) => invocations++;
 
@@ -241,10 +229,6 @@ namespace Chimera.UI.ComponentModel.Tests
                 get => _value;
                 set => SetValue(ref _value, value);
             }
-        }
-
-        private sealed class TestBindableCommand : BindableCommand
-        {
         }
 
         #endregion

@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Threading;
+using System.Windows.Input;
 
 namespace Chimera.UI.ComponentModel
 {
     /// <summary>Defines a bindable command component.</summary>
-    public interface IBindableCommand : IDisposable
+    public interface IBindableCommand : ICommand, IDisposable
     {
         /// <summary>Raises an event that the command should be requeried for its state.</summary>
         void RaiseCanExecuteChanged();

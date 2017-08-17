@@ -6,101 +6,38 @@ using System.Threading;
 namespace Chimera.UI.ComponentModel
 {
     /// <summary>Represents a bindable command component.</summary>
-    public abstract class BindableCommand : IBindableCommand
+    public class BindableCommand : IBindableCommand
     {
-        private static Func<BindableCommand> _factory;
-
         private Action<object> _action;
         private Predicate<object> _predicate;
         private IBindableObject _trackingObject;
         private ConcurrentDictionary<string, byte> _trackingProperties;
 
         /// <summary>Initializes a new instance of the <see cref="BindableCommand" /> class.</summary>
-        protected BindableCommand()
-        {
-        }
-
-        /// <summary>Registers a factory for creating a platform-specific command instance.</summary>
-        /// <param name="factory">The factory for command instance.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="factory" /> is <see langword="null" />.</exception>
-        public static void RegisterFactory(Func<BindableCommand> factory)
-        {
-            _factory = factory ?? throw new ArgumentNullException(nameof(factory));
-        }
-
-        /// <summary>Creates a bindable command.</summary>
-        /// <param name="action">The action to execute when the command is executed.</param>
-        /// <returns>An <see cref="IBindableCommand" /> instance.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="action" /> is <see langword="null" />.</exception>
-        /// <exception cref="InvalidOperationException">The command factory is not defined.</exception>
-        public static IBindableCommand Create(Action<object> action)
-        {
-            if (action == null)
-            {
-                throw new ArgumentNullException(nameof(action));
-            }
-
-            return CreateInternal(default(IBindableObject), action, null, null);
-        }
-
-        /// <summary>Creates a bindable command.</summary>
-        /// <param name="action">The action to execute when the command is executed.</param>
-        /// <param name="synchronizationContext">The synchronization context for executing UI-related actions.</param>
-        /// <returns>An <see cref="IBindableCommand" /> instance.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="action" /> is <see langword="null" />.</exception>
-        /// <exception cref="InvalidOperationException">The command factory is not defined.</exception>
-        public static IBindableCommand Create(Action<object> action, SynchronizationContext synchronizationContext)
-        {
-            if (action == null)
-            {
-                throw new ArgumentNullException(nameof(action));
-            }
-
-            return CreateInternal(default(IBindableObject), action, null, synchronizationContext);
-        }
-
-        /// <summary>Creates a bindable command.</summary>
-        /// <param name="action">The action to execute when the command is executed.</param>
-        /// <param name="predicate">The predicate to check if the command can be executed.</param>
-        /// <returns>An <see cref="IBindableCommand" /> instance.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="action" /> is <see langword="null" />.</exception>
-        /// <exception cref="InvalidOperationException">The command factory is not defined.</exception>
-        public static IBindableCommand Create(Action<object> action, Predicate<object> predicate)
-        {
-            if (action == null)
-            {
-                throw new ArgumentNullException(nameof(action));
-            }
-
-            return CreateInternal(default(IBindableObject), action, predicate, null);
-        }
-
-        /// <summary>Creates a bindable command.</summary>
         /// <param name="action">The action to execute when the command is executed.</param>
         /// <param name="predicate">The predicate to check if the command can be executed.</param>
         /// <param name="synchronizationContext">The synchronization context for executing UI-related actions.</param>
-        /// <returns>An <see cref="IBindableCommand" /> instance.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="action" /> is <see langword="null" />.</exception>
-        /// <exception cref="InvalidOperationException">The command factory is not defined.</exception>
-        public static IBindableCommand Create(Action<object> action, Predicate<object> predicate, SynchronizationContext synchronizationContext)
+        public BindableCommand(Action<object> action, Predicate<object> predicate = null, SynchronizationContext synchronizationContext = null)
         {
             if (action == null)
             {
                 throw new ArgumentNullException(nameof(action));
             }
 
-            return CreateInternal(default(IBindableObject), action, predicate, synchronizationContext);
+            _action = action;
+            _predicate = predicate;
+
+            SynchronizationContext = synchronizationContext;
         }
 
-        /// <summary>Creates a bindable command.</summary>
-        /// <typeparam name="TObject">The type of tracking object.</typeparam>
+        /// <summary>Initializes a new instance of the <see cref="BindableCommand" /> class.</summary>
         /// <param name="trackingObject">The <see cref="IBindableObject" /> as a source of tracking properties and a synchronization context.</param>
         /// <param name="action">The action to execute when the command is executed.</param>
-        /// <returns>An <see cref="IBindableCommand" /> instance.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="action" /> or <paramref name="trackingObject" /> is <see langword="null" />.</exception>
-        /// <exception cref="InvalidOperationException">The command factory is not defined.</exception>
-        public static IBindableCommand Create<TObject>(TObject trackingObject, Action<object> action)
-            where TObject : IBindableObject
+        /// <param name="predicate">The predicate to check if the command can be executed.</param>
+        /// <param name="synchronizationContext">The synchronization context for executing UI-related actions.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="trackingObject" /> or <paramref name="action" /> is <see langword="null" />.</exception>
+        public BindableCommand(IBindableObject trackingObject, Action<object> action, Predicate<object> predicate = null, SynchronizationContext synchronizationContext = null)
         {
             if (trackingObject == null)
             {
@@ -111,79 +48,14 @@ namespace Chimera.UI.ComponentModel
                 throw new ArgumentNullException(nameof(action));
             }
 
-            return CreateInternal(trackingObject, action, null, null);
-        }
+            _trackingObject = trackingObject;
+            _action = action;
+            _predicate = predicate;
+            _trackingProperties = new ConcurrentDictionary<string, byte>(StringComparer.Ordinal);
 
-        /// <summary>Creates a bindable command.</summary>
-        /// <typeparam name="TObject">The type of tracking object.</typeparam>
-        /// <param name="trackingObject">The <see cref="IBindableObject" /> as a source of tracking properties and a synchronization context.</param>
-        /// <param name="action">The action to execute when the command is executed.</param>
-        /// <param name="predicate">The predicate to check if the command can be executed.</param>
-        /// <returns>An <see cref="IBindableCommand" /> instance.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="action" /> or <paramref name="trackingObject" /> is <see langword="null" />.</exception>
-        /// <exception cref="InvalidOperationException">The command factory is not defined.</exception>
-        public static IBindableCommand Create<TObject>(TObject trackingObject, Action<object> action, Predicate<object> predicate)
-            where TObject : IBindableObject
-        {
-            if (trackingObject == null)
-            {
-                throw new ArgumentNullException(nameof(trackingObject));
-            }
-            if (action == null)
-            {
-                throw new ArgumentNullException(nameof(action));
-            }
+            SynchronizationContext = synchronizationContext ?? trackingObject?.SynchronizationContext;
 
-            return CreateInternal(trackingObject, action, predicate, null);
-        }
-
-        /// <summary>Creates a bindable command.</summary>
-        /// <typeparam name="TObject">The type of tracking object.</typeparam>
-        /// <param name="trackingObject">The <see cref="IBindableObject" /> as a source of tracking properties and a synchronization context.</param>
-        /// <param name="action">The action to execute when the command is executed.</param>
-        /// <param name="predicate">The predicate to check if the command can be executed.</param>
-        /// <param name="synchronizationContext">The synchronization context for executing UI-related actions.</param>
-        /// <returns>An <see cref="IBindableCommand" /> instance.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="action" /> or <paramref name="trackingObject" /> is <see langword="null" />.</exception>
-        /// <exception cref="InvalidOperationException">The command factory is not defined.</exception>
-        public static IBindableCommand Create<TObject>(TObject trackingObject, Action<object> action, Predicate<object> predicate, SynchronizationContext synchronizationContext)
-            where TObject : IBindableObject
-        {
-            if (trackingObject == null)
-            {
-                throw new ArgumentNullException(nameof(trackingObject));
-            }
-            if (action == null)
-            {
-                throw new ArgumentNullException(nameof(action));
-            }
-
-            return CreateInternal(trackingObject, action, predicate, synchronizationContext);
-        }
-
-        private static BindableCommand CreateInternal<TObject>(TObject trackingObject, Action<object> action, Predicate<object> predicate, SynchronizationContext synchronizationContext)
-            where TObject : IBindableObject
-        {
-            if (_factory == null)
-            {
-                throw new InvalidOperationException("The command factory is not defined");
-            }
-
-            var command = _factory.Invoke();
-
-            command._trackingObject = trackingObject;
-            command._action = action;
-            command._predicate = predicate;
-
-            command.SynchronizationContext = synchronizationContext ?? trackingObject?.SynchronizationContext;
-
-            if (trackingObject != null)
-            {
-                command._trackingProperties = new ConcurrentDictionary<string, byte>(StringComparer.Ordinal);
-                trackingObject.PropertyChanged += command.PropertyChangedEventHandler;
-            }
-
-            return command;
+            trackingObject.PropertyChanged += PropertyChangedEventHandler;
         }
 
         /// <summary>Starts tracking a property for changing to raise an event about command's state.</summary>
@@ -202,7 +74,7 @@ namespace Chimera.UI.ComponentModel
                 throw new InvalidOperationException("The tracking object is not defined");
             }
 
-            _trackingProperties?.TryAdd(propertyName, default(byte));
+            _trackingProperties?.TryAdd(propertyName, default);
 
             return this;
         }

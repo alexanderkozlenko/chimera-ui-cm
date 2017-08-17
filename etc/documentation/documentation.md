@@ -36,22 +36,19 @@ class MyViewModel : BindableObject
 
 ## A bindable command
 
-A base object for a platform specific command
+An extensible object for a command
 
 ```csharp
-class MyCommand : BindableCommand, ICommand
-{
-}
+var command = new BindableCommand(MyCommandAction, MyCommandPredicate);
 ```
 
-which must be specified in a command factory
-
 ```csharp
-BindableCommand.RegisterFactory(() => new MyCommand());
+var command = new BindableCommand(MyCommandAction, MyCommandPredicate, SynchronizationContext.Current);
 ```
 
-and then will be implicitly used by a factory method
-
 ```csharp
-var command = BindableCommand.Create(MyCommandAction, MyCommandPredicate);
+var command = new BindableCommand(this, MyCommandAction, MyCommandPredicate);
+
+command.StartTrackingProperty(nameof(Value));
+command.StopTrackingProperty(nameof(Value));
 ```
