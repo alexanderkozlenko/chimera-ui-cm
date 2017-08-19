@@ -115,22 +115,11 @@ namespace Chimera.UI.ComponentModel.Tests
         }
 
         [Fact]
-        public void ExecuteDisposed()
-        {
-            var command = new BindableCommand(o => { });
-
-            command.Dispose();
-
-            Assert.Throws<ObjectDisposedException>(
-                () => command.Execute(null));
-        }
-
-        [Fact]
         public void Execute()
         {
             var invoked = false;
 
-            using (var command = new BindableCommand(o => invoked = true))
+            using (var command = new BindableCommand(o => invoked = true) as IBindableCommand)
             {
                 Assert.True(command.CanExecute(null));
 
@@ -145,7 +134,7 @@ namespace Chimera.UI.ComponentModel.Tests
         {
             var invoked = false;
 
-            using (var command = new BindableCommand(o => invoked = true, default(Predicate<object>), SynchronizationContext.Current))
+            using (var command = new BindableCommand(o => invoked = true, default(Predicate<object>), SynchronizationContext.Current) as IBindableCommand)
             {
                 Assert.True(command.CanExecute(null));
 
@@ -160,7 +149,7 @@ namespace Chimera.UI.ComponentModel.Tests
         {
             var invoked = false;
 
-            using (var command = new BindableCommand(o => invoked = true, o => true))
+            using (var command = new BindableCommand(o => invoked = true, o => true) as IBindableCommand)
             {
                 Assert.True(command.CanExecute(null));
 
@@ -175,7 +164,7 @@ namespace Chimera.UI.ComponentModel.Tests
         {
             var invoked = false;
 
-            using (var command = new BindableCommand(o => invoked = true, o => true, SynchronizationContext.Current))
+            using (var command = new BindableCommand(o => invoked = true, o => true, SynchronizationContext.Current) as IBindableCommand)
             {
                 Assert.True(command.CanExecute(null));
 

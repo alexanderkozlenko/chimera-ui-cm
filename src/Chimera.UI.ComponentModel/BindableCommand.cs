@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Threading;
+using System.Windows.Input;
 
 namespace Chimera.UI.ComponentModel
 {
@@ -106,25 +107,14 @@ namespace Chimera.UI.ComponentModel
             OnCanExecuteChanged();
         }
 
-        /// <summary>Determines whether the command can execute in its current state.</summary>
-        /// <param name="parameter">The data used by the command.</param>
-        /// <returns><see langword="true" /> if this command can be executed; otherwise, <see langword="false" />.</returns>
-        public bool CanExecute(object parameter)
+        bool ICommand.CanExecute(object parameter)
         {
             return (_predicate == null) || _predicate.Invoke(parameter);
         }
 
-        /// <summary>Executes the command.</summary>
-        /// <param name="parameter">The data used by the command.</param>
-        /// <exception cref="ObjectDisposedException">The instance is disposed.</exception>
-        public void Execute(object parameter)
+        void ICommand.Execute(object parameter)
         {
-            if (_action == null)
-            {
-                throw new ObjectDisposedException(nameof(BindableCommand));
-            }
-
-            _action.Invoke(parameter);
+            _action?.Invoke(parameter);
         }
 
         /// <summary>Releases all references and subscriptions of the command.</summary>
