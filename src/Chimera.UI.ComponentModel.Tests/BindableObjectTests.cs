@@ -17,7 +17,7 @@ namespace Chimera.UI.ComponentModel.Tests
                 bindableObject.PropertyChanged += (sender, e) => properties.Add(e.PropertyName);
                 bindableObject.ValueNormal = 42;
 
-                Assert.Equal(1, properties.Count);
+                Assert.Single(properties);
                 Assert.Equal(nameof(bindableObject.ValueNormal), properties[0]);
                 Assert.Equal(42, bindableObject.ValueNormal);
                 Assert.Equal(42, bindableObject.PureValue);
@@ -36,7 +36,7 @@ namespace Chimera.UI.ComponentModel.Tests
                 bindableObject.PropertyChanged += (sender, e) => properties.Add(e.PropertyName);
                 bindableObject.ValueNormal = 42;
 
-                Assert.Equal(1, properties.Count);
+                Assert.Single(properties);
                 Assert.Equal(nameof(bindableObject.ValueNormal), properties[0]);
                 Assert.Equal(42, bindableObject.ValueNormal);
                 Assert.Equal(42, bindableObject.PureValue);
@@ -58,7 +58,7 @@ namespace Chimera.UI.ComponentModel.Tests
                 bindableObject.PropertyChanged += (sender, e) => properties.Add(e.PropertyName);
                 bindableObject.ValueWithActionCallback = 42;
 
-                Assert.Equal(1, properties.Count);
+                Assert.Single(properties);
                 Assert.Equal(nameof(bindableObject.ValueWithActionCallback), properties[0]);
                 Assert.Equal(42, bindableObject.ValueWithActionCallback);
                 Assert.Equal(42, bindableObject.PureValue);
@@ -77,7 +77,7 @@ namespace Chimera.UI.ComponentModel.Tests
                 bindableObject.PropertyChanged += (sender, e) => properties.Add(e.PropertyName);
                 bindableObject.ValueNormal = 42;
 
-                Assert.Equal(1, properties.Count);
+                Assert.Single(properties);
                 Assert.Equal(nameof(bindableObject.ValueNormal), properties[0]);
                 Assert.Equal(42, bindableObject.ValueNormal);
                 Assert.Equal(42, bindableObject.PureValue);
@@ -97,7 +97,7 @@ namespace Chimera.UI.ComponentModel.Tests
                 bindableObject.PropertyChanged += (sender, e) => properties.Add(e.PropertyName);
                 bindableObject.ValueNormal = 42;
 
-                Assert.Equal(1, properties.Count);
+                Assert.Single(properties);
                 Assert.Equal(nameof(bindableObject.ValueNormal), properties[0]);
                 Assert.Equal(42, bindableObject.ValueNormal);
                 Assert.Equal(42, bindableObject.PureValue);
@@ -119,7 +119,7 @@ namespace Chimera.UI.ComponentModel.Tests
                 bindableObject.PropertyChanged += (sender, e) => properties.Add(e.PropertyName);
                 bindableObject.ValueWithActionCallback = 42;
 
-                Assert.Equal(1, properties.Count);
+                Assert.Single(properties);
                 Assert.Equal(nameof(bindableObject.ValueWithActionCallback), properties[0]);
                 Assert.Equal(42, bindableObject.ValueWithActionCallback);
                 Assert.Equal(42, bindableObject.PureValue);
