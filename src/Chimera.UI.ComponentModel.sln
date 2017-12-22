@@ -1,17 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.16
+VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chimera.UI.ComponentModel", "Chimera.UI.ComponentModel\Chimera.UI.ComponentModel.csproj", "{9EFE3E9F-369A-4BC9-9D0B-51869688AC9B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chimera.UI.ComponentModel.Tests", "Chimera.UI.ComponentModel.Tests\Chimera.UI.ComponentModel.Tests.csproj", "{6636E2FE-EC58-43F1-9A9F-963F694F4BA2}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scheme", "scheme", "{C18572D2-70E1-4836-97BD-888C9C4044FE}"
-	ProjectSection(SolutionItems) = preProject
-		scheme\solution.package.props = scheme\solution.package.props
-		scheme\solution.props = scheme\solution.props
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,5 +24,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {78DEB757-2D75-472C-A857-D7DE584CE7E9}
 	EndGlobalSection
 EndGlobal
