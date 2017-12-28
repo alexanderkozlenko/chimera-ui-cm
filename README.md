@@ -12,7 +12,7 @@ A base object for view-model components, which supports two types of them:
 
 ### Type 1
 
-```csharp
+```cs
 class MyViewModel : BindableObject
 {
     private int _value;
@@ -27,7 +27,7 @@ class MyViewModel : BindableObject
 
 ### Type 2
 
-```csharp
+```cs
 class MyViewModel : BindableObject
 {
     private MyBusinessObject _object;
@@ -44,16 +44,12 @@ class MyViewModel : BindableObject
 
 An extensible object for a command
 
-```csharp
+```cs
 var command = new BindableCommand(MyCommandAction, MyCommandPredicate);
 ```
 
-```csharp
-var command = new BindableCommand(MyCommandAction, MyCommandPredicate, SynchronizationContext.Current);
-```
-
-```csharp
-var command = new BindableCommand(this, MyCommandAction, MyCommandPredicate);
+```cs
+var command = new BindableCommand(MyCommandAction, MyCommandPredicate, this);
 
 command.StartTrackingProperty(nameof(Value));
 command.StopTrackingProperty(nameof(Value));

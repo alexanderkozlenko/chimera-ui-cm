@@ -9,71 +9,29 @@ namespace Chimera.UI.ComponentModel.Tests
         [Fact]
         public void CreateWithActionWhenActionIsNull()
         {
-            Assert.Throws<ArgumentNullException>(
-                () => new BindableCommand(default(Action<object>), default(Predicate<object>), default(SynchronizationContext)));
-        }
-
-        [Fact]
-        public void CreateWithActionAndContextWhenActionIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(
-                () => new BindableCommand(default(Action<object>), default(Predicate<object>), new SynchronizationContext()));
+            Assert.Throws<ArgumentNullException>(() =>
+                new BindableCommand(null, null));
         }
 
         [Fact]
         public void CreateWithActionAndPredicateWhenActionIsNull()
         {
-            Assert.Throws<ArgumentNullException>(
-                () => new BindableCommand(default(Action<object>), o => true, default(SynchronizationContext)));
-        }
-
-        [Fact]
-        public void CreateWithActionAndPredicateAndContextWhenActionIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(
-                () => new BindableCommand(default(Action<object>), o => true, new SynchronizationContext()));
-        }
-
-        [Fact]
-        public void CreateWithObjectAndActionWhenObjectIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(
-                () => new BindableCommand(default(IBindableObject), o => { }));
+            Assert.Throws<ArgumentNullException>(() =>
+                new BindableCommand(null, o => true));
         }
 
         [Fact]
         public void CreateWithObjectAndActionWhenActionIsNull()
         {
-            Assert.Throws<ArgumentNullException>(
-                () => new BindableCommand(new TestBindableObject(), null));
-        }
-
-        [Fact]
-        public void CreateWithObjectAndActionAndPredicateWhenObjectIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(
-                () => new BindableCommand(default(IBindableObject), o => { }, o => true));
+            Assert.Throws<ArgumentNullException>(() =>
+                new BindableCommand(null, null, new TestBindableObject()));
         }
 
         [Fact]
         public void CreateWithObjectAndActionAndPredicateWhenActionIsNull()
         {
-            Assert.Throws<ArgumentNullException>(
-                () => new BindableCommand(new TestBindableObject(), null, o => true));
-        }
-
-        [Fact]
-        public void CreateWithObjectAndActionAndPredicateAndContextWhenObjectIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(
-                () => new BindableCommand(default(IBindableObject), o => { }, o => true, new SynchronizationContext()));
-        }
-
-        [Fact]
-        public void CreateWithObjectAndActionAndPredicateAndContextWhenActionIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(
-                () => new BindableCommand(new TestBindableObject(), null, o => true, new SynchronizationContext()));
+            Assert.Throws<ArgumentNullException>(() =>
+                new BindableCommand(null, o => true, new TestBindableObject()));
         }
 
         [Fact]
@@ -81,8 +39,8 @@ namespace Chimera.UI.ComponentModel.Tests
         {
             var command = new BindableCommand(o => { });
 
-            Assert.Throws<ArgumentNullException>(
-                () => command.StartTrackingProperty(null));
+            Assert.Throws<ArgumentNullException>(() =>
+                command.StartTrackingProperty(null));
         }
 
         [Fact]
@@ -91,8 +49,8 @@ namespace Chimera.UI.ComponentModel.Tests
             var @object = new TestBusinessObject();
             var command = new BindableCommand(o => { });
 
-            Assert.Throws<InvalidOperationException>(
-                () => command.StartTrackingProperty(nameof(@object.Value)));
+            Assert.Throws<InvalidOperationException>(() =>
+                command.StartTrackingProperty(nameof(@object.Value)));
         }
 
         [Fact]
@@ -100,8 +58,8 @@ namespace Chimera.UI.ComponentModel.Tests
         {
             var command = new BindableCommand(o => { });
 
-            Assert.Throws<ArgumentNullException>(
-                () => command.StopTrackingProperty(null));
+            Assert.Throws<ArgumentNullException>(() =>
+                command.StopTrackingProperty(null));
         }
 
         [Fact]
@@ -110,8 +68,8 @@ namespace Chimera.UI.ComponentModel.Tests
             var @object = new TestBusinessObject();
             var command = new BindableCommand(o => { });
 
-            Assert.Throws<InvalidOperationException>(
-                () => command.StopTrackingProperty(nameof(@object.Value)));
+            Assert.Throws<InvalidOperationException>(() =>
+                command.StopTrackingProperty(nameof(@object.Value)));
         }
 
         [Fact]
@@ -134,11 +92,13 @@ namespace Chimera.UI.ComponentModel.Tests
         {
             var invoked = false;
 
-            using (var command = new BindableCommand(o => invoked = true, default(Predicate<object>), SynchronizationContext.Current) as IBindableCommand)
+            using (var command = new BindableCommand(o => invoked = true, null))
             {
-                Assert.True(command.CanExecute(null));
+                command.SynchronizationContext = SynchronizationContext.Current;
 
-                command.Execute(null);
+                Assert.True((command as IBindableCommand).CanExecute(null));
+
+                (command as IBindableCommand).Execute(null);
             }
 
             Assert.True(invoked);
@@ -164,11 +124,13 @@ namespace Chimera.UI.ComponentModel.Tests
         {
             var invoked = false;
 
-            using (var command = new BindableCommand(o => invoked = true, o => true, SynchronizationContext.Current) as IBindableCommand)
+            using (var command = new BindableCommand(o => invoked = true, o => true))
             {
-                Assert.True(command.CanExecute(null));
+                command.SynchronizationContext = SynchronizationContext.Current;
 
-                command.Execute(null);
+                Assert.True((command as IBindableCommand).CanExecute(null));
+
+                (command as IBindableCommand).Execute(null);
             }
 
             Assert.True(invoked);
@@ -180,7 +142,7 @@ namespace Chimera.UI.ComponentModel.Tests
             var @object = new TestBindableObject();
             var invocations = 0;
 
-            using (var command = new BindableCommand(@object, o => { }))
+            using (var command = new BindableCommand(o => { }, null, @object))
             {
                 command.CanExecuteChanged += (sender, e) => invocations++;
 

@@ -21,6 +21,9 @@ namespace Chimera.UI.ComponentModel
         IBindableCommand StopTrackingProperty(string propertyName);
 
         /// <summary>Gets the synchronization context to interact with UI through.</summary>
-        SynchronizationContext SynchronizationContext { get; }
+        SynchronizationContext SynchronizationContext
+        {
+            get;
+        }
     }
 }

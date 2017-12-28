@@ -17,46 +17,27 @@ namespace Chimera.UI.ComponentModel
         /// <summary>Initializes a new instance of the <see cref="BindableCommand" /> class.</summary>
         /// <param name="action">The action to execute when the command is executed.</param>
         /// <param name="predicate">The predicate to check if the command can be executed.</param>
-        /// <param name="synchronizationContext">The synchronization context for executing UI-related actions.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="action" /> is <see langword="null" />.</exception>
-        public BindableCommand(Action<object> action, Predicate<object> predicate = null, SynchronizationContext synchronizationContext = null)
-        {
-            if (action == null)
-            {
-                throw new ArgumentNullException(nameof(action));
-            }
-
-            _action = action;
-            _predicate = predicate;
-
-            SynchronizationContext = synchronizationContext;
-        }
-
-        /// <summary>Initializes a new instance of the <see cref="BindableCommand" /> class.</summary>
         /// <param name="trackingObject">The <see cref="IBindableObject" /> as a source of tracking properties and a synchronization context.</param>
-        /// <param name="action">The action to execute when the command is executed.</param>
-        /// <param name="predicate">The predicate to check if the command can be executed.</param>
-        /// <param name="synchronizationContext">The synchronization context for executing UI-related actions.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="trackingObject" /> or <paramref name="action" /> is <see langword="null" />.</exception>
-        public BindableCommand(IBindableObject trackingObject, Action<object> action, Predicate<object> predicate = null, SynchronizationContext synchronizationContext = null)
+        /// <exception cref="ArgumentNullException"><paramref name="action" /> is <see langword="null" />.</exception>
+        public BindableCommand(Action<object> action, Predicate<object> predicate = null, IBindableObject trackingObject = null)
         {
-            if (trackingObject == null)
-            {
-                throw new ArgumentNullException(nameof(trackingObject));
-            }
             if (action == null)
             {
                 throw new ArgumentNullException(nameof(action));
             }
 
-            _trackingObject = trackingObject;
             _action = action;
             _predicate = predicate;
-            _trackingProperties = new ConcurrentDictionary<string, byte>(StringComparer.Ordinal);
+            _trackingObject = trackingObject;
 
-            SynchronizationContext = synchronizationContext ?? trackingObject?.SynchronizationContext;
+            if (trackingObject != null)
+            {
+                _trackingProperties = new ConcurrentDictionary<string, byte>(StringComparer.Ordinal);
 
-            trackingObject.PropertyChanged += PropertyChangedEventHandler;
+                SynchronizationContext = trackingObject.SynchronizationContext;
+
+                trackingObject.PropertyChanged += PropertyChangedEventHandler;
+            }
         }
 
         /// <summary>Starts tracking a property for changing to raise an event about command's state.</summary>
@@ -127,13 +108,15 @@ namespace Chimera.UI.ComponentModel
         /// <summary>Executes raising an event that the command should be requeried for its state.</summary>
         protected virtual void OnCanExecuteChanged()
         {
-            if ((SynchronizationContext == null) || (SynchronizationContext == SynchronizationContext.Current))
+            var synchronizationContext = SynchronizationContext;
+
+            if ((synchronizationContext == null) || (synchronizationContext == SynchronizationContext.Current))
             {
                 CanExecuteChanged?.Invoke(this, EventArgs.Empty);
             }
             else
             {
-                SynchronizationContext.Post(state => CanExecuteChanged?.Invoke(this, EventArgs.Empty), null);
+                synchronizationContext.Post(state => CanExecuteChanged?.Invoke(this, EventArgs.Empty), null);
             }
         }
 
@@ -180,7 +163,11 @@ namespace Chimera.UI.ComponentModel
         }
 
         /// <summary>Gets the synchronization context to interact with UI through.</summary>
-        public SynchronizationContext SynchronizationContext { get; private set; }
+        public SynchronizationContext SynchronizationContext
+        {
+            get;
+            set;
+        }
 
         /// <summary>Occurs when changes occur that affect whether or not the command should execute.</summary>
         public event EventHandler CanExecuteChanged;

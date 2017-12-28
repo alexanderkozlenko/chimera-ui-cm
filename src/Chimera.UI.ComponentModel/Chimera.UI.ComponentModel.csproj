@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <VersionPrefix>1.1.1</VersionPrefix>
-    <VersionSuffix></VersionSuffix>
+    <Version>1.2.0</Version>
     <Product><![CDATA[Chimera.UI.ComponentModel]]></Product>
     <Description><![CDATA[Provides key components for building XAML-based UI using MVVM pattern]]></Description>
     <Authors><![CDATA[Alexander Kozlenko]]></Authors>
@@ -16,9 +15,9 @@
     <BaseIntermediateOutputPath>$(RepositoryPath)/bin/obj/$(AssemblyName)/</BaseIntermediateOutputPath>
     <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)../solution.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>True</SignAssembly>
-    <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <DebugType>none</DebugType>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 </Project>

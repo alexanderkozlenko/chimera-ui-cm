@@ -72,13 +72,15 @@ namespace Chimera.UI.ComponentModel
                 throw new ArgumentNullException(nameof(propertyName));
             }
 
-            if ((SynchronizationContext == null) || (SynchronizationContext == SynchronizationContext.Current))
+            var synchronizationContext = SynchronizationContext;
+
+            if ((synchronizationContext == null) || (synchronizationContext == SynchronizationContext.Current))
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             }
             else
             {
-                SynchronizationContext.Post(state => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName)), null);
+                synchronizationContext.Post(state => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName)), null);
             }
         }
 
@@ -266,7 +268,11 @@ namespace Chimera.UI.ComponentModel
         }
 
         /// <summary>Gets the synchronization context to interact with UI through.</summary>
-        public SynchronizationContext SynchronizationContext { get; set; }
+        public SynchronizationContext SynchronizationContext
+        {
+            get;
+            set;
+        }
 
         /// <summary>Occurs when a property value changes.</summary>
         public event PropertyChangedEventHandler PropertyChanged;

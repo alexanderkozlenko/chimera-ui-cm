@@ -8,6 +8,9 @@ namespace Chimera.UI.ComponentModel
     public interface IBindableObject : INotifyPropertyChanged, IDisposable
     {
         /// <summary>Gets the synchronization context to interact with UI through.</summary>
-        SynchronizationContext SynchronizationContext { get; }
+        SynchronizationContext SynchronizationContext
+        {
+            get;
+        }
     }
 }

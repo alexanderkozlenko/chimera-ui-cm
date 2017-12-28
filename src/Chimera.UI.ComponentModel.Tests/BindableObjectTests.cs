@@ -192,7 +192,11 @@ namespace Chimera.UI.ComponentModel.Tests
 
         private abstract class TestBusinessObject1
         {
-            public int Value { get; set; }
+            public int Value
+            {
+                get;
+                set;
+            }
         }
 
         private sealed class TestBusinessObject2 : TestBusinessObject1
