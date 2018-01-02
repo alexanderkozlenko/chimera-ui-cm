@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using Xunit;
 
 namespace Chimera.UI.ComponentModel.Tests
@@ -7,98 +6,81 @@ namespace Chimera.UI.ComponentModel.Tests
     public sealed class BindableCommandTests
     {
         [Fact]
-        public void CreateWithActionWhenActionIsNull()
+        public void CreateWhenActionIsNull()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                new BindableCommand(null, null));
+                new BindableCommand(null));
         }
 
         [Fact]
-        public void CreateWithActionAndPredicateWhenActionIsNull()
+        public void StartTrackingPropertyWhenPropertyNameIsNull()
         {
+            var bindable = new BindableCommand(x => { });
+
             Assert.Throws<ArgumentNullException>(() =>
-                new BindableCommand(null, o => true));
+                bindable.StartTrackingProperty(null));
         }
 
         [Fact]
-        public void CreateWithObjectAndActionWhenActionIsNull()
+        public void StartTrackingPropertyWhenBindableObjectIsUndefined()
         {
-            Assert.Throws<ArgumentNullException>(() =>
-                new BindableCommand(null, null, new TestBindableObject()));
-        }
-
-        [Fact]
-        public void CreateWithObjectAndActionAndPredicateWhenActionIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-                new BindableCommand(null, o => true, new TestBindableObject()));
-        }
-
-        [Fact]
-        public void TrackPropertyWhenPropertyNameIsNull()
-        {
-            var command = new BindableCommand(o => { });
-
-            Assert.Throws<ArgumentNullException>(() =>
-                command.StartTrackingProperty(null));
-        }
-
-        [Fact]
-        public void TrackPropertyWhenBindableObjectIsUndefined()
-        {
-            var @object = new TestBusinessObject();
-            var command = new BindableCommand(o => { });
+            var target = new TargetObject<int>();
+            var bindable = new BindableCommand(x => { });
 
             Assert.Throws<InvalidOperationException>(() =>
-                command.StartTrackingProperty(nameof(@object.Value)));
+                bindable.StartTrackingProperty(nameof(target.Value)));
         }
 
         [Fact]
-        public void UntrackPropertyWhenPropertyNameIsNull()
+        public void StartTrackingPropertyWhenPropertyNameIsInvalid()
         {
-            var command = new BindableCommand(o => { });
-
-            Assert.Throws<ArgumentNullException>(() =>
-                command.StopTrackingProperty(null));
-        }
-
-        [Fact]
-        public void UntrackPropertyWhenBindableObjectIsUndefined()
-        {
-            var @object = new TestBusinessObject();
-            var command = new BindableCommand(o => { });
+            var target = new TargetObject<int>();
+            var bindable = new BindableCommand(x => { });
 
             Assert.Throws<InvalidOperationException>(() =>
-                command.StopTrackingProperty(nameof(@object.Value)));
+                bindable.StartTrackingProperty("UnknownName"));
+        }
+
+        [Fact]
+        public void StopTrackingPropertyWhenPropertyNameIsNull()
+        {
+            var bindable = new BindableCommand(x => { });
+
+            Assert.Throws<ArgumentNullException>(() =>
+                bindable.StopTrackingProperty(null));
+        }
+
+        [Fact]
+        public void StopTrackingPropertyWhenBindableObjectIsUndefined()
+        {
+            var target = new TargetObject<int>();
+            var bindable = new BindableCommand(x => { });
+
+            Assert.Throws<InvalidOperationException>(() =>
+                bindable.StopTrackingProperty(nameof(target.Value)));
+        }
+
+        [Fact]
+        public void StopTrackingPropertyWhenPropertyNameIsInvalid()
+        {
+            var target = new TargetObject<int>();
+            var bindable = new BindableCommand(x => { });
+
+            Assert.Throws<InvalidOperationException>(() =>
+                bindable.StopTrackingProperty("UnknownName"));
         }
 
         [Fact]
         public void Execute()
         {
             var invoked = false;
+            var action = (Action<object>)(x => invoked = true);
 
-            using (var command = new BindableCommand(o => invoked = true) as IBindableCommand)
+            using (var bindable = new BindableCommand(action) as IBindableCommand)
             {
-                Assert.True(command.CanExecute(null));
+                Assert.True(bindable.CanExecute(null));
 
-                command.Execute(null);
-            }
-
-            Assert.True(invoked);
-        }
-
-        [Fact]
-        public void ExecuteWithCurrentContext()
-        {
-            var invoked = false;
-
-            using (var command = new BindableCommand(o => invoked = true, null))
-            {
-                command.SynchronizationContext = SynchronizationContext.Current;
-
-                Assert.True((command as IBindableCommand).CanExecute(null));
-
-                (command as IBindableCommand).Execute(null);
+                bindable.Execute(null);
             }
 
             Assert.True(invoked);
@@ -108,57 +90,46 @@ namespace Chimera.UI.ComponentModel.Tests
         public void ExecuteWithPredicate()
         {
             var invoked = false;
+            var allowed = false;
+            var action = (Action<object>)(x => invoked = true);
+            var predicate = (Predicate<object>)(x => allowed);
 
-            using (var command = new BindableCommand(o => invoked = true, o => true) as IBindableCommand)
+            using (var bindable = new BindableCommand(action, predicate) as IBindableCommand)
             {
-                Assert.True(command.CanExecute(null));
+                Assert.False(bindable.CanExecute(null));
 
-                command.Execute(null);
+                allowed = true;
+
+                Assert.True(bindable.CanExecute(null));
+
+                bindable.Execute(null);
             }
 
             Assert.True(invoked);
         }
 
         [Fact]
-        public void ExecuteWithPredicateAndCurrentContext()
+        public void CanExecuteChangedByTrackingProperty()
         {
-            var invoked = false;
-
-            using (var command = new BindableCommand(o => invoked = true, o => true))
-            {
-                command.SynchronizationContext = SynchronizationContext.Current;
-
-                Assert.True((command as IBindableCommand).CanExecute(null));
-
-                (command as IBindableCommand).Execute(null);
-            }
-
-            Assert.True(invoked);
-        }
-
-        [Fact]
-        public void ExecuteWithTrackingProperty()
-        {
-            var @object = new TestBindableObject();
+            var target = new TargetObject<int>();
+            var action = (Action<object>)(x => { });
             var invocations = 0;
 
-            using (var command = new BindableCommand(o => { }, null, @object))
+            using (var bindable = new BindableCommand(action, null, target))
             {
-                command.CanExecuteChanged += (sender, e) => invocations++;
+                bindable.CanExecuteChanged += (sender, e) => invocations++;
 
-                var tpr = command.StartTrackingProperty(nameof(@object.Value));
+                var chain1 = bindable.StartTrackingProperty(nameof(target.Value));
 
-                Assert.Equal(command, tpr);
+                target.Value = 1;
 
-                @object.Value = 42;
+                var chain2 = bindable.StopTrackingProperty(nameof(target.Value));
 
+                target.Value = 2;
+
+                Assert.Equal(bindable, chain1);
+                Assert.Equal(bindable, chain2);
                 Assert.Equal(1, invocations);
-
-                var upr = command.StopTrackingProperty(nameof(@object.Value));
-
-                Assert.Equal(command, upr);
-
-                @object.Value = null;
             }
 
             Assert.Equal(1, invocations);
@@ -166,18 +137,13 @@ namespace Chimera.UI.ComponentModel.Tests
 
         #region Test Types
 
-        private sealed class TestBusinessObject
+        private sealed class TargetObject<T> : BindableObject
         {
-            public object Value { get; set; }
-        }
+            private T _value;
 
-        private sealed class TestBindableObject : BindableObject
-        {
-            private object _value;
-
-            public object Value
+            public T Value
             {
-                get => _value;
+                get => GetValue(ref _value);
                 set => SetValue(ref _value, value);
             }
         }

@@ -1,11 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Version>1.2.0</Version>
-    <Product><![CDATA[Chimera.UI.ComponentModel]]></Product>
+    <Version>1.2.1</Version>
     <Description><![CDATA[Provides key components for building XAML-based UI using MVVM pattern]]></Description>
     <Authors><![CDATA[Alexander Kozlenko]]></Authors>
     <Copyright><![CDATA[© Alexander Kozlenko. All rights reserved.]]></Copyright>
-    <PackageTags><![CDATA[mvvm xaml]]></PackageTags>
+    <PackageTags><![CDATA[ui binding mvvm xaml]]></PackageTags>
     <PackageProjectUrl>https://github.com/alexanderkozlenko/chimera-ui-cm</PackageProjectUrl>
     <PackageLicenseUrl>https://raw.github.com/alexanderkozlenko/chimera-ui-cm/master/LICENSE</PackageLicenseUrl>
   </PropertyGroup>

@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.ComponentModel;
+using System.Globalization;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using Chimera.UI.ComponentModel.Resources;
 
 namespace Chimera.UI.ComponentModel
 {
     /// <summary>Represents a bindable object component.</summary>
     public abstract class BindableObject : IBindableObject
     {
-        private ConcurrentDictionary<PropertyInfoKey, PropertyInfo> _propertyDefinitions;
+        private ConcurrentDictionary<PropertyInfoKey, PropertyInfo> _properties;
 
         /// <summary>Initializes a new instance of the <see cref="BindableObject" /> class.</summary>
         protected BindableObject()
@@ -33,8 +35,8 @@ namespace Chimera.UI.ComponentModel
                 return;
             }
 
-            _propertyDefinitions?.Clear();
-            _propertyDefinitions = null;
+            _properties?.Clear();
+            _properties = null;
 
             SynchronizationContext = null;
 
@@ -88,7 +90,6 @@ namespace Chimera.UI.ComponentModel
         /// <typeparam name="TValue">The type of the field.</typeparam>
         /// <param name="storage">The field to get a value from.</param>
         /// <returns>The value of the field.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected TValue GetValue<TValue>(ref TValue storage)
         {
             return storage;
@@ -101,9 +102,14 @@ namespace Chimera.UI.ComponentModel
         /// <param name="propertyName">The name of the property.</param>
         /// <param name="defaultValue">The value to return if the object is uninitialized.</param>
         /// <returns>The value of the object's property.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="propertyName" /> is <see langword="null" />.</exception>
         /// <exception cref="InvalidOperationException">The specified property is not found.</exception>
         protected TValue GetValue<TStorage, TValue>(TStorage storageObject, string propertyName, TValue defaultValue)
         {
+            if (propertyName == null)
+            {
+                throw new ArgumentNullException(nameof(propertyName));
+            }
             if (object.Equals(storageObject, default(TStorage)))
             {
                 return defaultValue;
@@ -118,31 +124,11 @@ namespace Chimera.UI.ComponentModel
         /// <typeparam name="TValue">The type of the field.</typeparam>
         /// <param name="storage">The field to set value to.</param>
         /// <param name="value">The desired value to set.</param>
-        /// <param name="outerPropertyName">The name of the property to raise change notification for. This value is provided automatically.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="outerPropertyName" /> is <see langword="null" />.</exception>
-        protected void SetValue<TValue>(ref TValue storage, TValue value, [CallerMemberName] string outerPropertyName = null)
-        {
-            if (outerPropertyName == null)
-            {
-                throw new ArgumentNullException(nameof(outerPropertyName));
-            }
-
-            SetValueInternal(ref storage, value, null, outerPropertyName);
-        }
-
-        /// <summary>Sets the value to the field if it differs and notify listeners.</summary>
-        /// <typeparam name="TValue">The type of the field.</typeparam>
-        /// <param name="storage">The field to set value to.</param>
-        /// <param name="value">The desired value to set.</param>
         /// <param name="action">The action to execute in case the value was changed.</param>
         /// <param name="outerPropertyName">The name of the property to raise change notification for. This value is provided automatically.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="action" /> or <paramref name="outerPropertyName" /> is <see langword="null" />.</exception>
-        protected void SetValue<TValue>(ref TValue storage, TValue value, Action action, [CallerMemberName] string outerPropertyName = null)
+        /// <exception cref="ArgumentNullException"><paramref name="outerPropertyName" /> is <see langword="null" />.</exception>
+        protected void SetValue<TValue>(ref TValue storage, TValue value, Action action = null, [CallerMemberName] string outerPropertyName = null)
         {
-            if (action == null)
-            {
-                throw new ArgumentNullException(nameof(action));
-            }
             if (outerPropertyName == null)
             {
                 throw new ArgumentNullException(nameof(outerPropertyName));
@@ -157,42 +143,15 @@ namespace Chimera.UI.ComponentModel
         /// <param name="storageObject">The object that declares the property.</param>
         /// <param name="propertyName">The name of the property.</param>
         /// <param name="value">The desired value to set.</param>
+        /// <param name="action">The action to execute in case the value was changed.</param>
         /// <param name="outerPropertyName">The name of the property to raise change notification for. This value is provided automatically.</param>
         /// <exception cref="ArgumentNullException"><paramref name="propertyName" /> or <paramref name="outerPropertyName" /> is <see langword="null" />.</exception>
         /// <exception cref="InvalidOperationException">The specified property is not found.</exception>
-        protected void SetValue<TStorage, TValue>(TStorage storageObject, string propertyName, TValue value, [CallerMemberName] string outerPropertyName = null)
+        protected void SetValue<TStorage, TValue>(TStorage storageObject, string propertyName, TValue value, Action action = null, [CallerMemberName] string outerPropertyName = null)
         {
             if (propertyName == null)
             {
                 throw new ArgumentNullException(nameof(propertyName));
-            }
-            if (outerPropertyName == null)
-            {
-                throw new ArgumentNullException(nameof(outerPropertyName));
-            }
-
-            SetValueInternal(storageObject, propertyName, value, null, outerPropertyName);
-        }
-
-        /// <summary>Sets the value to the object's property if it differs and notify listeners.</summary>
-        /// <typeparam name="TStorage">The type of the object.</typeparam>
-        /// <typeparam name="TValue">The type of the property.</typeparam>
-        /// <param name="storageObject">The object that declares the property.</param>
-        /// <param name="propertyName">The name of the property.</param>
-        /// <param name="value">The desired value to set.</param>
-        /// <param name="action">The action to execute in case the value was changed.</param>
-        /// <param name="outerPropertyName">The name of the property to raise change notification for. This value is provided automatically.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="propertyName" />, <paramref name="action" />, or <paramref name="outerPropertyName" /> is <see langword="null" />.</exception>
-        /// <exception cref="InvalidOperationException">The specified property is not found.</exception>
-        protected void SetValue<TStorage, TValue>(TStorage storageObject, string propertyName, TValue value, Action action, [CallerMemberName] string outerPropertyName = null)
-        {
-            if (propertyName == null)
-            {
-                throw new ArgumentNullException(nameof(propertyName));
-            }
-            if (action == null)
-            {
-                throw new ArgumentNullException(nameof(action));
             }
             if (outerPropertyName == null)
             {
@@ -237,12 +196,11 @@ namespace Chimera.UI.ComponentModel
             action?.Invoke();
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private PropertyInfo GetPropertyInfo<TStorage>(string propertyName)
         {
-            LazyInitializer.EnsureInitialized(ref _propertyDefinitions, () => new ConcurrentDictionary<PropertyInfoKey, PropertyInfo>());
+            LazyInitializer.EnsureInitialized(ref _properties, () => new ConcurrentDictionary<PropertyInfoKey, PropertyInfo>());
 
-            return _propertyDefinitions.GetOrAdd(new PropertyInfoKey(typeof(TStorage), propertyName), key => GetPropertyInfo(typeof(TStorage), propertyName));
+            return _properties.GetOrAdd(new PropertyInfoKey(typeof(TStorage), propertyName), key => GetPropertyInfo(typeof(TStorage), propertyName));
         }
 
         private static PropertyInfo GetPropertyInfo(Type type, string propertyName)
@@ -264,7 +222,12 @@ namespace Chimera.UI.ComponentModel
                 }
             }
 
-            return result ?? throw new InvalidOperationException($"The instance property \"{propertyName}\" was not found on the type \"{type}\" or any underlying type");
+            if (result == null)
+            {
+                throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, Strings.GetString("object.property.not_found"), propertyName, type));
+            }
+
+            return result;
         }
 
         /// <summary>Gets the synchronization context to interact with UI through.</summary>
@@ -277,7 +240,7 @@ namespace Chimera.UI.ComponentModel
         /// <summary>Occurs when a property value changes.</summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private struct PropertyInfoKey
+        private readonly struct PropertyInfoKey
         {
             private readonly Type _declaringType;
             private readonly string _propertyName;
@@ -290,14 +253,22 @@ namespace Chimera.UI.ComponentModel
 
             public override int GetHashCode()
             {
-                return _declaringType.GetHashCode() ^ _propertyName.GetHashCode();
+                unchecked
+                {
+                    var result = (int)2166136261;
+
+                    result = (result * 16777619) ^ _declaringType.GetHashCode();
+                    result = (result * 16777619) ^ _propertyName.GetHashCode();
+
+                    return result;
+                }
             }
 
             public override bool Equals(object obj)
             {
                 var objB = (PropertyInfoKey)obj;
 
-                return object.Equals(objB._declaringType, _declaringType) && object.Equals(objB._propertyName, _propertyName);
+                return object.Equals(objB._declaringType, _declaringType) && (objB._propertyName == _propertyName);
             }
         }
     }

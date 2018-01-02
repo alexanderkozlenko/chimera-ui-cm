@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Threading;
 using System.Windows.Input;
+using Chimera.UI.ComponentModel.Resources;
 
 namespace Chimera.UI.ComponentModel
 {
@@ -53,7 +54,7 @@ namespace Chimera.UI.ComponentModel
             }
             if (_trackingObject == null)
             {
-                throw new InvalidOperationException("The tracking object is not defined");
+                throw new InvalidOperationException(Strings.GetString("command.object.undefined"));
             }
 
             _trackingProperties?.TryAdd(propertyName, default);
@@ -74,7 +75,7 @@ namespace Chimera.UI.ComponentModel
             }
             if (_trackingObject == null)
             {
-                throw new InvalidOperationException("The tracking object is not defined");
+                throw new InvalidOperationException(Strings.GetString("command.object.undefined"));
             }
 
             _trackingProperties?.TryRemove(propertyName, out var _);

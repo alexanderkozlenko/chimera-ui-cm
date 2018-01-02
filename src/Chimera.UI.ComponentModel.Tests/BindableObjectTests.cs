@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Chimera.UI.ComponentModel.Tests
@@ -8,258 +6,245 @@ namespace Chimera.UI.ComponentModel.Tests
     public sealed class BindableObjectTests
     {
         [Fact]
-        public void Type1SetValueGetValue()
+        public void Type1GetValue()
         {
-            var properties = new List<string>();
-
-            using (var bindableObject = new TestType1BindableObject())
+            using (var bindable = new BindableObjectType1<int>(42))
             {
-                bindableObject.PropertyChanged += (sender, e) => properties.Add(e.PropertyName);
-                bindableObject.ValueNormal = 42;
+                var value = bindable.InvokeGetValue();
 
-                Assert.Single(properties);
-                Assert.Equal(nameof(bindableObject.ValueNormal), properties[0]);
-                Assert.Equal(42, bindableObject.ValueNormal);
-                Assert.Equal(42, bindableObject.PureValue);
+                Assert.Equal(42, value);
+                Assert.Equal(42, bindable.Target);
             }
         }
 
         [Fact]
-        public void Type1SetValueWithSetHandler()
+        public void Type1SetValue()
         {
-            var properties = new List<string>();
-            var invoked = false;
-            var setHandler = (Action<string>)(n => invoked = true);
-
-            using (var bindableObject = new TestType1BindableObject(setHandler))
+            using (var bindable = new BindableObjectType1<int>())
             {
-                bindableObject.PropertyChanged += (sender, e) => properties.Add(e.PropertyName);
-                bindableObject.ValueNormal = 42;
+                Assert.PropertyChanged(bindable, "p", () => bindable.InvokeSetValue(42, null, "p"));
+                Assert.Equal(42, bindable.Target);
+            }
+        }
 
-                Assert.Single(properties);
-                Assert.Equal(nameof(bindableObject.ValueNormal), properties[0]);
-                Assert.Equal(42, bindableObject.ValueNormal);
-                Assert.Equal(42, bindableObject.PureValue);
+        [Fact]
+        public void Type1SetValueWithAction()
+        {
+            var invoked = false;
+            var action = (Action)(() => invoked = true);
+
+            using (var bindable = new BindableObjectType1<int>())
+            {
+                Assert.PropertyChanged(bindable, "p", () => bindable.InvokeSetValue(42, action, "p"));
+                Assert.Equal(42, bindable.Target);
             }
 
             Assert.True(invoked);
         }
 
         [Fact]
-        public void Type1SetValueWithActionCallback()
+        public void Type2GetValue()
         {
-            var properties = new List<string>();
-            var invoked = false;
-            var setHandler = (Action)(() => invoked = true);
-
-            using (var bindableObject = new TestType1BindableObject(setHandler))
+            var target = new ValueObjectLevel2<int>
             {
+                Value1 = 1,
+                Value2 = 2
+            };
 
-                bindableObject.PropertyChanged += (sender, e) => properties.Add(e.PropertyName);
-                bindableObject.ValueWithActionCallback = 42;
-
-                Assert.Single(properties);
-                Assert.Equal(nameof(bindableObject.ValueWithActionCallback), properties[0]);
-                Assert.Equal(42, bindableObject.ValueWithActionCallback);
-                Assert.Equal(42, bindableObject.PureValue);
-            }
-
-            Assert.True(invoked);
-        }
-
-        [Fact]
-        public void Type2SetValueGetValue()
-        {
-            var properties = new List<string>();
-
-            using (var bindableObject = new TestType2BindableObject(new TestBusinessObject2()))
+            using (var bindable = new BindableObjectType2<ValueObjectLevel2<int>>(target))
             {
-                bindableObject.PropertyChanged += (sender, e) => properties.Add(e.PropertyName);
-                bindableObject.ValueNormal = 42;
+                var value1 = bindable.InvokeGetValue(nameof(target.Value1), default(int));
+                var value2 = bindable.InvokeGetValue(nameof(target.Value2), default(int));
 
-                Assert.Single(properties);
-                Assert.Equal(nameof(bindableObject.ValueNormal), properties[0]);
-                Assert.Equal(42, bindableObject.ValueNormal);
-                Assert.Equal(42, bindableObject.PureValue);
+                Assert.Equal(1, value1);
+                Assert.Equal(2, value2);
             }
         }
 
         [Fact]
-        public void Type2SetValueWithSetHandler()
+        public void Type2GetValueWhenPropertyNameIsNull()
         {
-            var properties = new List<string>();
-            var invoked = false;
-            var setHandler = (Action<string>)(n => invoked = true);
-
-            using (var bindableObject = new TestType2BindableObject(new TestBusinessObject2(), setHandler))
+            var target = new ValueObjectLevel1<int>
             {
+                Value1 = 1
+            };
 
-                bindableObject.PropertyChanged += (sender, e) => properties.Add(e.PropertyName);
-                bindableObject.ValueNormal = 42;
-
-                Assert.Single(properties);
-                Assert.Equal(nameof(bindableObject.ValueNormal), properties[0]);
-                Assert.Equal(42, bindableObject.ValueNormal);
-                Assert.Equal(42, bindableObject.PureValue);
+            using (var bindable = new BindableObjectType2<ValueObjectLevel1<int>>(target))
+            {
+                Assert.Throws<ArgumentNullException>(() =>
+                    bindable.InvokeGetValue(null, default(int)));
             }
-
-            Assert.True(invoked);
         }
 
         [Fact]
-        public void Type2SetValueWithActionCallback()
+        public void Type2GetValueWhenPropertyNameIsInvalid()
         {
-            var properties = new List<string>();
-            var invoked = false;
-            var setHandler = (Action)(() => invoked = true);
-
-            using (var bindableObject = new TestType2BindableObject(new TestBusinessObject2(), setHandler))
+            var target = new ValueObjectLevel1<int>
             {
+                Value1 = 1
+            };
 
-                bindableObject.PropertyChanged += (sender, e) => properties.Add(e.PropertyName);
-                bindableObject.ValueWithActionCallback = 42;
-
-                Assert.Single(properties);
-                Assert.Equal(nameof(bindableObject.ValueWithActionCallback), properties[0]);
-                Assert.Equal(42, bindableObject.ValueWithActionCallback);
-                Assert.Equal(42, bindableObject.PureValue);
+            using (var bindable = new BindableObjectType2<ValueObjectLevel1<int>>(target))
+            {
+                Assert.Throws<InvalidOperationException>(() =>
+                    bindable.InvokeGetValue("Value3", default(int)));
             }
+        }
 
-            Assert.True(invoked);
+        [Fact]
+        public void Type2GetValueWhenTargetIsNull()
+        {
+            var target = default(ValueObjectLevel2<int>);
+
+            using (var bindable = new BindableObjectType2<ValueObjectLevel2<int>>(target))
+            {
+                var value1 = bindable.InvokeGetValue(nameof(target.Value1), 1);
+                var value2 = bindable.InvokeGetValue(nameof(target.Value2), 2);
+
+                Assert.Equal(1, value1);
+                Assert.Equal(2, value2);
+            }
+        }
+
+        [Fact]
+        public void Type2SetValue()
+        {
+            var target = new ValueObjectLevel2<int>();
+
+            using (var bindable = new BindableObjectType2<ValueObjectLevel2<int>>(target))
+            {
+                Assert.PropertyChanged(bindable, "p1", () => bindable.InvokeSetValue(nameof(bindable.Target.Value1), 1, null, "p1"));
+                Assert.PropertyChanged(bindable, "p2", () => bindable.InvokeSetValue(nameof(bindable.Target.Value2), 2, null, "p2"));
+                Assert.Equal(1, bindable.Target.Value1);
+                Assert.Equal(2, bindable.Target.Value2);
+            }
+        }
+
+        [Fact]
+        public void Type2SetValueWhenPropertyNameIsNull()
+        {
+            var target = new ValueObjectLevel1<int>();
+
+            using (var bindable = new BindableObjectType2<ValueObjectLevel1<int>>(target))
+            {
+                Assert.Throws<ArgumentNullException>(() =>
+                    bindable.InvokeSetValue(null, 1, null, "p1"));
+            }
         }
 
         [Fact]
         public void Type2SetValueWhenPropertyNameIsInvalid()
         {
-            using (var bindableObject = new TestType2BindableObject(new TestBusinessObject2()))
+            var target = new ValueObjectLevel1<int>();
+
+            using (var bindable = new BindableObjectType2<ValueObjectLevel1<int>>(target))
             {
-                Assert.Throws<InvalidOperationException>(
-                    () => bindableObject.ValueWithInvalidPropertyName = 42);
+                Assert.Throws<InvalidOperationException>(() =>
+                    bindable.InvokeSetValue("Value3", 1, null, "p3"));
+            }
+        }
+
+        [Fact]
+        public void Type2SetValueWithAction()
+        {
+            var target = new ValueObjectLevel2<int>();
+            var invoked1 = false;
+            var invoked2 = false;
+            var action1 = (Action)(() => invoked1 = true);
+            var action2 = (Action)(() => invoked2 = true);
+
+            using (var bindable = new BindableObjectType2<ValueObjectLevel2<int>>(target))
+            {
+                Assert.PropertyChanged(bindable, "p1", () => bindable.InvokeSetValue(nameof(bindable.Target.Value1), 1, action1, "p1"));
+                Assert.PropertyChanged(bindable, "p2", () => bindable.InvokeSetValue(nameof(bindable.Target.Value2), 2, action2, "p2"));
+                Assert.Equal(1, bindable.Target.Value1);
+                Assert.Equal(2, bindable.Target.Value2);
+            }
+
+            Assert.True(invoked1);
+            Assert.True(invoked2);
+        }
+
+        [Fact]
+        public void Type2SetValueWhenTargetIsNull()
+        {
+            var target = default(ValueObjectLevel2<int>);
+
+            using (var bindable = new BindableObjectType2<ValueObjectLevel2<int>>(target))
+            {
+                bindable.InvokeSetValue(nameof(target.Value1), 1, null, "p1");
+                bindable.InvokeSetValue(nameof(target.Value2), 2, null, "p2");
             }
         }
 
         #region Test Types
 
-        private sealed class TestType1BindableObject : BindableObject
+        private sealed class BindableObjectType1<T> : BindableObject
         {
-            private readonly Action<string> _handler;
+            private T _target;
 
-            private readonly Action _callbackAction;
-            private readonly Func<Task> _callbackFunc;
-
-            private int _value;
-
-            public TestType1BindableObject()
+            public BindableObjectType1(T target = default)
             {
+                _target = target;
             }
 
-            public TestType1BindableObject(Action<string> handler)
+            public T InvokeGetValue()
             {
-                _handler = handler;
+                return GetValue(ref _target);
             }
 
-            public TestType1BindableObject(Action callback)
+            public void InvokeSetValue(T value, Action action, string outerPropertyName)
             {
-                _callbackAction = callback;
+                SetValue(ref _target, value, action, outerPropertyName);
             }
 
-            public TestType1BindableObject(Func<Task> callback)
+            public T Target
             {
-                _callbackFunc = callback;
-            }
-
-            protected override void OnPropertyChanged(string propertyName)
-            {
-                base.OnPropertyChanged(propertyName);
-
-                _handler?.Invoke(propertyName);
-            }
-
-            public int PureValue => _value;
-
-            public int ValueNormal
-            {
-                get => GetValue(ref _value);
-                set => SetValue(ref _value, value);
-            }
-
-            public int ValueWithActionCallback
-            {
-                get => GetValue(ref _value);
-                set => SetValue(ref _value, value, _callbackAction);
+                get => _target;
+                set => _target = value;
             }
         }
 
-        private abstract class TestBusinessObject1
+        private sealed class BindableObjectType2<T> : BindableObject
         {
-            public int Value
+            private readonly T _target;
+
+            public BindableObjectType2(T target)
+            {
+                _target = target;
+            }
+
+            public TValue InvokeGetValue<TValue>(string propertyName, TValue defaultValue)
+            {
+                return GetValue(_target, propertyName, defaultValue);
+            }
+
+            public void InvokeSetValue<TValue>(string propertyName, TValue value, Action action, string outerPropertyName)
+            {
+                SetValue(_target, propertyName, value, action, outerPropertyName);
+            }
+
+            public T Target
+            {
+                get => _target;
+            }
+        }
+
+        private class ValueObjectLevel1<T>
+        {
+            public T Value1
             {
                 get;
                 set;
             }
         }
 
-        private sealed class TestBusinessObject2 : TestBusinessObject1
+        private class ValueObjectLevel2<T> : ValueObjectLevel1<T>
         {
-        }
-
-        private sealed class TestType2BindableObject : BindableObject
-        {
-            private readonly TestBusinessObject2 _object;
-
-            private readonly Action<string> _handler;
-
-            private readonly Action _callbackAction;
-            private readonly Func<Task> _callbackFunc;
-
-            public TestType2BindableObject(TestBusinessObject2 @object)
+            public T Value2
             {
-                _object = @object;
-            }
-
-            public TestType2BindableObject(TestBusinessObject2 @object, Action<string> handler)
-            {
-                _object = @object;
-                _handler = handler;
-            }
-
-            public TestType2BindableObject(TestBusinessObject2 @object, Action callback)
-            {
-                _object = @object;
-                _callbackAction = callback;
-            }
-
-            public TestType2BindableObject(TestBusinessObject2 @object, Func<Task> callback)
-            {
-                _object = @object;
-                _callbackFunc = callback;
-            }
-
-            protected override void OnPropertyChanged(string propertyName)
-            {
-                base.OnPropertyChanged(propertyName);
-
-                _handler?.Invoke(propertyName);
-            }
-
-            public int PureValue => _object.Value;
-
-            public int ValueNormal
-            {
-                get => GetValue(_object, nameof(_object.Value), default(int));
-                set => SetValue(_object, nameof(_object.Value), value);
-            }
-
-            public int ValueWithActionCallback
-            {
-                get => GetValue(_object, nameof(_object.Value), default(int));
-                set => SetValue(_object, nameof(_object.Value), value, _callbackAction);
-            }
-
-            public int ValueWithInvalidPropertyName
-            {
-                get => GetValue(_object, "property_0", default(int));
-                set => SetValue(_object, "property_0", value);
+                get;
+                set;
             }
         }
 
