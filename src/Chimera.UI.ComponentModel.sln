@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2010
+VisualStudioVersion = 15.0.27130.2024
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chimera.UI.ComponentModel", "Chimera.UI.ComponentModel\Chimera.UI.ComponentModel.csproj", "{9EFE3E9F-369A-4BC9-9D0B-51869688AC9B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chimera.UI.ComponentModel.Tests", "Chimera.UI.ComponentModel.Tests\Chimera.UI.ComponentModel.Tests.csproj", "{6636E2FE-EC58-43F1-9A9F-963F694F4BA2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chimera.UI.ComponentModel.Benchmarks", "Chimera.UI.ComponentModel.Benchmarks\Chimera.UI.ComponentModel.Benchmarks.csproj", "{4AF78F30-4108-49FB-9655-54A81461765F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{6636E2FE-EC58-43F1-9A9F-963F694F4BA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6636E2FE-EC58-43F1-9A9F-963F694F4BA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6636E2FE-EC58-43F1-9A9F-963F694F4BA2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4AF78F30-4108-49FB-9655-54A81461765F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4AF78F30-4108-49FB-9655-54A81461765F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4AF78F30-4108-49FB-9655-54A81461765F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4AF78F30-4108-49FB-9655-54A81461765F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

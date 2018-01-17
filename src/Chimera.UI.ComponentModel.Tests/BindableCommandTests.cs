@@ -1,10 +1,15 @@
 ﻿using System;
+using Chimera.UI.ComponentModel.Tests.Objects;
 using Xunit;
 
 namespace Chimera.UI.ComponentModel.Tests
 {
     public sealed class BindableCommandTests
     {
+        private static void EmptyAction(object parameter)
+        {
+        }
+
         [Fact]
         public void CreateWhenActionIsNull()
         {
@@ -15,7 +20,7 @@ namespace Chimera.UI.ComponentModel.Tests
         [Fact]
         public void StartTrackingPropertyWhenPropertyNameIsNull()
         {
-            var bindable = new BindableCommand(x => { });
+            var bindable = new BindableCommand(EmptyAction);
 
             Assert.Throws<ArgumentNullException>(() =>
                 bindable.StartTrackingProperty(null));
@@ -24,8 +29,8 @@ namespace Chimera.UI.ComponentModel.Tests
         [Fact]
         public void StartTrackingPropertyWhenBindableObjectIsUndefined()
         {
-            var target = new TargetObject<int>();
-            var bindable = new BindableCommand(x => { });
+            var target = new TrackingObject<int>();
+            var bindable = new BindableCommand(EmptyAction);
 
             Assert.Throws<InvalidOperationException>(() =>
                 bindable.StartTrackingProperty(nameof(target.Value)));
@@ -34,17 +39,16 @@ namespace Chimera.UI.ComponentModel.Tests
         [Fact]
         public void StartTrackingPropertyWhenPropertyNameIsInvalid()
         {
-            var target = new TargetObject<int>();
-            var bindable = new BindableCommand(x => { });
+            var bindable = new BindableCommand(EmptyAction);
 
             Assert.Throws<InvalidOperationException>(() =>
-                bindable.StartTrackingProperty("UnknownName"));
+                bindable.StartTrackingProperty("*"));
         }
 
         [Fact]
         public void StopTrackingPropertyWhenPropertyNameIsNull()
         {
-            var bindable = new BindableCommand(x => { });
+            var bindable = new BindableCommand(EmptyAction);
 
             Assert.Throws<ArgumentNullException>(() =>
                 bindable.StopTrackingProperty(null));
@@ -53,8 +57,8 @@ namespace Chimera.UI.ComponentModel.Tests
         [Fact]
         public void StopTrackingPropertyWhenBindableObjectIsUndefined()
         {
-            var target = new TargetObject<int>();
-            var bindable = new BindableCommand(x => { });
+            var target = new TrackingObject<int>();
+            var bindable = new BindableCommand(EmptyAction);
 
             Assert.Throws<InvalidOperationException>(() =>
                 bindable.StopTrackingProperty(nameof(target.Value)));
@@ -63,11 +67,10 @@ namespace Chimera.UI.ComponentModel.Tests
         [Fact]
         public void StopTrackingPropertyWhenPropertyNameIsInvalid()
         {
-            var target = new TargetObject<int>();
-            var bindable = new BindableCommand(x => { });
+            var bindable = new BindableCommand(EmptyAction);
 
             Assert.Throws<InvalidOperationException>(() =>
-                bindable.StopTrackingProperty("UnknownName"));
+                bindable.StopTrackingProperty("*"));
         }
 
         [Fact]
@@ -111,8 +114,8 @@ namespace Chimera.UI.ComponentModel.Tests
         [Fact]
         public void CanExecuteChangedByTrackingProperty()
         {
-            var target = new TargetObject<int>();
-            var action = (Action<object>)(x => { });
+            var target = new TrackingObject<int>();
+            var action = (Action<object>)(EmptyAction);
             var invocations = 0;
 
             using (var bindable = new BindableCommand(action, null, target))
@@ -134,20 +137,5 @@ namespace Chimera.UI.ComponentModel.Tests
 
             Assert.Equal(1, invocations);
         }
-
-        #region Test Types
-
-        private sealed class TargetObject<T> : BindableObject
-        {
-            private T _value;
-
-            public T Value
-            {
-                get => GetValue(ref _value);
-                set => SetValue(ref _value, value);
-            }
-        }
-
-        #endregion
     }
 }

@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Version>1.2.1</Version>
+    <Version>1.2.2</Version>
     <Description><![CDATA[Provides key components for building XAML-based UI using MVVM pattern]]></Description>
     <Authors><![CDATA[Alexander Kozlenko]]></Authors>
     <Copyright><![CDATA[© Alexander Kozlenko. All rights reserved.]]></Copyright>

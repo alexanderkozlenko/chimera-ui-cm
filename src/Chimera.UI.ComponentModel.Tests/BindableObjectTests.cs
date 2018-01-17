@@ -1,4 +1,5 @@
 using System;
+using Chimera.UI.ComponentModel.Tests.Objects;
 using Xunit;
 
 namespace Chimera.UI.ComponentModel.Tests
@@ -13,17 +14,17 @@ namespace Chimera.UI.ComponentModel.Tests
                 var value = bindable.InvokeGetValue();
 
                 Assert.Equal(42, value);
-                Assert.Equal(42, bindable.Target);
+                Assert.Equal(42, bindable.Value);
             }
         }
 
         [Fact]
         public void Type1SetValue()
         {
-            using (var bindable = new BindableObjectType1<int>())
+            using (var bindable = new BindableObjectType1<int>(0))
             {
                 Assert.PropertyChanged(bindable, "p", () => bindable.InvokeSetValue(42, null, "p"));
-                Assert.Equal(42, bindable.Target);
+                Assert.Equal(42, bindable.Value);
             }
         }
 
@@ -33,10 +34,10 @@ namespace Chimera.UI.ComponentModel.Tests
             var invoked = false;
             var action = (Action)(() => invoked = true);
 
-            using (var bindable = new BindableObjectType1<int>())
+            using (var bindable = new BindableObjectType1<int>(0))
             {
                 Assert.PropertyChanged(bindable, "p", () => bindable.InvokeSetValue(42, action, "p"));
-                Assert.Equal(42, bindable.Target);
+                Assert.Equal(42, bindable.Value);
             }
 
             Assert.True(invoked);
@@ -113,10 +114,10 @@ namespace Chimera.UI.ComponentModel.Tests
 
             using (var bindable = new BindableObjectType2<ValueObjectLevel2<int>>(target))
             {
-                Assert.PropertyChanged(bindable, "p1", () => bindable.InvokeSetValue(nameof(bindable.Target.Value1), 1, null, "p1"));
-                Assert.PropertyChanged(bindable, "p2", () => bindable.InvokeSetValue(nameof(bindable.Target.Value2), 2, null, "p2"));
-                Assert.Equal(1, bindable.Target.Value1);
-                Assert.Equal(2, bindable.Target.Value2);
+                Assert.PropertyChanged(bindable, "p1", () => bindable.InvokeSetValue(nameof(bindable.Value.Value1), 1, null, "p1"));
+                Assert.PropertyChanged(bindable, "p2", () => bindable.InvokeSetValue(nameof(bindable.Value.Value2), 2, null, "p2"));
+                Assert.Equal(1, bindable.Value.Value1);
+                Assert.Equal(2, bindable.Value.Value2);
             }
         }
 
@@ -155,10 +156,10 @@ namespace Chimera.UI.ComponentModel.Tests
 
             using (var bindable = new BindableObjectType2<ValueObjectLevel2<int>>(target))
             {
-                Assert.PropertyChanged(bindable, "p1", () => bindable.InvokeSetValue(nameof(bindable.Target.Value1), 1, action1, "p1"));
-                Assert.PropertyChanged(bindable, "p2", () => bindable.InvokeSetValue(nameof(bindable.Target.Value2), 2, action2, "p2"));
-                Assert.Equal(1, bindable.Target.Value1);
-                Assert.Equal(2, bindable.Target.Value2);
+                Assert.PropertyChanged(bindable, "p1", () => bindable.InvokeSetValue(nameof(bindable.Value.Value1), 1, action1, "p1"));
+                Assert.PropertyChanged(bindable, "p2", () => bindable.InvokeSetValue(nameof(bindable.Value.Value2), 2, action2, "p2"));
+                Assert.Equal(1, bindable.Value.Value1);
+                Assert.Equal(2, bindable.Value.Value2);
             }
 
             Assert.True(invoked1);
@@ -176,78 +177,5 @@ namespace Chimera.UI.ComponentModel.Tests
                 bindable.InvokeSetValue(nameof(target.Value2), 2, null, "p2");
             }
         }
-
-        #region Test Types
-
-        private sealed class BindableObjectType1<T> : BindableObject
-        {
-            private T _target;
-
-            public BindableObjectType1(T target = default)
-            {
-                _target = target;
-            }
-
-            public T InvokeGetValue()
-            {
-                return GetValue(ref _target);
-            }
-
-            public void InvokeSetValue(T value, Action action, string outerPropertyName)
-            {
-                SetValue(ref _target, value, action, outerPropertyName);
-            }
-
-            public T Target
-            {
-                get => _target;
-                set => _target = value;
-            }
-        }
-
-        private sealed class BindableObjectType2<T> : BindableObject
-        {
-            private readonly T _target;
-
-            public BindableObjectType2(T target)
-            {
-                _target = target;
-            }
-
-            public TValue InvokeGetValue<TValue>(string propertyName, TValue defaultValue)
-            {
-                return GetValue(_target, propertyName, defaultValue);
-            }
-
-            public void InvokeSetValue<TValue>(string propertyName, TValue value, Action action, string outerPropertyName)
-            {
-                SetValue(_target, propertyName, value, action, outerPropertyName);
-            }
-
-            public T Target
-            {
-                get => _target;
-            }
-        }
-
-        private class ValueObjectLevel1<T>
-        {
-            public T Value1
-            {
-                get;
-                set;
-            }
-        }
-
-        private class ValueObjectLevel2<T> : ValueObjectLevel1<T>
-        {
-            public T Value2
-            {
-                get;
-                set;
-            }
-        }
-
-        #endregion
     }
 }

@@ -198,19 +198,24 @@ namespace Chimera.UI.ComponentModel
 
         private PropertyInfo GetPropertyInfo<TStorage>(string propertyName)
         {
-            LazyInitializer.EnsureInitialized(ref _properties, () => new ConcurrentDictionary<PropertyInfoKey, PropertyInfo>());
+            LazyInitializer.EnsureInitialized(ref _properties, CreatePropertiesDictionary);
 
-            return _properties.GetOrAdd(new PropertyInfoKey(typeof(TStorage), propertyName), key => GetPropertyInfo(typeof(TStorage), propertyName));
+            return _properties.GetOrAdd(new PropertyInfoKey(typeof(TStorage), propertyName), GetPropertyInfo);
         }
 
-        private static PropertyInfo GetPropertyInfo(Type type, string propertyName)
+        private static ConcurrentDictionary<PropertyInfoKey, PropertyInfo> CreatePropertiesDictionary()
+        {
+            return new ConcurrentDictionary<PropertyInfoKey, PropertyInfo>();
+        }
+
+        private static PropertyInfo GetPropertyInfo(PropertyInfoKey key)
         {
             var result = default(PropertyInfo);
-            var typeInfo = type.GetTypeInfo();
+            var typeInfo = key.Type.GetTypeInfo();
 
             while ((result == null) && (typeInfo != null))
             {
-                var propertyInfo = typeInfo.GetDeclaredProperty(propertyName);
+                var propertyInfo = typeInfo.GetDeclaredProperty(key.Name);
 
                 if ((propertyInfo != null) && !propertyInfo.GetMethod.IsStatic && !propertyInfo.SetMethod.IsStatic)
                 {
@@ -224,7 +229,7 @@ namespace Chimera.UI.ComponentModel
 
             if (result == null)
             {
-                throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, Strings.GetString("object.property.not_found"), propertyName, type));
+                throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, Strings.GetString("object.property.not_found"), key.Name, key.Type));
             }
 
             return result;
@@ -242,13 +247,13 @@ namespace Chimera.UI.ComponentModel
 
         private readonly struct PropertyInfoKey
         {
-            private readonly Type _declaringType;
-            private readonly string _propertyName;
+            private readonly Type _type;
+            private readonly string _name;
 
-            public PropertyInfoKey(Type declaringType, string propertyName)
+            public PropertyInfoKey(Type type, string name)
             {
-                _declaringType = declaringType;
-                _propertyName = propertyName;
+                _type = type;
+                _name = name;
             }
 
             public override int GetHashCode()
@@ -257,8 +262,8 @@ namespace Chimera.UI.ComponentModel
                 {
                     var result = (int)2166136261;
 
-                    result = (result * 16777619) ^ _declaringType.GetHashCode();
-                    result = (result * 16777619) ^ _propertyName.GetHashCode();
+                    result = (result * 16777619) ^ _type.GetHashCode();
+                    result = (result * 16777619) ^ _name.GetHashCode();
 
                     return result;
                 }
@@ -268,7 +273,17 @@ namespace Chimera.UI.ComponentModel
             {
                 var objB = (PropertyInfoKey)obj;
 
-                return object.Equals(objB._declaringType, _declaringType) && (objB._propertyName == _propertyName);
+                return _type.Equals(objB._type) && (_name == objB._name);
+            }
+
+            public Type Type
+            {
+                get => _type;
+            }
+
+            public string Name
+            {
+                get => _name;
             }
         }
     }
