@@ -12,7 +12,7 @@ namespace Chimera.UI.ComponentModel
     /// <summary>Represents a bindable object component.</summary>
     public abstract class BindableObject : IBindableObject
     {
-        private ConcurrentDictionary<PropertyInfoKey, PropertyInfo> _properties;
+        private static readonly ConcurrentDictionary<PropertyInfoKey, PropertyInfo> _properties = new ConcurrentDictionary<PropertyInfoKey, PropertyInfo>();
 
         /// <summary>Initializes a new instance of the <see cref="BindableObject" /> class.</summary>
         protected BindableObject()
@@ -34,9 +34,6 @@ namespace Chimera.UI.ComponentModel
             {
                 return;
             }
-
-            _properties?.Clear();
-            _properties = null;
 
             SynchronizationContext = null;
 
@@ -115,7 +112,7 @@ namespace Chimera.UI.ComponentModel
                 return defaultValue;
             }
 
-            var propertyInfo = GetPropertyInfo<TStorage>(propertyName);
+            var propertyInfo = _properties.GetOrAdd(new PropertyInfoKey(typeof(TStorage), propertyName), GetPropertyInfo);
 
             return (TValue)propertyInfo.GetValue(storageObject);
         }
@@ -182,7 +179,7 @@ namespace Chimera.UI.ComponentModel
                 return;
             }
 
-            var propertyInfo = GetPropertyInfo<TStorage>(propertyName);
+            var propertyInfo = _properties.GetOrAdd(new PropertyInfoKey(typeof(TStorage), propertyName), GetPropertyInfo);
 
             if (object.Equals(value, propertyInfo.GetValue(storageObject)))
             {
@@ -194,18 +191,6 @@ namespace Chimera.UI.ComponentModel
             OnPropertyChanged(outerPropertyName);
 
             action?.Invoke();
-        }
-
-        private PropertyInfo GetPropertyInfo<TStorage>(string propertyName)
-        {
-            LazyInitializer.EnsureInitialized(ref _properties, CreatePropertiesDictionary);
-
-            return _properties.GetOrAdd(new PropertyInfoKey(typeof(TStorage), propertyName), GetPropertyInfo);
-        }
-
-        private static ConcurrentDictionary<PropertyInfoKey, PropertyInfo> CreatePropertiesDictionary()
-        {
-            return new ConcurrentDictionary<PropertyInfoKey, PropertyInfo>();
         }
 
         private static PropertyInfo GetPropertyInfo(PropertyInfoKey key)
