@@ -131,7 +131,16 @@ namespace Chimera.UI.ComponentModel
                 throw new ArgumentNullException(nameof(outerPropertyName));
             }
 
-            SetValueInternal(ref storage, value, action, outerPropertyName);
+            if (object.Equals(storage, value))
+            {
+                return;
+            }
+
+            storage = value;
+
+            OnPropertyChanged(outerPropertyName);
+
+            action?.Invoke();
         }
 
         /// <summary>Sets the value to the object's property if it differs and notify listeners.</summary>
@@ -155,25 +164,6 @@ namespace Chimera.UI.ComponentModel
                 throw new ArgumentNullException(nameof(outerPropertyName));
             }
 
-            SetValueInternal(storageObject, propertyName, value, action, outerPropertyName);
-        }
-
-        private void SetValueInternal<TValue>(ref TValue storage, TValue value, Action action, string propertyName)
-        {
-            if (object.Equals(storage, value))
-            {
-                return;
-            }
-
-            storage = value;
-
-            OnPropertyChanged(propertyName);
-
-            action?.Invoke();
-        }
-
-        private void SetValueInternal<TStorage, TValue>(TStorage storageObject, string propertyName, TValue value, Action action, string outerPropertyName)
-        {
             if (object.Equals(storageObject, default(TStorage)))
             {
                 return;

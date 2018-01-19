@@ -91,7 +91,7 @@ namespace Chimera.UI.ComponentModel
 
         bool ICommand.CanExecute(object parameter)
         {
-            return (_predicate == null) || _predicate.Invoke(parameter);
+            return  _predicate?.Invoke(parameter) != false;
         }
 
         void ICommand.Execute(object parameter)
@@ -117,7 +117,7 @@ namespace Chimera.UI.ComponentModel
             }
             else
             {
-                synchronizationContext.Post(state => CanExecuteChanged?.Invoke(this, EventArgs.Empty), null);
+                synchronizationContext.Post(CanExecuteChangedContextAction, null);
             }
         }
 
@@ -153,6 +153,11 @@ namespace Chimera.UI.ComponentModel
                     CanExecuteChanged -= (EventHandler)subscribers[i];
                 }
             }
+        }
+
+        private void CanExecuteChangedContextAction(object state)
+        {
+            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private void PropertyChangedEventHandler(object sender, PropertyChangedEventArgs e)
