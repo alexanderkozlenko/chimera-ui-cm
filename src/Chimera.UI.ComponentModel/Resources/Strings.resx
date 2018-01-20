@@ -121,6 +121,6 @@
     <value>The tracking object is not defined</value>
   </data>
   <data name="object.property.not_found" xml:space="preserve">
-    <value>The instance property {0} was not found on the type {1} or any underlying type</value>
+    <value>The type {0} doesn't have an instance property "{1}" with get and set accessors</value>
   </data>
 </root>

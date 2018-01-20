@@ -97,7 +97,7 @@ namespace Chimera.UI.ComponentModel
         /// <typeparam name="TValue">The type of the property.</typeparam>
         /// <param name="storageObject">The object that declares the property.</param>
         /// <param name="propertyName">The name of the property.</param>
-        /// <param name="defaultValue">The value to return if the object is uninitialized.</param>
+        /// <param name="defaultValue">The value to return if the object is <see langword="null" />.</param>
         /// <returns>The value of the object's property.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="propertyName" /> is <see langword="null" />.</exception>
         /// <exception cref="InvalidOperationException">The specified property is not found.</exception>
@@ -107,7 +107,7 @@ namespace Chimera.UI.ComponentModel
             {
                 throw new ArgumentNullException(nameof(propertyName));
             }
-            if (object.Equals(storageObject, default(TStorage)))
+            if (storageObject == null)
             {
                 return defaultValue;
             }
@@ -130,7 +130,6 @@ namespace Chimera.UI.ComponentModel
             {
                 throw new ArgumentNullException(nameof(outerPropertyName));
             }
-
             if (object.Equals(storage, value))
             {
                 return;
@@ -163,8 +162,7 @@ namespace Chimera.UI.ComponentModel
             {
                 throw new ArgumentNullException(nameof(outerPropertyName));
             }
-
-            if (object.Equals(storageObject, default(TStorage)))
+            if (storageObject == null)
             {
                 return;
             }
@@ -192,7 +190,7 @@ namespace Chimera.UI.ComponentModel
             {
                 var propertyInfo = typeInfo.GetDeclaredProperty(key.Name);
 
-                if ((propertyInfo != null) && !propertyInfo.GetMethod.IsStatic && !propertyInfo.SetMethod.IsStatic)
+                if ((propertyInfo != null) && propertyInfo.CanRead && propertyInfo.CanWrite && !propertyInfo.GetMethod.IsStatic && !propertyInfo.SetMethod.IsStatic)
                 {
                     result = propertyInfo;
                 }
@@ -204,13 +202,13 @@ namespace Chimera.UI.ComponentModel
 
             if (result == null)
             {
-                throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, Strings.GetString("object.property.not_found"), key.Name, key.Type));
+                throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, Strings.GetString("object.property.not_found"), key.Type, key.Name));
             }
 
             return result;
         }
 
-        /// <summary>Gets the synchronization context to interact with UI through.</summary>
+        /// <summary>Gets or sets the synchronization context to interact with UI through.</summary>
         public SynchronizationContext SynchronizationContext
         {
             get;

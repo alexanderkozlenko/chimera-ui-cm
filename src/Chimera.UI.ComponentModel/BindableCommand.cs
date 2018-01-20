@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading;
 using System.Windows.Input;
@@ -12,15 +12,15 @@ namespace Chimera.UI.ComponentModel
     {
         private Action<object> _action;
         private Predicate<object> _predicate;
-        private IBindableObject _trackingObject;
-        private ConcurrentDictionary<string, byte> _trackingProperties;
+        private INotifyPropertyChanged _trackingObject;
+        private ISet<string> _trackingProperties;
 
         /// <summary>Initializes a new instance of the <see cref="BindableCommand" /> class.</summary>
         /// <param name="action">The action to execute when the command is executed.</param>
         /// <param name="predicate">The predicate to check if the command can be executed.</param>
-        /// <param name="trackingObject">The <see cref="IBindableObject" /> as a source of tracking properties and a synchronization context.</param>
+        /// <param name="trackingObject">The <see cref="INotifyPropertyChanged" /> as a source of tracking properties.</param>
         /// <exception cref="ArgumentNullException"><paramref name="action" /> is <see langword="null" />.</exception>
-        public BindableCommand(Action<object> action, Predicate<object> predicate = null, IBindableObject trackingObject = null)
+        public BindableCommand(Action<object> action, Predicate<object> predicate = null, INotifyPropertyChanged trackingObject = null)
         {
             if (action == null)
             {
@@ -33,9 +33,7 @@ namespace Chimera.UI.ComponentModel
 
             if (trackingObject != null)
             {
-                _trackingProperties = new ConcurrentDictionary<string, byte>(StringComparer.Ordinal);
-
-                SynchronizationContext = trackingObject.SynchronizationContext;
+                _trackingProperties = new HashSet<string>(StringComparer.Ordinal);
 
                 trackingObject.PropertyChanged += PropertyChangedEventHandler;
             }
@@ -57,7 +55,7 @@ namespace Chimera.UI.ComponentModel
                 throw new InvalidOperationException(Strings.GetString("command.object.undefined"));
             }
 
-            _trackingProperties?.TryAdd(propertyName, default);
+            _trackingProperties.Add(propertyName);
 
             return this;
         }
@@ -78,7 +76,7 @@ namespace Chimera.UI.ComponentModel
                 throw new InvalidOperationException(Strings.GetString("command.object.undefined"));
             }
 
-            _trackingProperties?.TryRemove(propertyName, out var _);
+            _trackingProperties.Remove(propertyName);
 
             return this;
         }
@@ -91,7 +89,7 @@ namespace Chimera.UI.ComponentModel
 
         bool ICommand.CanExecute(object parameter)
         {
-            return  _predicate?.Invoke(parameter) != false;
+            return _predicate?.Invoke(parameter) != false;
         }
 
         void ICommand.Execute(object parameter)
@@ -142,8 +140,6 @@ namespace Chimera.UI.ComponentModel
             _predicate = null;
             _action = null;
 
-            SynchronizationContext = null;
-
             var subscribers = CanExecuteChanged?.GetInvocationList();
 
             if (subscribers != null)
@@ -162,13 +158,13 @@ namespace Chimera.UI.ComponentModel
 
         private void PropertyChangedEventHandler(object sender, PropertyChangedEventArgs e)
         {
-            if (_trackingProperties?.ContainsKey(e.PropertyName) == true)
+            if (_trackingProperties?.Contains(e.PropertyName) == true)
             {
                 OnCanExecuteChanged();
             }
         }
 
-        /// <summary>Gets the synchronization context to interact with UI through.</summary>
+        /// <summary>Gets or sets the synchronization context to interact with UI through.</summary>
         public SynchronizationContext SynchronizationContext
         {
             get;
