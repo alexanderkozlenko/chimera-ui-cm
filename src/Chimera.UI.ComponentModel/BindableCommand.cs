@@ -43,7 +43,7 @@ namespace Chimera.UI.ComponentModel
         /// <param name="propertyName">The name of the property.</param>
         /// <returns>The current instance of <see cref="IBindableCommand" />.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="propertyName" /> is <see langword="null" />.</exception>
-        /// <exception cref="InvalidOperationException">The source of tracking properties is not defined or invalid.</exception>
+        /// <exception cref="InvalidOperationException">The source of tracking properties is <see langword="null" />.</exception>
         public IBindableCommand StartTrackingProperty(string propertyName)
         {
             if (propertyName == null)
@@ -64,7 +64,7 @@ namespace Chimera.UI.ComponentModel
         /// <param name="propertyName">The name of the property.</param>
         /// <returns>The current instance of <see cref="IBindableCommand" />.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="propertyName" /> is <see langword="null" />.</exception>
-        /// <exception cref="InvalidOperationException">The source of tracking properties is not defined or invalid.</exception>
+        /// <exception cref="InvalidOperationException">The source of tracking properties is <see langword="null" />.</exception>
         public IBindableCommand StopTrackingProperty(string propertyName)
         {
             if (propertyName == null)

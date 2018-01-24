@@ -19,14 +19,14 @@ namespace Chimera.UI.ComponentModel
         {
         }
 
-        /// <summary>Releases all references of the bindable object.</summary>
+        /// <summary>Releases all references of the object.</summary>
         public void Dispose()
         {
             OnDispose(true);
             GC.SuppressFinalize(this);
         }
 
-        /// <summary>Releases all references and subscriptions of the command.</summary>
+        /// <summary>Releases all references and subscriptions of the object.</summary>
         /// <param name="disposing">Indicates whether the method was not invoked by finalyzer.</param>
         protected virtual void OnDispose(bool disposing)
         {
@@ -100,7 +100,7 @@ namespace Chimera.UI.ComponentModel
         /// <param name="defaultValue">The value to return if the object is <see langword="null" />.</param>
         /// <returns>The value of the object's property.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="propertyName" /> is <see langword="null" />.</exception>
-        /// <exception cref="InvalidOperationException">The specified property is not found.</exception>
+        /// <exception cref="InvalidOperationException">The specified property is not found or cannot be used.</exception>
         protected TValue GetValue<TStorage, TValue>(TStorage storageObject, string propertyName, TValue defaultValue)
         {
             if (propertyName == null)
@@ -122,7 +122,7 @@ namespace Chimera.UI.ComponentModel
         /// <param name="storage">The field to set value to.</param>
         /// <param name="value">The desired value to set.</param>
         /// <param name="action">The action to execute in case the value was changed.</param>
-        /// <param name="outerPropertyName">The name of the property to raise change notification for. This value is provided automatically.</param>
+        /// <param name="outerPropertyName">The name of the property to raise change notification for. The value is provided automatically.</param>
         /// <exception cref="ArgumentNullException"><paramref name="outerPropertyName" /> is <see langword="null" />.</exception>
         protected void SetValue<TValue>(ref TValue storage, TValue value, Action action = null, [CallerMemberName] string outerPropertyName = null)
         {
@@ -149,9 +149,9 @@ namespace Chimera.UI.ComponentModel
         /// <param name="propertyName">The name of the property.</param>
         /// <param name="value">The desired value to set.</param>
         /// <param name="action">The action to execute in case the value was changed.</param>
-        /// <param name="outerPropertyName">The name of the property to raise change notification for. This value is provided automatically.</param>
+        /// <param name="outerPropertyName">The name of the property to raise change notification for. The value is provided automatically.</param>
         /// <exception cref="ArgumentNullException"><paramref name="propertyName" /> or <paramref name="outerPropertyName" /> is <see langword="null" />.</exception>
-        /// <exception cref="InvalidOperationException">The specified property is not found.</exception>
+        /// <exception cref="InvalidOperationException">The specified property is not found or cannot be used.</exception>
         protected void SetValue<TStorage, TValue>(TStorage storageObject, string propertyName, TValue value, Action action = null, [CallerMemberName] string outerPropertyName = null)
         {
             if (propertyName == null)
