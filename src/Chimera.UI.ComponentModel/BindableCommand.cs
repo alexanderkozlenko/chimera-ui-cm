@@ -81,7 +81,7 @@ namespace Chimera.UI.ComponentModel
             return this;
         }
 
-        /// <summary>Raises an event that the command should be requeried for its state.</summary>
+        /// <summary>Raises an event that the command should be required for its state.</summary>
         public void RaiseCanExecuteChanged()
         {
             OnCanExecuteChanged();
@@ -104,7 +104,7 @@ namespace Chimera.UI.ComponentModel
             GC.SuppressFinalize(this);
         }
 
-        /// <summary>Executes raising an event that the command should be requeried for its state.</summary>
+        /// <summary>Executes raising an event that the command should be required for its state.</summary>
         protected virtual void OnCanExecuteChanged()
         {
             var synchronizationContext = SynchronizationContext;
