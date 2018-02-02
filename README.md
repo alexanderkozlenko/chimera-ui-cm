@@ -1,14 +1,14 @@
 ## Chimera.UI.ComponentModel
 
-A set of key components for building XAML-based UI using [MVVM](https://docs.microsoft.com/en-us/windows/uwp/debug-test-perf/mvvm-performance-tips) pattern, which supports interaction with UI through specified [SynchronizationContext](https://docs.microsoft.com/en-us/dotnet/api/system.threading.synchronizationcontext?view=netstandard-1.1) and can be used in a .NET Standard assembly. Each component has a corresponded interface as an additional abstraction layer and implements the `IDisposable` interface. The package has no additional dependencies and can be used for creating a platform-independent testable library of bindable components.
+A set of key components for building XAML-based UI using `MVVM` pattern, which supports interaction with UI through specified `SynchronizationContext` and can be used in a .NET Standard assembly. Each component has a corresponded interface as an additional abstraction layer and implements the `IDisposable` interface. The package has no additional dependencies and can be used for creating a platform-independent testable library of bindable components.
 
 [![NuGet package](https://img.shields.io/nuget/v/Chimera.UI.ComponentModel.svg?style=flat-square)](https://www.nuget.org/packages/Chimera.UI.ComponentModel)
 
-## `BindableObject`
+### `BindableObject`
 
 A base class for bindable components, which supports two types of bindable object structures. `SetValue` has an optional `Action` parameter to specify an action, which will be executed in case the value was changed during `SetValue` method invocation.
 
-### Bindable Object: Type 1
+#### Bindable Object: Type 1
 
 A bindable component, which works with values stored directly inside the component.
 
@@ -25,7 +25,7 @@ public class MyBindableObject1 : BindableObject
 }
 ```
 
-### Bindable Object: Type 2
+#### Bindable Object: Type 2
 
 A bindable component, which works with values from existing business object.
 
@@ -45,14 +45,14 @@ public class MyBindableObject2 : BindableObject
 }
 ```
 
-## `BindableCommand`
+### `BindableCommand`
 
 An extensible object for a bindable command, which supports tracking the `PropertyChanged` event for the specified object and provided property names.
 
 ```cs
 var command = new BindableCommand(CommandAction, CommandPredicate);
 ```
-
+or
 ```cs
 var command = new BindableCommand(CommandAction, CommandPredicate, this);
 
