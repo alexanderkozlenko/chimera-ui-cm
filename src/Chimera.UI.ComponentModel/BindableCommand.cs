@@ -52,7 +52,7 @@ namespace Chimera.UI.ComponentModel
             }
             if (_trackingObject == null)
             {
-                throw new InvalidOperationException(Strings.GetString("command.object.undefined"));
+                throw new InvalidOperationException(Strings.GetString("command.object.not_specified"));
             }
 
             _trackingProperties.Add(propertyName);
@@ -73,7 +73,7 @@ namespace Chimera.UI.ComponentModel
             }
             if (_trackingObject == null)
             {
-                throw new InvalidOperationException(Strings.GetString("command.object.undefined"));
+                throw new InvalidOperationException(Strings.GetString("command.object.not_specified"));
             }
 
             _trackingProperties.Remove(propertyName);

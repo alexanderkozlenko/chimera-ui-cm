@@ -71,15 +71,16 @@ namespace Chimera.UI.ComponentModel
                 throw new ArgumentNullException(nameof(propertyName));
             }
 
+            var eventArgs = new PropertyChangedEventArgs(propertyName);
             var synchronizationContext = SynchronizationContext;
 
             if ((synchronizationContext == null) || (synchronizationContext == SynchronizationContext.Current))
             {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged?.Invoke(this, eventArgs);
             }
             else
             {
-                synchronizationContext.Post(state => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName)), null);
+                synchronizationContext.Post(state => PropertyChanged?.Invoke(this, eventArgs), null);
             }
         }
 
@@ -100,7 +101,7 @@ namespace Chimera.UI.ComponentModel
         /// <param name="defaultValue">The value to return if the object is <see langword="null" />.</param>
         /// <returns>The value of the object's property.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="propertyName" /> is <see langword="null" />.</exception>
-        /// <exception cref="InvalidOperationException">The specified property is not found or cannot be used.</exception>
+        /// <exception cref="InvalidOperationException">The specified property is not found, or is static, or doesn't have get or set accessor.</exception>
         protected TValue GetValue<TStorage, TValue>(TStorage storageObject, string propertyName, TValue defaultValue)
         {
             if (propertyName == null)
@@ -151,7 +152,7 @@ namespace Chimera.UI.ComponentModel
         /// <param name="action">The action to execute in case the value was changed.</param>
         /// <param name="outerPropertyName">The name of the property to raise change notification for. The value is provided by the runtime.</param>
         /// <exception cref="ArgumentNullException"><paramref name="propertyName" /> or <paramref name="outerPropertyName" /> is <see langword="null" />.</exception>
-        /// <exception cref="InvalidOperationException">The specified property is not found or cannot be used.</exception>
+        /// <exception cref="InvalidOperationException">The specified property is not found, or is static, or doesn't have get or set accessor.</exception>
         protected void SetValue<TStorage, TValue>(TStorage storageObject, string propertyName, TValue value, Action action = null, [CallerMemberName] string outerPropertyName = null)
         {
             if (propertyName == null)
@@ -190,7 +191,7 @@ namespace Chimera.UI.ComponentModel
             {
                 var propertyInfo = typeInfo.GetDeclaredProperty(key.Name);
 
-                if ((propertyInfo != null) && propertyInfo.CanRead && propertyInfo.CanWrite && !propertyInfo.GetMethod.IsStatic && !propertyInfo.SetMethod.IsStatic)
+                if ((propertyInfo != null) && propertyInfo.CanRead && propertyInfo.CanWrite && !propertyInfo.GetMethod.IsStatic)
                 {
                     result = propertyInfo;
                 }
@@ -244,9 +245,9 @@ namespace Chimera.UI.ComponentModel
 
             public override bool Equals(object obj)
             {
-                var objB = (PropertyInfoKey)obj;
+                var other = (PropertyInfoKey)obj;
 
-                return _type.Equals(objB._type) && (_name == objB._name);
+                return _type.Equals(other._type) && (_name == other._name);
             }
 
             public Type Type
