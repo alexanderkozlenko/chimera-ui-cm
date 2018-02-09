@@ -101,7 +101,7 @@ namespace Chimera.UI.ComponentModel
         /// <param name="defaultValue">The value to return if the object is <see langword="null" />.</param>
         /// <returns>The value of the object's property.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="propertyName" /> is <see langword="null" />.</exception>
-        /// <exception cref="InvalidOperationException">The specified property is not found, or is static, or doesn't have get or set accessor.</exception>
+        /// <exception cref="InvalidOperationException">The specified property is not found, or is static, or does not have get or set accessor.</exception>
         protected TValue GetValue<TStorage, TValue>(TStorage storageObject, string propertyName, TValue defaultValue)
         {
             if (propertyName == null)
@@ -152,7 +152,7 @@ namespace Chimera.UI.ComponentModel
         /// <param name="action">The action to execute in case the value was changed.</param>
         /// <param name="outerPropertyName">The name of the property to raise change notification for. The value is provided by the runtime.</param>
         /// <exception cref="ArgumentNullException"><paramref name="propertyName" /> or <paramref name="outerPropertyName" /> is <see langword="null" />.</exception>
-        /// <exception cref="InvalidOperationException">The specified property is not found, or is static, or doesn't have get or set accessor.</exception>
+        /// <exception cref="InvalidOperationException">The specified property is not found, or is static, or does not have get or set accessor.</exception>
         protected void SetValue<TStorage, TValue>(TStorage storageObject, string propertyName, TValue value, Action action = null, [CallerMemberName] string outerPropertyName = null)
         {
             if (propertyName == null)

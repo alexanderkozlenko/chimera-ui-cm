@@ -121,6 +121,6 @@
     <value>The tracking object is not specified</value>
   </data>
   <data name="object.property.not_found" xml:space="preserve">
-    <value>The type {0} doesn't have the instance property "{1}" with get and set accessors</value>
+    <value>The type {0} does not have the instance property "{1}" with get and set accessors</value>
   </data>
 </root>
