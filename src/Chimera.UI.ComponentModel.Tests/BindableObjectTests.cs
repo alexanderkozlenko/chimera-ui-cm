@@ -9,12 +9,12 @@ namespace Chimera.UI.ComponentModel.Tests
         [Fact]
         public void Type1GetValue()
         {
-            using (var bindable = new BindableObjectType1<int>(42))
+            using (var bindable = new BindableObjectType1<int>(1))
             {
                 var value = bindable.InvokeGetValue();
 
-                Assert.Equal(42, value);
-                Assert.Equal(42, bindable.Value);
+                Assert.Equal(1, value);
+                Assert.Equal(1, bindable.Value);
             }
         }
 
@@ -23,8 +23,8 @@ namespace Chimera.UI.ComponentModel.Tests
         {
             using (var bindable = new BindableObjectType1<int>(0))
             {
-                Assert.PropertyChanged(bindable, "p", () => bindable.InvokeSetValue(42, null, "p"));
-                Assert.Equal(42, bindable.Value);
+                Assert.PropertyChanged(bindable, "p", () => bindable.InvokeSetValue(1, null, "p"));
+                Assert.Equal(1, bindable.Value);
             }
         }
 
@@ -36,8 +36,8 @@ namespace Chimera.UI.ComponentModel.Tests
 
             using (var bindable = new BindableObjectType1<int>(0))
             {
-                Assert.PropertyChanged(bindable, "p", () => bindable.InvokeSetValue(42, action, "p"));
-                Assert.Equal(42, bindable.Value);
+                Assert.PropertyChanged(bindable, "p", () => bindable.InvokeSetValue(1, action, "p"));
+                Assert.Equal(1, bindable.Value);
             }
 
             Assert.True(invoked);

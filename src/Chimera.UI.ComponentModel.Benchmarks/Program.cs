@@ -1,9 +1,11 @@
 ﻿using System.Linq;
+using BenchmarkDotNet.Columns;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Diagnosers;
 using BenchmarkDotNet.Engines;
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Loggers;
+using BenchmarkDotNet.Reports;
 using BenchmarkDotNet.Validators;
 using Chimera.UI.ComponentModel.Benchmarks.Framework;
 
@@ -15,8 +17,9 @@ namespace Chimera.UI.ComponentModel.Benchmarks
         {
             var configuration = ManualConfig.CreateEmpty();
 
+            configuration.Set(SummaryStyle.Default.WithSizeUnit(SizeUnit.B));
             configuration.Add(DefaultConfig.Instance.GetColumnProviders().ToArray());
-            configuration.Add(Job.Dry.With(RunStrategy.Throughput).WithTargetCount(5));
+            configuration.Add(Job.Dry.With(RunStrategy.Throughput).WithTargetCount(2));
             configuration.Add(ConsoleLogger.Default);
             configuration.Add(MemoryDiagnoser.Default);
             configuration.Add(JitOptimizationsValidator.DontFailOnError);

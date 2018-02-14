@@ -8,55 +8,55 @@ namespace Chimera.UI.ComponentModel.Benchmarks.Suites
     public abstract class BindableObjectBenchmarks
     {
         private readonly BindableObjectType1<bool> _type1Object = new BindableObjectType1<bool>();
-        private readonly BindableObjectType2<bool> _type2ObjectWithNotNullTarget = new BindableObjectType2<bool>(new ValueObject<bool>());
-        private readonly BindableObjectType2<bool> _type2ObjectWithNullTarget = new BindableObjectType2<bool>(null);
+        private readonly BindableObjectType2<bool> _type2Object1 = new BindableObjectType2<bool>(new ValueObject<bool>());
+        private readonly BindableObjectType2<bool> _type2Object2 = new BindableObjectType2<bool>(null);
 
-        [Benchmark(Description = "T1 GET *** **")]
+        [Benchmark(Description = "t1 get --- --")]
         public bool GetFromType1()
         {
             return _type1Object.Value;
         }
 
-        [Benchmark(Description = "T1 SET *** ==")]
+        [Benchmark(Description = "t1 set --- ==")]
         public void SetToType1TheSameValue()
         {
             _type1Object.Value = _type1Object.Source;
         }
 
-        [Benchmark(Description = "T1 SET *** !=")]
+        [Benchmark(Description = "t1 set --- !=")]
         public void SetToType1DifferentValue()
         {
             _type1Object.Value = !_type1Object.Source;
         }
 
-        [Benchmark(Description = "T2 GET NUL **")]
+        [Benchmark(Description = "t2 get nul --")]
         public bool GetFromType2WithNullTarget()
         {
-            return _type2ObjectWithNullTarget.Value;
+            return _type2Object2.Value;
         }
 
-        [Benchmark(Description = "T2 SET NUL **")]
+        [Benchmark(Description = "t2 set nul --")]
         public void SetToType2WithNullTarget()
         {
-            _type2ObjectWithNullTarget.Value = true;
+            _type2Object2.Value = true;
         }
 
-        [Benchmark(Description = "T2 GET OBJ **")]
+        [Benchmark(Description = "t2 get obj --")]
         public bool GetFromType2WithNotNullTarget()
         {
-            return _type2ObjectWithNotNullTarget.Value;
+            return _type2Object1.Value;
         }
 
-        [Benchmark(Description = "T2 SET OBJ ==")]
+        [Benchmark(Description = "t2 set obj ==")]
         public void SetToType2WithNotNullTargetTheSameValue()
         {
-            _type2ObjectWithNotNullTarget.Value = _type2ObjectWithNotNullTarget.Source;
+            _type2Object1.Value = _type2Object1.Source;
         }
 
-        [Benchmark(Description = "T2 SET OBJ !=")]
+        [Benchmark(Description = "t2 set obj !=")]
         public void SetToType2WithNotNullTargetDifferentValue()
         {
-            _type2ObjectWithNotNullTarget.Value = !_type2ObjectWithNotNullTarget.Source;
+            _type2Object1.Value = !_type2Object1.Source;
         }
     }
 }
