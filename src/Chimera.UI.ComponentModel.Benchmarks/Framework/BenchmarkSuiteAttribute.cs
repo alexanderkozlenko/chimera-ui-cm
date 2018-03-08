@@ -2,7 +2,7 @@
 
 namespace Chimera.UI.ComponentModel.Benchmarks.Framework
 {
-    /// <summary>Represents the benchmark suite attribute.</summary>
+    /// <summary>Benchmark suite definition attribute.</summary>
     [AttributeUsage(AttributeTargets.Class)]
     internal sealed class BenchmarkSuiteAttribute : Attribute
     {
