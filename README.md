@@ -59,3 +59,7 @@ var command = new BindableCommand(CommandAction, CommandPredicate, this);
 command.StartTrackingProperty(nameof(Value));
 command.StopTrackingProperty(nameof(Value));
 ```
+
+### Examples
+
+- Example of GUI application for .NET Core: https://github.com/alexanderkozlenko/avalonia-puzzle-15
