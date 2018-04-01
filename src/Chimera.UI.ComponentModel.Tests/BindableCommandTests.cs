@@ -18,59 +18,41 @@ namespace Chimera.UI.ComponentModel.Tests
         }
 
         [Fact]
-        public void StartTrackingPropertyWhenPropertyNameIsNull()
+        public void StartObservingPropertiesWhenBindableObjectIsUndefined()
         {
-            var bindable = new BindableCommand(EmptyAction);
-
-            Assert.Throws<ArgumentNullException>(() =>
-                bindable.StartTrackingProperty(null));
-        }
-
-        [Fact]
-        public void StartTrackingPropertyWhenBindableObjectIsUndefined()
-        {
-            var target = new TrackingObject<int>();
+            var target = new ObservingObject<int>();
             var bindable = new BindableCommand(EmptyAction);
 
             Assert.Throws<InvalidOperationException>(() =>
-                bindable.StartTrackingProperty(nameof(target.Value)));
+                bindable.StartObservingProperties(nameof(target.Value)));
         }
 
         [Fact]
-        public void StartTrackingPropertyWhenPropertyNameIsInvalid()
+        public void StartObservingPropertiesWhenPropertyNameIsInvalid()
         {
             var bindable = new BindableCommand(EmptyAction);
 
             Assert.Throws<InvalidOperationException>(() =>
-                bindable.StartTrackingProperty("*"));
+                bindable.StartObservingProperties("*"));
         }
 
         [Fact]
-        public void StopTrackingPropertyWhenPropertyNameIsNull()
+        public void StopObservingPropertiesWhenBindableObjectIsUndefined()
         {
-            var bindable = new BindableCommand(EmptyAction);
-
-            Assert.Throws<ArgumentNullException>(() =>
-                bindable.StopTrackingProperty(null));
-        }
-
-        [Fact]
-        public void StopTrackingPropertyWhenBindableObjectIsUndefined()
-        {
-            var target = new TrackingObject<int>();
+            var target = new ObservingObject<int>();
             var bindable = new BindableCommand(EmptyAction);
 
             Assert.Throws<InvalidOperationException>(() =>
-                bindable.StopTrackingProperty(nameof(target.Value)));
+                bindable.StopObservingProperties(nameof(target.Value)));
         }
 
         [Fact]
-        public void StopTrackingPropertyWhenPropertyNameIsInvalid()
+        public void StopObservingPropertiesWhenPropertyNameIsInvalid()
         {
             var bindable = new BindableCommand(EmptyAction);
 
             Assert.Throws<InvalidOperationException>(() =>
-                bindable.StopTrackingProperty("*"));
+                bindable.StopObservingProperties("*"));
         }
 
         [Fact]
@@ -112,9 +94,9 @@ namespace Chimera.UI.ComponentModel.Tests
         }
 
         [Fact]
-        public void CanExecuteChangedByTrackingProperty()
+        public void CanExecuteChangedByObservingProperties()
         {
-            var target = new TrackingObject<int>();
+            var target = new ObservingObject<int>();
             var action = (Action<object>)(EmptyAction);
             var invocations = 0;
 
@@ -122,16 +104,14 @@ namespace Chimera.UI.ComponentModel.Tests
             {
                 bindable.CanExecuteChanged += (sender, e) => invocations++;
 
-                var chain1 = bindable.StartTrackingProperty(nameof(target.Value));
+                bindable.StartObservingProperties(nameof(target.Value));
 
                 target.Value = 1;
 
-                var chain2 = bindable.StopTrackingProperty(nameof(target.Value));
+                bindable.StopObservingProperties(nameof(target.Value));
 
                 target.Value = 2;
 
-                Assert.Equal(bindable, chain1);
-                Assert.Equal(bindable, chain2);
                 Assert.Equal(1, invocations);
             }
 

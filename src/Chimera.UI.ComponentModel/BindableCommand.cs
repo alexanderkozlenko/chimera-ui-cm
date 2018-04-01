@@ -10,75 +10,65 @@ namespace Chimera.UI.ComponentModel
     /// <summary>Represents a bindable command component.</summary>
     public class BindableCommand : IBindableCommand
     {
-        private Action<object> _action;
-        private Predicate<object> _predicate;
-        private INotifyPropertyChanged _trackingObject;
-        private ISet<string> _trackingProperties;
+        private Action<object> _commandAction;
+        private Predicate<object> _commandPredicate;
+        private INotifyPropertyChanged _observingObject;
+        private ISet<string> _observingProperties;
 
         /// <summary>Initializes a new instance of the <see cref="BindableCommand" /> class.</summary>
         /// <param name="action">The action to execute when the command is executed.</param>
         /// <param name="predicate">The predicate to check if the command can be executed.</param>
-        /// <param name="trackingObject">The <see cref="INotifyPropertyChanged" /> as a source of tracking properties.</param>
+        /// <param name="observingObject">The <see cref="INotifyPropertyChanged" /> as a source of observing properties.</param>
         /// <exception cref="ArgumentNullException"><paramref name="action" /> is <see langword="null" />.</exception>
-        public BindableCommand(Action<object> action, Predicate<object> predicate = null, INotifyPropertyChanged trackingObject = null)
+        public BindableCommand(Action<object> action, Predicate<object> predicate = null, INotifyPropertyChanged observingObject = null)
         {
             if (action == null)
             {
                 throw new ArgumentNullException(nameof(action));
             }
 
-            _action = action;
-            _predicate = predicate;
-            _trackingObject = trackingObject;
+            _commandAction = action;
+            _commandPredicate = predicate;
+            _observingObject = observingObject;
 
-            if (trackingObject != null)
+            if (observingObject != null)
             {
-                _trackingProperties = new HashSet<string>(StringComparer.Ordinal);
+                _observingProperties = new HashSet<string>(StringComparer.Ordinal);
 
-                trackingObject.PropertyChanged += PropertyChangedEventHandler;
+                observingObject.PropertyChanged += PropertyChangedEventHandler;
             }
         }
 
-        /// <summary>Starts tracking a property for changing to raise an event about command's state.</summary>
-        /// <param name="propertyName">The name of the property.</param>
-        /// <returns>The current instance of <see cref="IBindableCommand" />.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="propertyName" /> is <see langword="null" />.</exception>
-        /// <exception cref="InvalidOperationException">The source of tracking properties is <see langword="null" />.</exception>
-        public IBindableCommand StartTrackingProperty(string propertyName)
+        /// <summary>Starts observing a property for changing to raise an event about command's state.</summary>
+        /// <param name="propertyNames">The names of the properties.</param>
+        /// <exception cref="InvalidOperationException">The source of observing properties is <see langword="null" />.</exception>
+        public void StartObservingProperties(params string[] propertyNames)
         {
-            if (propertyName == null)
+            if (_observingObject == null)
             {
-                throw new ArgumentNullException(nameof(propertyName));
-            }
-            if (_trackingObject == null)
-            {
-                throw new InvalidOperationException(Strings.GetString("command.object.not_specified"));
+                throw new InvalidOperationException(Strings.GetString("command.observing_object.null"));
             }
 
-            _trackingProperties.Add(propertyName);
-
-            return this;
+            for (var i = 0; i < propertyNames.Length; i++)
+            {
+                _observingProperties.Add(propertyNames[i]);
+            }
         }
 
-        /// <summary>Stops tracking a property for changing to raise an event about command's state.</summary>
-        /// <param name="propertyName">The name of the property.</param>
-        /// <returns>The current instance of <see cref="IBindableCommand" />.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="propertyName" /> is <see langword="null" />.</exception>
-        /// <exception cref="InvalidOperationException">The source of tracking properties is <see langword="null" />.</exception>
-        public IBindableCommand StopTrackingProperty(string propertyName)
+        /// <summary>Stops observing a property for changing to raise an event about command's state.</summary>
+        /// <param name="propertyNames">The names of the properties.</param>
+        /// <exception cref="InvalidOperationException">The source of observing properties is <see langword="null" />.</exception>
+        public void StopObservingProperties(params string[] propertyNames)
         {
-            if (propertyName == null)
+            if (_observingObject == null)
             {
-                throw new ArgumentNullException(nameof(propertyName));
-            }
-            if (_trackingObject == null)
-            {
-                throw new InvalidOperationException(Strings.GetString("command.object.not_specified"));
+                throw new InvalidOperationException(Strings.GetString("command.observing_object.null"));
             }
 
-            _trackingProperties.Remove(propertyName);
-
-            return this;
+            for (var i = 0; i < propertyNames.Length; i++)
+            {
+                _observingProperties.Remove(propertyNames[i]);
+            }
         }
 
         /// <summary>Raises an event that the command should be required for its state.</summary>
@@ -89,18 +79,18 @@ namespace Chimera.UI.ComponentModel
 
         bool ICommand.CanExecute(object parameter)
         {
-            return _predicate?.Invoke(parameter) != false;
+            return _commandPredicate?.Invoke(parameter) != false;
         }
 
         void ICommand.Execute(object parameter)
         {
-            _action?.Invoke(parameter);
+            _commandAction?.Invoke(parameter);
         }
 
         /// <summary>Releases all references and subscriptions of the command.</summary>
         public void Dispose()
         {
-            OnDispose(true);
+            Dispose(true);
             GC.SuppressFinalize(this);
         }
 
@@ -121,34 +111,26 @@ namespace Chimera.UI.ComponentModel
 
         /// <summary>Releases all references and subscriptions of the command.</summary>
         /// <param name="disposing">Indicates whether the method was not invoked by finalyzer.</param>
-        protected virtual void OnDispose(bool disposing)
+        protected virtual void Dispose(bool disposing)
         {
             if (!disposing)
             {
                 return;
             }
 
-            var trackingObject = _trackingObject;
+            var observingObject = _observingObject;
 
-            if (trackingObject != null)
+            if (observingObject != null)
             {
-                trackingObject.PropertyChanged -= PropertyChangedEventHandler;
+                observingObject.PropertyChanged -= PropertyChangedEventHandler;
             }
 
-            _trackingObject = null;
-            _trackingProperties = null;
-            _predicate = null;
-            _action = null;
+            _observingObject = null;
+            _observingProperties = null;
+            _commandPredicate = null;
+            _commandAction = null;
 
-            var subscribers = CanExecuteChanged?.GetInvocationList();
-
-            if (subscribers != null)
-            {
-                for (var i = 0; i < subscribers.Length; i++)
-                {
-                    CanExecuteChanged -= (EventHandler)subscribers[i];
-                }
-            }
+            CanExecuteChanged = null;
         }
 
         private void CanExecuteChangedContextAction(object state)
@@ -158,7 +140,7 @@ namespace Chimera.UI.ComponentModel
 
         private void PropertyChangedEventHandler(object sender, PropertyChangedEventArgs e)
         {
-            if (_trackingProperties?.Contains(e.PropertyName) == true)
+            if (_observingProperties?.Contains(e.PropertyName) == true)
             {
                 OnCanExecuteChanged();
             }

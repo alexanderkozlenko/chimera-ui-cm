@@ -10,15 +10,13 @@ namespace Chimera.UI.ComponentModel
         /// <summary>Raises an event that the command should be required for its state.</summary>
         void RaiseCanExecuteChanged();
 
-        /// <summary>Starts tracking a property for changing to raise an event about command's state.</summary>
-        /// <param name="propertyName">The name of the property.</param>
-        /// <returns>The current instance of <see cref="IBindableCommand" />.</returns>
-        IBindableCommand StartTrackingProperty(string propertyName);
+        /// <summary>Starts observing a property for changing to raise an event about command's state.</summary>
+        /// <param name="propertyNames">The names of the properties.</param>
+        void StartObservingProperties(params string[] propertyNames);
 
-        /// <summary>Stops tracking a property for changing to raise an event about command's state.</summary>
-        /// <param name="propertyName">The name of the property.</param>
-        /// <returns>The current instance of <see cref="IBindableCommand" />.</returns>
-        IBindableCommand StopTrackingProperty(string propertyName);
+        /// <summary>Stops observing a property for changing to raise an event about command's state.</summary>
+        /// <param name="propertyNames">The names of the properties.</param>
+        void StopObservingProperties(params string[] propertyNames);
 
         /// <summary>Gets the synchronization context to interact with UI through.</summary>
         SynchronizationContext SynchronizationContext

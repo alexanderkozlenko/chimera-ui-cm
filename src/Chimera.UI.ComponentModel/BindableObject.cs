@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using Chimera.UI.ComponentModel.Internal;
 using Chimera.UI.ComponentModel.Resources;
 
 namespace Chimera.UI.ComponentModel
@@ -12,7 +14,7 @@ namespace Chimera.UI.ComponentModel
     /// <summary>Represents a bindable object component.</summary>
     public abstract class BindableObject : IBindableObject
     {
-        private static readonly ConcurrentDictionary<PropertyInfoKey, PropertyInfo> _properties = new ConcurrentDictionary<PropertyInfoKey, PropertyInfo>();
+        private static readonly ConcurrentDictionary<TypeMemberKey, PropertyInfo> _properties = new ConcurrentDictionary<TypeMemberKey, PropertyInfo>();
 
         /// <summary>Initializes a new instance of the <see cref="BindableObject" /> class.</summary>
         protected BindableObject()
@@ -22,30 +24,20 @@ namespace Chimera.UI.ComponentModel
         /// <summary>Releases all subscriptions of the object.</summary>
         public void Dispose()
         {
-            OnDispose(true);
+            Dispose(true);
             GC.SuppressFinalize(this);
         }
 
         /// <summary>Releases all subscriptions of the object.</summary>
         /// <param name="disposing">Indicates whether the method was not invoked by finalyzer.</param>
-        protected virtual void OnDispose(bool disposing)
+        protected virtual void Dispose(bool disposing)
         {
             if (!disposing)
             {
                 return;
             }
 
-            SynchronizationContext = null;
-
-            var subscribers = PropertyChanged?.GetInvocationList();
-
-            if (subscribers != null)
-            {
-                for (var i = 0; i < subscribers.Length; i++)
-                {
-                    PropertyChanged -= (PropertyChangedEventHandler)subscribers[i];
-                }
-            }
+            PropertyChanged = null;
         }
 
         /// <summary>Raises an event about changed property.</summary>
@@ -113,7 +105,7 @@ namespace Chimera.UI.ComponentModel
                 return defaultValue;
             }
 
-            var propertyInfo = _properties.GetOrAdd(new PropertyInfoKey(typeof(TStorage), propertyName), GetPropertyInfo);
+            var propertyInfo = _properties.GetOrAdd(new TypeMemberKey(typeof(TStorage), propertyName), GetPropertyInfo);
 
             return (TValue)propertyInfo.GetValue(storageObject);
         }
@@ -131,7 +123,7 @@ namespace Chimera.UI.ComponentModel
             {
                 throw new ArgumentNullException(nameof(outerPropertyName));
             }
-            if (object.Equals(storage, value))
+            if (EqualityComparer<TValue>.Default.Equals(value, storage))
             {
                 return;
             }
@@ -168,9 +160,9 @@ namespace Chimera.UI.ComponentModel
                 return;
             }
 
-            var propertyInfo = _properties.GetOrAdd(new PropertyInfoKey(typeof(TStorage), propertyName), GetPropertyInfo);
+            var propertyInfo = _properties.GetOrAdd(new TypeMemberKey(typeof(TStorage), propertyName), GetPropertyInfo);
 
-            if (object.Equals(value, propertyInfo.GetValue(storageObject)))
+            if (EqualityComparer<TValue>.Default.Equals(value, (TValue)propertyInfo.GetValue(storageObject)))
             {
                 return;
             }
@@ -182,7 +174,7 @@ namespace Chimera.UI.ComponentModel
             action?.Invoke();
         }
 
-        private static PropertyInfo GetPropertyInfo(PropertyInfoKey key)
+        private static PropertyInfo GetPropertyInfo(TypeMemberKey key)
         {
             var result = default(PropertyInfo);
             var typeInfo = key.Type.GetTypeInfo();
@@ -218,47 +210,5 @@ namespace Chimera.UI.ComponentModel
 
         /// <summary>Occurs when a property value changes.</summary>
         public event PropertyChangedEventHandler PropertyChanged;
-
-        private readonly struct PropertyInfoKey
-        {
-            private readonly Type _type;
-            private readonly string _name;
-
-            public PropertyInfoKey(Type type, string name)
-            {
-                _type = type;
-                _name = name;
-            }
-
-            public override int GetHashCode()
-            {
-                unchecked
-                {
-                    var result = (int)2166136261;
-
-                    result = (result * 16777619) ^ _type.GetHashCode();
-                    result = (result * 16777619) ^ _name.GetHashCode();
-
-                    return result;
-                }
-            }
-
-            public override bool Equals(object obj)
-            {
-                var other = (PropertyInfoKey)obj;
-
-                return _type.Equals(other._type) && (_name == other._name);
-            }
-
-            public Type Type
-            {
-                get => _type;
-            }
-
-            public string Name
-            {
-                get => _name;
-            }
-        }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Chimera.UI.ComponentModel.Tests.Objects
 {
-    internal sealed class TrackingObject<T> : BindableObject
+    internal sealed class ObservingObject<T> : BindableObject
     {
         private T _value;
 

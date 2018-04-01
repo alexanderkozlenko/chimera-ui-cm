@@ -117,8 +117,8 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="command.object.not_specified" xml:space="preserve">
-    <value>The tracking object is not specified</value>
+  <data name="command.observing_object.null" xml:space="preserve">
+    <value>The source of observing properties is null</value>
   </data>
   <data name="object.property.not_found" xml:space="preserve">
     <value>The type {0} does not have the instance property "{1}" with get and set accessors</value>
