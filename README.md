@@ -4,7 +4,7 @@ A set of key components for building XAML-based UI using `MVVM` pattern, which s
 
 [![NuGet package](https://img.shields.io/nuget/v/Chimera.UI.ComponentModel.svg?style=flat-square)](https://www.nuget.org/packages/Chimera.UI.ComponentModel)
 
-### `BindableObject`
+### Bindable Object
 
 A base class for bindable components, which supports two types of bindable object structures. `SetValue` has an optional `Action` parameter to specify an action, which will be executed in case the value was changed during `SetValue` method invocation.
 
@@ -45,7 +45,7 @@ public class MyBindableObject2 : BindableObject
 }
 ```
 
-### `BindableCommand`
+### Bindable Command
 
 An extensible object for a bindable command, which supports tracking the `PropertyChanged` event for the specified object and provided property names.
 
