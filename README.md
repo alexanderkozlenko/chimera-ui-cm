@@ -47,7 +47,7 @@ public class MyBindableObject2 : BindableObject
 
 ### Bindable Command
 
-An extensible object for a bindable command, which supports tracking the `PropertyChanged` event for the specified object and provided property names.
+An extensible object for a bindable command, which supports observing the `PropertyChanged` event for the specified object and provided property names.
 
 ```cs
 var command = new BindableCommand(CommandAction, CommandPredicate);
@@ -56,8 +56,8 @@ or
 ```cs
 var command = new BindableCommand(CommandAction, CommandPredicate, this);
 
-command.StartTrackingProperty(nameof(Value));
-command.StopTrackingProperty(nameof(Value));
+command.StartObservingProperties(nameof(Value));
+command.StopObservingProperties(nameof(Value));
 ```
 
 ### Examples
