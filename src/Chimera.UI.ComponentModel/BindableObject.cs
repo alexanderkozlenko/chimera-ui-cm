@@ -14,11 +14,12 @@ namespace Chimera.UI.ComponentModel
     /// <summary>Represents a bindable object component.</summary>
     public abstract class BindableObject : IBindableObject
     {
-        private static readonly ConcurrentDictionary<TypeMemberKey, PropertyInfo> _properties = new ConcurrentDictionary<TypeMemberKey, PropertyInfo>();
+        private static readonly ConcurrentDictionary<TypeMemberKey, PropertyInfo> _propertiesCache = new ConcurrentDictionary<TypeMemberKey, PropertyInfo>();
 
         /// <summary>Initializes a new instance of the <see cref="BindableObject" /> class.</summary>
         protected BindableObject()
         {
+            SynchronizationContext = SynchronizationContext.Current;
         }
 
         /// <summary>Releases all subscriptions of the object.</summary>
@@ -105,7 +106,7 @@ namespace Chimera.UI.ComponentModel
                 return defaultValue;
             }
 
-            var propertyInfo = _properties.GetOrAdd(new TypeMemberKey(typeof(TStorage), propertyName), GetPropertyInfo);
+            var propertyInfo = _propertiesCache.GetOrAdd(new TypeMemberKey(typeof(TStorage), propertyName), GetPropertyInfo);
 
             return (TValue)propertyInfo.GetValue(storageObject);
         }
@@ -160,7 +161,7 @@ namespace Chimera.UI.ComponentModel
                 return;
             }
 
-            var propertyInfo = _properties.GetOrAdd(new TypeMemberKey(typeof(TStorage), propertyName), GetPropertyInfo);
+            var propertyInfo = _propertiesCache.GetOrAdd(new TypeMemberKey(typeof(TStorage), propertyName), GetPropertyInfo);
 
             if (EqualityComparer<TValue>.Default.Equals(value, (TValue)propertyInfo.GetValue(storageObject)))
             {

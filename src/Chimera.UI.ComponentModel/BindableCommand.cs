@@ -19,8 +19,9 @@ namespace Chimera.UI.ComponentModel
         /// <param name="action">The action to execute when the command is executed.</param>
         /// <param name="predicate">The predicate to check if the command can be executed.</param>
         /// <param name="observingObject">The <see cref="INotifyPropertyChanged" /> as a source of observing properties.</param>
+        /// <param name="synchronizationContext">The synchronization context to interact with UI through.</param>
         /// <exception cref="ArgumentNullException"><paramref name="action" /> is <see langword="null" />.</exception>
-        public BindableCommand(Action<object> action, Predicate<object> predicate = null, INotifyPropertyChanged observingObject = null)
+        public BindableCommand(Action<object> action, Predicate<object> predicate = null, INotifyPropertyChanged observingObject = null, SynchronizationContext synchronizationContext = null)
         {
             if (action == null)
             {
@@ -37,6 +38,8 @@ namespace Chimera.UI.ComponentModel
 
                 observingObject.PropertyChanged += PropertyChangedEventHandler;
             }
+
+            SynchronizationContext = synchronizationContext ?? SynchronizationContext.Current;
         }
 
         /// <summary>Starts observing a property for changing to raise an event about command's state.</summary>
@@ -146,11 +149,10 @@ namespace Chimera.UI.ComponentModel
             }
         }
 
-        /// <summary>Gets or sets the synchronization context to interact with UI through.</summary>
+        /// <summary>Gets the synchronization context to interact with UI through.</summary>
         public SynchronizationContext SynchronizationContext
         {
             get;
-            set;
         }
 
         /// <summary>Occurs when changes occur that affect whether or not the command should execute.</summary>
