@@ -24,8 +24,14 @@ namespace Chimera.UI.ComponentModel.Internal
             {
                 var result = (int)2166136261;
 
-                result = (result * 16777619) ^ _type.GetHashCode();
-                result = (result * 16777619) ^ _name.GetHashCode();
+                if (_type != null)
+                {
+                    result = (result * 16777619) ^ _type.GetHashCode();
+                }
+                if (_name != null)
+                {
+                    result = (result * 16777619) ^ _name.GetHashCode();
+                }
 
                 return result;
             }
