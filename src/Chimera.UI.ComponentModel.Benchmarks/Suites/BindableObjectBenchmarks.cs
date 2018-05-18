@@ -1,10 +1,8 @@
 ﻿using BenchmarkDotNet.Attributes;
-using Chimera.UI.ComponentModel.Benchmarks.Framework;
 using Chimera.UI.ComponentModel.Benchmarks.Objects;
 
 namespace Chimera.UI.ComponentModel.Benchmarks.Suites
 {
-    [BenchmarkSuite(nameof(BindableObject))]
     public abstract class BindableObjectBenchmarks
     {
         private readonly BindableObjectType1<bool> _type1Object = new BindableObjectType1<bool>();
