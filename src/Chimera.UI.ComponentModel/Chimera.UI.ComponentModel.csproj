@@ -10,12 +10,12 @@
   </PropertyGroup>
   <PropertyGroup>
     <TargetFrameworks>netstandard1.1;netstandard2.0</TargetFrameworks>
-    <OutputPath>$(RepositoryPath)/bin/bin/$(AssemblyName)/$(Configuration)/</OutputPath>
-    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)../Open.snk</AssemblyOriginatorKeyFile>
-    <SignAssembly>True</SignAssembly>
+    <OutputPath>$(RepositoryPath)\bin\bin\$(AssemblyName)\$(Configuration)\</OutputPath>
+    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)..\Open.snk</AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <DebugType>none</DebugType>
-    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 </Project>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using BenchmarkDotNet.Exporters;
 using BenchmarkDotNet.Loggers;
 using BenchmarkDotNet.Reports;
@@ -33,7 +34,7 @@ namespace Chimera.UI.ComponentModel.Benchmarks.Framework
 
         protected override string FileNameSuffix
         {
-            get => "-" + DateTime.Now.ToString("yyyyMMddHHmmss");
+            get => "-" + DateTime.Now.ToString("yyyyMMddHHmmss", CultureInfo.InvariantCulture);
         }
     }
 }
