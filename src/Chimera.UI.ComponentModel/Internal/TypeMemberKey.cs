@@ -22,18 +22,20 @@ namespace Chimera.UI.ComponentModel.Internal
         {
             unchecked
             {
-                var result = (int)2166136261;
+                var hashCode = (int)2166136261;
 
                 if (_type != null)
                 {
-                    result = (result * 16777619) ^ _type.GetHashCode();
+                    hashCode ^= _type.GetHashCode();
+                    hashCode *= 16777619;
                 }
                 if (_name != null)
                 {
-                    result = (result * 16777619) ^ _name.GetHashCode();
+                    hashCode ^= _name.GetHashCode();
+                    hashCode *= 16777619;
                 }
 
-                return result;
+                return hashCode;
             }
         }
 
