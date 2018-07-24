@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Chimera.UI.ComponentModel.Tests.Objects
+namespace Chimera.UI.ComponentModel.UnitTests.TestObjects
 {
     internal sealed class BindableObjectType2<T> : BindableObject
     {

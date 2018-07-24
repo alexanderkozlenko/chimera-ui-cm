@@ -1,4 +1,4 @@
-﻿namespace Chimera.UI.ComponentModel.Tests.Objects
+﻿namespace Chimera.UI.ComponentModel.UnitTests.TestObjects
 {
     internal class ValueObjectLevel2<T> : ValueObjectLevel1<T>
     {

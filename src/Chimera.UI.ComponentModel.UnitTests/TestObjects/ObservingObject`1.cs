@@ -1,4 +1,4 @@
-﻿namespace Chimera.UI.ComponentModel.Tests.Objects
+﻿namespace Chimera.UI.ComponentModel.UnitTests.TestObjects
 {
     internal sealed class ObservingObject<T> : BindableObject
     {

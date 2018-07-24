@@ -1,4 +1,4 @@
-﻿namespace Chimera.UI.ComponentModel.Benchmarks.Objects
+﻿namespace Chimera.UI.ComponentModel.Benchmarks.TestObjects
 {
     internal sealed class ValueObject<T>
     {

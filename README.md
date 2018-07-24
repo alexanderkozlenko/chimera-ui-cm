@@ -1,14 +1,15 @@
 ## Chimera.UI.ComponentModel
 
-A set of key components for building XAML-based UI using `MVVM` pattern, which supports interaction with UI through specified `SynchronizationContext` and can be used in a .NET Standard assembly. Each component has a corresponded interface as an additional abstraction layer and implements the `IDisposable` interface. The package has no additional dependencies and can be used for creating a platform-independent testable library of bindable components.
+A set of key components for building XAML-based UI using Model-View-ViewModel pattern, which supports interaction with UI through specified synchronization context.
 
 [![NuGet package](https://img.shields.io/nuget/v/Chimera.UI.ComponentModel.svg?style=flat-square)](https://www.nuget.org/packages/Chimera.UI.ComponentModel)
 
-### Bindable Object
+### Characteristics
+### Characteristics: Bindable Object
 
 A base class for bindable components, which supports two types of bindable object structures. `SetValue` has an optional `Action` parameter to specify an action, which will be executed in case the value was changed during `SetValue` method invocation.
 
-#### Bindable Object: Type 1
+### Characteristics: Bindable Object (Type 1)
 
 A bindable component, which works with values stored directly inside the component.
 
@@ -25,17 +26,17 @@ public class MyBindableObject1 : BindableObject
 }
 ```
 
-#### Bindable Object: Type 2
+### Characteristics: Bindable Object (Type 2)
 
-A bindable component, which works with values from existing business object.
+A bindable component, which works with values from specified object.
 
-- `GetValue` method uses the specified default value to return in case the target business object is `null`.
-- `SetValue` method does nothing in case the target business object is `null`.
+- `GetValue` method uses the specified default value to return in case the specified object is `null`.
+- `SetValue` method does nothing in case the specified object is `null`.
 
 ```cs
 public class MyBindableObject2 : BindableObject
 {
-    private MyBusinessObject _target;
+    private MyTargetObject _target;
 
     public int Value
     {
@@ -45,14 +46,13 @@ public class MyBindableObject2 : BindableObject
 }
 ```
 
-### Bindable Command
+### Characteristics: Bindable Command
 
 An extensible object for a bindable command, which supports observing the `PropertyChanged` event for the specified object and provided property names.
 
 ```cs
 var command = new BindableCommand(CommandAction, CommandPredicate);
 ```
-or
 ```cs
 var command = new BindableCommand(CommandAction, CommandPredicate, this);
 
@@ -60,6 +60,6 @@ command.StartObservingProperties(nameof(Value));
 command.StopObservingProperties(nameof(Value));
 ```
 
-### Examples
+### Usage Examples
 
 - Example of GUI application for .NET Core: https://github.com/alexanderkozlenko/avalonia-puzzle-15

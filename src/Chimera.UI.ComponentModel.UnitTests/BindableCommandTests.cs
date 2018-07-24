@@ -1,61 +1,62 @@
 ﻿using System;
-using Chimera.UI.ComponentModel.Tests.Objects;
-using Xunit;
+using Chimera.UI.ComponentModel.UnitTests.TestObjects;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Chimera.UI.ComponentModel.Tests
+namespace Chimera.UI.ComponentModel.UnitTests
 {
+    [TestClass]
     public sealed class BindableCommandTests
     {
         private static void EmptyAction(object parameter)
         {
         }
 
-        [Fact]
+        [TestMethod]
         public void CreateWhenActionIsNull()
         {
-            Assert.Throws<ArgumentNullException>(() =>
+            Assert.ThrowsException<ArgumentNullException>(() =>
                 new BindableCommand(null));
         }
 
-        [Fact]
+        [TestMethod]
         public void StartObservingPropertiesWhenBindableObjectIsUndefined()
         {
             var target = new ObservingObject<int>();
             var bindable = new BindableCommand(EmptyAction);
 
-            Assert.Throws<InvalidOperationException>(() =>
+            Assert.ThrowsException<InvalidOperationException>(() =>
                 bindable.StartObservingProperties(nameof(target.Value)));
         }
 
-        [Fact]
+        [TestMethod]
         public void StartObservingPropertiesWhenPropertyNameIsInvalid()
         {
             var bindable = new BindableCommand(EmptyAction);
 
-            Assert.Throws<InvalidOperationException>(() =>
+            Assert.ThrowsException<InvalidOperationException>(() =>
                 bindable.StartObservingProperties("*"));
         }
 
-        [Fact]
+        [TestMethod]
         public void StopObservingPropertiesWhenBindableObjectIsUndefined()
         {
             var target = new ObservingObject<int>();
             var bindable = new BindableCommand(EmptyAction);
 
-            Assert.Throws<InvalidOperationException>(() =>
+            Assert.ThrowsException<InvalidOperationException>(() =>
                 bindable.StopObservingProperties(nameof(target.Value)));
         }
 
-        [Fact]
+        [TestMethod]
         public void StopObservingPropertiesWhenPropertyNameIsInvalid()
         {
             var bindable = new BindableCommand(EmptyAction);
 
-            Assert.Throws<InvalidOperationException>(() =>
+            Assert.ThrowsException<InvalidOperationException>(() =>
                 bindable.StopObservingProperties("*"));
         }
 
-        [Fact]
+        [TestMethod]
         public void Execute()
         {
             var invoked = false;
@@ -63,15 +64,15 @@ namespace Chimera.UI.ComponentModel.Tests
 
             using (var bindable = new BindableCommand(action) as IBindableCommand)
             {
-                Assert.True(bindable.CanExecute(null));
+                Assert.IsTrue(bindable.CanExecute(null));
 
                 bindable.Execute(null);
             }
 
-            Assert.True(invoked);
+            Assert.IsTrue(invoked);
         }
 
-        [Fact]
+        [TestMethod]
         public void ExecuteWithPredicate()
         {
             var invoked = false;
@@ -81,19 +82,19 @@ namespace Chimera.UI.ComponentModel.Tests
 
             using (var bindable = new BindableCommand(action, predicate) as IBindableCommand)
             {
-                Assert.False(bindable.CanExecute(null));
+                Assert.IsFalse(bindable.CanExecute(null));
 
                 allowed = true;
 
-                Assert.True(bindable.CanExecute(null));
+                Assert.IsTrue(bindable.CanExecute(null));
 
                 bindable.Execute(null);
             }
 
-            Assert.True(invoked);
+            Assert.IsTrue(invoked);
         }
 
-        [Fact]
+        [TestMethod]
         public void CanExecuteChangedByObservingProperties()
         {
             var target = new ObservingObject<int>();
@@ -112,10 +113,10 @@ namespace Chimera.UI.ComponentModel.Tests
 
                 target.Value = 2;
 
-                Assert.Equal(1, invocations);
+                Assert.AreEqual(1, invocations);
             }
 
-            Assert.Equal(1, invocations);
+            Assert.AreEqual(1, invocations);
         }
     }
 }
