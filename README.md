@@ -1,8 +1,8 @@
-## Chimera.UI.ComponentModel
+## Anemonis.UI.ComponentModel
 
 A set of key components for building XAML-based UI using Model-View-ViewModel pattern, which supports interaction with UI through specified synchronization context.
 
-[![NuGet package](https://img.shields.io/nuget/v/Chimera.UI.ComponentModel.svg?style=flat-square)](https://www.nuget.org/packages/Chimera.UI.ComponentModel)
+[![NuGet package](https://img.shields.io/nuget/v/Anemonis.UI.ComponentModel.svg?style=flat-square)](https://www.nuget.org/packages/Anemonis.UI.ComponentModel)
 
 ### Characteristics
 ### Characteristics: Bindable Object
