@@ -9,7 +9,7 @@ namespace Anemonis.UI.ComponentModel
     /// <summary>Defines a bindable object component.</summary>
     public interface IBindableObject : INotifyPropertyChanged, IDisposable
     {
-        /// <summary>Gets the synchronization context to interact with UI through.</summary>
+        /// <summary>Gets the synchronization context for interaction with UI.</summary>
         SynchronizationContext SynchronizationContext
         {
             get;

@@ -1,6 +1,7 @@
 ﻿// © Alexander Kozlenko. Licensed under the MIT License.
 
 using System;
+using System.ComponentModel;
 using System.Threading;
 using System.Windows.Input;
 
@@ -12,15 +13,20 @@ namespace Anemonis.UI.ComponentModel
         /// <summary>Raises an event that the command should be required for its state.</summary>
         void RaiseCanExecuteChanged();
 
-        /// <summary>Starts observing a property for changing to raise an event about command's state.</summary>
-        /// <param name="propertyNames">The names of the properties.</param>
-        void StartObservingProperties(params string[] propertyNames);
+        /// <summary>Adds an object to the collection of objects observed for the property change event, that triggers the event for command state re-querying.</summary>
+        /// <param name="observable">The object to observe the property change event for.</param>
+        void AddObservingObject(INotifyPropertyChanged observable);
 
-        /// <summary>Stops observing a property for changing to raise an event about command's state.</summary>
-        /// <param name="propertyNames">The names of the properties.</param>
-        void StopObservingProperties(params string[] propertyNames);
+        /// <summary>Adds an object to the collection of objects observed for the property change event, that triggers the event for command state re-querying.</summary>
+        /// <param name="observable">The object to observe the property change event for.</param>
+        /// <param name="propertyNames">The list of property names to observe.</param>
+        void AddObservingObject(INotifyPropertyChanged observable, params string[] propertyNames);
 
-        /// <summary>Gets the synchronization context to interact with UI through.</summary>
+        /// <summary>Removes an object from the collection of objects observed for the property change event, that triggers the event for command state re-querying.</summary>
+        /// <param name="observable">The object to observe the property change event for.</param>
+        void RemoveObservingObject(INotifyPropertyChanged observable);
+
+        /// <summary>Gets the synchronization context for interaction with UI.</summary>
         SynchronizationContext SynchronizationContext
         {
             get;

@@ -5,118 +5,106 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Anemonis.UI.ComponentModel.UnitTests
 {
     [TestClass]
-    public sealed class BindableCommandTests
+    public sealed class BindableCommandTests : UnitTest
     {
-        private static void EmptyAction(object parameter)
+        [TestMethod]
+        public void ConstructorWhenActionIsNull()
         {
+            Assert.Throws<ArgumentNullException>(() =>
+                new BindableCommand<object>(default(Action<object>)));
         }
 
         [TestMethod]
-        public void CreateWhenActionIsNull()
+        public void ConstructorWithPredicateWhenActionIsNull()
         {
-            Assert.ThrowsException<ArgumentNullException>(() =>
-                new BindableCommand(null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new BindableCommand<object>(default(Action<object>), p => true));
         }
 
         [TestMethod]
-        public void StartObservingPropertiesWhenBindableObjectIsUndefined()
+        public void ConstructorWithPredicateWhenPredicateIsNull()
         {
-            var target = new ObservingObject<int>();
-            var bindable = new BindableCommand(EmptyAction);
-
-            Assert.ThrowsException<InvalidOperationException>(() =>
-                bindable.StartObservingProperties(nameof(target.Value)));
+            Assert.Throws<ArgumentNullException>(() =>
+                new BindableCommand<object>(p => { }, default(Predicate<object>)));
         }
 
         [TestMethod]
-        public void StartObservingPropertiesWhenPropertyNameIsInvalid()
+        public void CanExecuteWhenPredicateIsNull()
         {
-            var bindable = new BindableCommand(EmptyAction);
+            var command = new BindableCommand<object>(p => { });
 
-            Assert.ThrowsException<InvalidOperationException>(() =>
-                bindable.StartObservingProperties("*"));
+            Assert.IsTrue(((IBindableCommand)command).CanExecute(null));
         }
 
         [TestMethod]
-        public void StopObservingPropertiesWhenBindableObjectIsUndefined()
+        public void CanExecute()
         {
-            var target = new ObservingObject<int>();
-            var bindable = new BindableCommand(EmptyAction);
+            var command = new BindableCommand<object>(p => { }, p => true);
 
-            Assert.ThrowsException<InvalidOperationException>(() =>
-                bindable.StopObservingProperties(nameof(target.Value)));
+            Assert.IsTrue(((IBindableCommand)command).CanExecute(null));
         }
 
         [TestMethod]
-        public void StopObservingPropertiesWhenPropertyNameIsInvalid()
+        public void ExecuteWhenPredicateIsNull()
         {
-            var bindable = new BindableCommand(EmptyAction);
+            var invoked = false;
+            var command = new BindableCommand<object>(p => invoked = true);
 
-            Assert.ThrowsException<InvalidOperationException>(() =>
-                bindable.StopObservingProperties("*"));
+            ((IBindableCommand)command).Execute(null);
+
+            Assert.IsTrue(invoked);
         }
 
         [TestMethod]
         public void Execute()
         {
             var invoked = false;
-            var action = (Action<object>)(x => invoked = true);
+            var command = new BindableCommand<object>(p => invoked = true, p => true);
 
-            using (var bindable = new BindableCommand(action) as IBindableCommand)
-            {
-                Assert.IsTrue(bindable.CanExecute(null));
-
-                bindable.Execute(null);
-            }
+            ((IBindableCommand)command).Execute(null);
 
             Assert.IsTrue(invoked);
         }
 
         [TestMethod]
-        public void ExecuteWithPredicate()
+        public void AddObservingObjectWhenObservableIsNull()
+        {
+            var command = new BindableCommand<object>(p => { });
+
+            Assert.Throws<ArgumentNullException>(() =>
+                command.AddObservingObject(null));
+        }
+
+        [TestMethod]
+        public void AddObservingObjectWhenPropertyNamesIsNull()
+        {
+            var command = new BindableCommand<object>(p => { });
+
+            Assert.Throws<ArgumentNullException>(() =>
+                command.AddObservingObject(new TestBindableObject<object>(null), null));
+        }
+
+        [TestMethod]
+        public void RemoveObservingObjectWhenObservableIsNull()
+        {
+            var command = new BindableCommand<object>(p => { });
+
+            Assert.Throws<ArgumentNullException>(() =>
+                command.RemoveObservingObject(null));
+        }
+
+        [TestMethod]
+        public void ObservingPropertyChanged()
         {
             var invoked = false;
-            var allowed = false;
-            var action = (Action<object>)(x => invoked = true);
-            var predicate = (Predicate<object>)(x => allowed);
+            var bindable = new TestBindableObject<int>(0);
+            var command = new BindableCommand<object>(p => { });
 
-            using (var bindable = new BindableCommand(action, predicate) as IBindableCommand)
-            {
-                Assert.IsFalse(bindable.CanExecute(null));
-
-                allowed = true;
-
-                Assert.IsTrue(bindable.CanExecute(null));
-
-                bindable.Execute(null);
-            }
+            command.AddObservingObject(bindable);
+            command.CanExecuteChanged += (sender, e) => invoked = true;
+            bindable.BindableFieldValue = 1;
 
             Assert.IsTrue(invoked);
-        }
-
-        [TestMethod]
-        public void CanExecuteChangedByObservingProperties()
-        {
-            var target = new ObservingObject<int>();
-            var action = (Action<object>)(EmptyAction);
-            var invocations = 0;
-
-            using (var bindable = new BindableCommand(action, null, target))
-            {
-                bindable.CanExecuteChanged += (sender, e) => invocations++;
-
-                bindable.StartObservingProperties(nameof(target.Value));
-
-                target.Value = 1;
-
-                bindable.StopObservingProperties(nameof(target.Value));
-
-                target.Value = 2;
-
-                Assert.AreEqual(1, invocations);
-            }
-
-            Assert.AreEqual(1, invocations);
         }
     }
 }

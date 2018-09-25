@@ -1,13 +1,13 @@
 ﻿<!-- © Alexander Kozlenko. Licensed under the MIT License. -->
 <Project>
   <PropertyGroup>
-    <VersionPrefix>1.7.0</VersionPrefix>
-    <VersionSuffix></VersionSuffix>
+    <VersionPrefix>1.8.0</VersionPrefix>
+    <VersionSuffix>beta</VersionSuffix>
   </PropertyGroup>
   <PropertyGroup>
     <Authors><![CDATA[Alexander Kozlenko]]></Authors>
     <Copyright><![CDATA[© $(Authors). All rights reserved.]]></Copyright>
-    <Description><![CDATA[A set of key components for building XAML-based UI using bindings]]></Description>
+    <Description><![CDATA[A set of basic components for building XAML-based UI]]></Description>
     <PackageTags><![CDATA[ui binding xaml]]></PackageTags>
   </PropertyGroup>
 </Project>

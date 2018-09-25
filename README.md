@@ -1,63 +1,99 @@
 ## Anemonis.UI.ComponentModel
 
-A set of key components for building XAML-based UI using Model-View-ViewModel pattern, which supports interaction with UI through specified synchronization context.
+A set of basic components for building XAML-based UI using Model-View-ViewModel pattern.
 
 [![NuGet package](https://img.shields.io/nuget/v/Anemonis.UI.ComponentModel.svg?style=flat-square)](https://www.nuget.org/packages/Anemonis.UI.ComponentModel)
 
-### Characteristics
-### Characteristics: Bindable Object
+### Important Features: Bindable Object
 
-A base class for bindable components, which supports two types of bindable object structures. `SetValue` has an optional `Action` parameter to specify an action, which will be executed in case the value was changed during `SetValue` method invocation.
+- The component supports working with a synchronization context.
+- The `GetValue` method uses the specified default value if the target object is `null`.
+- The `SetValue` method does nothing if the target object is `null`.
+- The `SetValue` method can invoke an optional callback if the value was changed.
 
-### Characteristics: Bindable Object (Type 1)
+### Important Features: Bindable Command
 
-A bindable component, which works with values stored directly inside the component.
+- The component supports working with a synchronization context.
+- The component supports automatic state refresh based on properties update.
+
+### Usage Examples: Bindable Object
 
 ```cs
-public class MyBindableObject1 : BindableObject
+public class MyBindableObject : BindableObject
 {
     private int _value;
 
-    public int Value
+    private void OnPropertyUpdate()
+    {
+    }
+
+    public int Value1
+    {
+        get => GetValue(ref _value);
+        set => SetValue(ref _value, value);
+    }
+
+    public int Value2
+    {
+        get => GetValue(ref _value, nameof(OnPropertyUpdate));
+        set => SetValue(ref _value, value, nameof(OnPropertyUpdate));
+    }
+}
+```
+```cs
+public class MyBindableObject : BindableObject
+{
+    private MyTargetObject _target;
+
+    private void OnPropertyUpdate()
+    {
+    }
+
+    public int Value1
+    {
+        get => GetValue(_target, nameof(_target.Value), 0);
+        set => SetValue(_target, nameof(_target.Value), value);
+    }
+
+    public int Value2
+    {
+        get => GetValue(_target, nameof(_target.Value), 0, nameof(OnPropertyUpdate));
+        set => SetValue(_target, nameof(_target.Value), value, nameof(OnPropertyUpdate));
+    }
+}
+```
+
+### Usage Examples: Bindable Command
+
+```cs
+public class MyBindableObject : BindableObject
+{
+    private readonly IBindableCommand _command;
+
+    private int _value;
+
+    public MyBindableObject()
+    {
+        _command = new BindableCommand<string>(CommandAction);
+        _command.AddObservingObject(this, nameof(Value2));
+    }
+
+    private void CommandAction(string parameter)
+    {
+    }
+
+    public int Value1
+    {
+        get => GetValue(ref _value);
+        set => SetValue(ref _value, value);
+    }
+
+    public int Value2
     {
         get => GetValue(ref _value);
         set => SetValue(ref _value, value);
     }
 }
-```
-
-### Characteristics: Bindable Object (Type 2)
-
-A bindable component, which works with values from specified object.
-
-- `GetValue` method uses the specified default value to return in case the specified object is `null`.
-- `SetValue` method does nothing in case the specified object is `null`.
-
-```cs
-public class MyBindableObject2 : BindableObject
-{
-    private MyTargetObject _target;
-
-    public int Value
-    {
-        get => GetValue(_target, nameof(_target.Value), 0);
-        set => SetValue(_target, nameof(_target.Value), value);
-    }
-}
-```
-
-### Characteristics: Bindable Command
-
-An extensible object for a bindable command, which supports observing the `PropertyChanged` event for the specified object and provided property names.
-
-```cs
-var command = new BindableCommand(CommandAction, CommandPredicate);
-```
-```cs
-var command = new BindableCommand(CommandAction, CommandPredicate, this);
-
-command.StartObservingProperties(nameof(Value));
-command.StopObservingProperties(nameof(Value));
 ```
 
 ### Usage Examples

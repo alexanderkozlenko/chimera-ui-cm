@@ -1,186 +1,142 @@
-using System;
 using Anemonis.UI.ComponentModel.UnitTests.TestObjects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Anemonis.UI.ComponentModel.UnitTests
 {
     [TestClass]
-    public sealed class BindableObjectTests
+    public sealed class BindableObjectTests : UnitTest
     {
         [TestMethod]
-        public void Type1GetValue()
+        public void GetByField()
         {
-            using (var bindable = new BindableObjectType1<int>(1))
-            {
-                var value = bindable.InvokeGetValue();
+            var bindable = new TestBindableObject<int>(1);
+            var value = bindable.BindableFieldValue;
 
-                Assert.AreEqual(1, value);
-                Assert.AreEqual(1, bindable.Value);
-            }
+            Assert.AreEqual(1, value);
         }
 
         [TestMethod]
-        public void Type1SetValue()
+        public void SetByField()
         {
-            using (var bindable = new BindableObjectType1<int>(0))
-            {
-                bindable.InvokeSetValue(1, null, "p");
+            var bindable = new TestBindableObject<int>(0);
 
-                Assert.AreEqual(1, bindable.Value);
-            }
+            Assert.PropertyChanged(bindable, o => o.BindableFieldValue, 1);
+
+            bindable.BindableFieldValue = 1;
+
+            Assert.AreEqual(1, bindable.FieldValue);
         }
 
         [TestMethod]
-        public void Type1SetValueWithAction()
+        public void SetByFieldWhenValueIsTheSame()
+        {
+            var bindable = new TestBindableObject<int>(1);
+
+            Assert.PropertyNotChanged(bindable, o => o.BindableFieldValue, 1);
+
+            bindable.BindableFieldValue = 1;
+
+            Assert.AreEqual(1, bindable.FieldValue);
+        }
+
+        [TestMethod]
+        public void SetByFieldWithCallback()
         {
             var invoked = false;
-            var action = (Action)(() => invoked = true);
+            var bindable = new TestBindableObject<int>(0, () => invoked = true);
 
-            using (var bindable = new BindableObjectType1<int>(0))
-            {
-                bindable.InvokeSetValue(1, action, "p");
+            Assert.PropertyChanged(bindable, o => o.BindableFieldValue, 1);
 
-                Assert.AreEqual(1, bindable.Value);
-            }
+            bindable.BindableFieldValue = 1;
 
+            Assert.AreEqual(1, bindable.FieldValue);
             Assert.IsTrue(invoked);
         }
 
         [TestMethod]
-        public void Type2GetValue()
+        public void SetByFieldWithCallbackWhenValueIsTheSame()
         {
-            var target = new ValueObjectLevel2<int>
-            {
-                Value1 = 1,
-                Value2 = 2
-            };
+            var invoked = false;
+            var bindable = new TestBindableObject<int>(1, () => invoked = true);
 
-            using (var bindable = new BindableObjectType2<ValueObjectLevel2<int>>(target))
-            {
-                var value1 = bindable.InvokeGetValue(nameof(target.Value1), default(int));
-                var value2 = bindable.InvokeGetValue(nameof(target.Value2), default(int));
+            Assert.PropertyNotChanged(bindable, o => o.BindableFieldValue, 1);
 
-                Assert.AreEqual(1, value1);
-                Assert.AreEqual(2, value2);
-            }
+            bindable.BindableFieldValue = 1;
+
+            Assert.AreEqual(1, bindable.FieldValue);
+            Assert.IsFalse(invoked);
         }
 
         [TestMethod]
-        public void Type2GetValueWhenPropertyNameIsNull()
+        public void GetByProperty()
         {
-            var target = new ValueObjectLevel1<int>
-            {
-                Value1 = 1
-            };
+            var bindable = new TestBindableObject<int>(new TestTargetObject<int>(1));
+            var value = bindable.BindablePropertyValue;
 
-            using (var bindable = new BindableObjectType2<ValueObjectLevel1<int>>(target))
-            {
-                Assert.ThrowsException<ArgumentNullException>(() =>
-                    bindable.InvokeGetValue(null, default(int)));
-            }
+            Assert.AreEqual(1, value);
         }
 
         [TestMethod]
-        public void Type2GetValueWhenPropertyNameIsInvalid()
+        public void SetByProperty()
         {
-            var target = new ValueObjectLevel1<int>
-            {
-                Value1 = 1
-            };
+            var bindable = new TestBindableObject<int>(new TestTargetObject<int>(0));
 
-            using (var bindable = new BindableObjectType2<ValueObjectLevel1<int>>(target))
-            {
-                Assert.ThrowsException<InvalidOperationException>(() =>
-                    bindable.InvokeGetValue("Value3", default(int)));
-            }
+            Assert.PropertyChanged(bindable, o => o.BindablePropertyValue, 1);
+
+            bindable.BindablePropertyValue = 1;
+
+            Assert.AreEqual(1, bindable.PropertyValue);
         }
 
         [TestMethod]
-        public void Type2GetValueWhenTargetIsNull()
+        public void SetByPropertyWhenValueIsTheSame()
         {
-            var target = default(ValueObjectLevel2<int>);
+            var bindable = new TestBindableObject<int>(new TestTargetObject<int>(1));
 
-            using (var bindable = new BindableObjectType2<ValueObjectLevel2<int>>(target))
-            {
-                var value1 = bindable.InvokeGetValue(nameof(target.Value1), 1);
-                var value2 = bindable.InvokeGetValue(nameof(target.Value2), 2);
+            Assert.PropertyNotChanged(bindable, o => o.BindablePropertyValue, 1);
 
-                Assert.AreEqual(1, value1);
-                Assert.AreEqual(2, value2);
-            }
+            bindable.BindablePropertyValue = 1;
+
+            Assert.AreEqual(1, bindable.PropertyValue);
         }
 
         [TestMethod]
-        public void Type2SetValue()
+        public void SetByPropertyWithCallback()
         {
-            var target = new ValueObjectLevel2<int>();
+            var invoked = false;
+            var bindable = new TestBindableObject<int>(new TestTargetObject<int>(0), () => invoked = true);
 
-            using (var bindable = new BindableObjectType2<ValueObjectLevel2<int>>(target))
-            {
-                bindable.InvokeSetValue(nameof(bindable.Value.Value1), 1, null, "p1");
-                bindable.InvokeSetValue(nameof(bindable.Value.Value2), 2, null, "p2");
+            Assert.PropertyChanged(bindable, o => o.BindablePropertyValue, 1);
 
-                Assert.AreEqual(1, bindable.Value.Value1);
-                Assert.AreEqual(2, bindable.Value.Value2);
-            }
+            bindable.BindablePropertyValue = 1;
+
+            Assert.AreEqual(1, bindable.PropertyValue);
+            Assert.IsTrue(invoked);
         }
 
         [TestMethod]
-        public void Type2SetValueWhenPropertyNameIsNull()
+        public void SetByPropertyWithCallbackWhenValueIsTheSame()
         {
-            var target = new ValueObjectLevel1<int>();
+            var invoked = false;
+            var bindable = new TestBindableObject<int>(new TestTargetObject<int>(1), () => invoked = true);
 
-            using (var bindable = new BindableObjectType2<ValueObjectLevel1<int>>(target))
-            {
-                Assert.ThrowsException<ArgumentNullException>(() =>
-                    bindable.InvokeSetValue(null, 1, null, "p1"));
-            }
+            Assert.PropertyNotChanged(bindable, o => o.BindablePropertyValue, 1);
+
+            bindable.BindablePropertyValue = 1;
+
+            Assert.AreEqual(1, bindable.PropertyValue);
+            Assert.IsFalse(invoked);
         }
 
         [TestMethod]
-        public void Type2SetValueWhenPropertyNameIsInvalid()
+        public void RaisePropertyChanged()
         {
-            var target = new ValueObjectLevel1<int>();
+            var bindable = new TestBindableObject<int>(0);
 
-            using (var bindable = new BindableObjectType2<ValueObjectLevel1<int>>(target))
-            {
-                Assert.ThrowsException<InvalidOperationException>(() =>
-                    bindable.InvokeSetValue("Value3", 1, null, "p3"));
-            }
-        }
+            Assert.PropertyChanged(bindable, o => o.BindableFieldValue, 1);
 
-        [TestMethod]
-        public void Type2SetValueWithAction()
-        {
-            var target = new ValueObjectLevel2<int>();
-            var invoked1 = false;
-            var invoked2 = false;
-            var action1 = (Action)(() => invoked1 = true);
-            var action2 = (Action)(() => invoked2 = true);
-
-            using (var bindable = new BindableObjectType2<ValueObjectLevel2<int>>(target))
-            {
-                bindable.InvokeSetValue(nameof(bindable.Value.Value1), 1, action1, "p1");
-                bindable.InvokeSetValue(nameof(bindable.Value.Value2), 2, action2, "p2");
-
-                Assert.AreEqual(1, bindable.Value.Value1);
-                Assert.AreEqual(2, bindable.Value.Value2);
-            }
-
-            Assert.IsTrue(invoked1);
-            Assert.IsTrue(invoked2);
-        }
-
-        [TestMethod]
-        public void Type2SetValueWhenTargetIsNull()
-        {
-            var target = default(ValueObjectLevel2<int>);
-
-            using (var bindable = new BindableObjectType2<ValueObjectLevel2<int>>(target))
-            {
-                bindable.InvokeSetValue(nameof(target.Value1), 1, null, "p1");
-                bindable.InvokeSetValue(nameof(target.Value2), 2, null, "p2");
-            }
+            bindable.FieldValue = 1;
+            bindable.InvokeRaisePropertyChanged(nameof(TestBindableObject<int>.BindableFieldValue));
         }
     }
 }
