@@ -36,7 +36,7 @@ namespace Anemonis.UI.ComponentModel
         /// <summary>Raises the event about a changed property.</summary>
         /// <param name="propertyName">The name of the property.</param>
         /// <exception cref="ArgumentNullException"><paramref name="propertyName" /> is <see langword="null" />.</exception>
-        protected virtual void RaisePropertyChanged(string propertyName)
+        protected void RaisePropertyChanged(string propertyName)
         {
             if (propertyName == null)
             {

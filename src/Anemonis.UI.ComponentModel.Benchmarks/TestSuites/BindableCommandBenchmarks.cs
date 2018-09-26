@@ -10,7 +10,7 @@ namespace Anemonis.UI.ComponentModel.Benchmarks.TestSuites
 
         public BindableCommandBenchmarks()
         {
-            _bindableCommand.AddObservingObject(_observbleObject);
+            _bindableCommand.SubscribePropertyChanged(_observbleObject);
         }
 
         [Benchmark(Description = "observable-PropertyChanged")]

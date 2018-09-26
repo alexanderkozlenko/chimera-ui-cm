@@ -88,31 +88,31 @@ namespace Anemonis.UI.ComponentModel.UnitTests
         }
 
         [TestMethod]
-        public void AddObservingObjectWhenObservableIsNull()
+        public void SubscribePropertyChangedWhenObservableIsNull()
         {
             var command = new BindableCommand<object>(p => { });
 
             Assert.Throws<ArgumentNullException>(() =>
-                command.AddObservingObject(null));
+                command.SubscribePropertyChanged(null));
         }
 
         [TestMethod]
-        public void AddObservingObjectWhenPropertyNamesIsNull()
+        public void SubscribePropertyChangedWhenPropertyNamesIsNull()
         {
             var command = new BindableCommand<object>(p => { });
             var bindable = new TestBindableObject<object>(null);
 
             Assert.Throws<ArgumentNullException>(() =>
-                command.AddObservingObject(bindable, null));
+                command.SubscribePropertyChanged(bindable, null));
         }
 
         [TestMethod]
-        public void RemoveObservingObjectWhenObservableIsNull()
+        public void UnsubscribePropertyChangedWhenObservableIsNull()
         {
             var command = new BindableCommand<object>(p => { });
 
             Assert.Throws<ArgumentNullException>(() =>
-                command.RemoveObservingObject(null));
+                command.UnsubscribePropertyChanged(null));
         }
 
         [TestMethod]
@@ -122,7 +122,7 @@ namespace Anemonis.UI.ComponentModel.UnitTests
             var bindable = new TestBindableObject<int>(0);
             var command = new BindableCommand<object>(p => { });
 
-            command.AddObservingObject(bindable);
+            command.SubscribePropertyChanged(bindable);
             command.CanExecuteChanged += (sender, e) => invoked = true;
             bindable.BindableFieldValue = 1;
 

@@ -100,7 +100,7 @@ namespace Anemonis.UI.ComponentModel
         }
 
         /// <summary>Raises an event that the command should be required for its state.</summary>
-        public virtual void RaiseCanExecuteChanged()
+        public void RaiseCanExecuteChanged()
         {
             var synchronizationContext = _synchronizationContext;
 
@@ -133,10 +133,10 @@ namespace Anemonis.UI.ComponentModel
             CanExecuteChanged = null;
         }
 
-        /// <summary>Adds an object to the collection of objects observed for the property change event, that triggers the event for command state re-querying.</summary>
-        /// <param name="observable">The object to observe the property change event for.</param>
+        /// <summary>Subscribes for property changed events of an object to trigger the event for command state re-querying.</summary>
+        /// <param name="observable">The object to handle property changed events of.</param>
         /// <exception cref="ArgumentNullException"><paramref name="observable" /> is <see langword="null" />.</exception>
-        public void AddObservingObject(INotifyPropertyChanged observable)
+        public void SubscribePropertyChanged(INotifyPropertyChanged observable)
         {
             if (observable == null)
             {
@@ -156,11 +156,11 @@ namespace Anemonis.UI.ComponentModel
             }
         }
 
-        /// <summary>Adds an object to the collection of objects observed for the property change event, that triggers the event for command state re-querying.</summary>
-        /// <param name="observable">The object to observe the property change event for.</param>
-        /// <param name="propertyNames">The list of property names to observe.</param>
+        /// <summary>Subscribes for property changed events of an object to trigger the event for command state re-querying.</summary>
+        /// <param name="observable">The object to handle property changed events of.</param>
+        /// <param name="propertyNames">The list of property names to handle.</param>
         /// <exception cref="ArgumentNullException"><paramref name="observable" /> or <paramref name="propertyNames" /> is <see langword="null" />.</exception>
-        public void AddObservingObject(INotifyPropertyChanged observable, params string[] propertyNames)
+        public void SubscribePropertyChanged(INotifyPropertyChanged observable, params string[] propertyNames)
         {
             if (observable == null)
             {
@@ -184,10 +184,10 @@ namespace Anemonis.UI.ComponentModel
             }
         }
 
-        /// <summary>Removes an object from the collection of objects observed for the property change event, that triggers the event for command state re-querying.</summary>
-        /// <param name="observable">The object to observe the property change event for.</param>
+        /// <summary>Unsubscribes from property changed events of an object to trigger the event for command state re-querying.</summary>
+        /// <param name="observable">The object to handle property changed events of.</param>
         /// <exception cref="ArgumentNullException"><paramref name="observable" /> is <see langword="null" />.</exception>
-        public void RemoveObservingObject(INotifyPropertyChanged observable)
+        public void UnsubscribePropertyChanged(INotifyPropertyChanged observable)
         {
             if (observable == null)
             {
