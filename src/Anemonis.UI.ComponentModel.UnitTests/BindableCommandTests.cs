@@ -37,11 +37,21 @@ namespace Anemonis.UI.ComponentModel.UnitTests
         }
 
         [TestMethod]
-        public void CanExecute()
+        public void CanExecuteWhenPredicateReturnsFalse()
+        {
+            var command = new BindableCommand<object>(p => { }, p => false);
+            var result = ((IBindableCommand)command).CanExecute(null);
+
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void CanExecuteWhenPredicateReturnsTrue()
         {
             var command = new BindableCommand<object>(p => { }, p => true);
+            var result = ((IBindableCommand)command).CanExecute(null);
 
-            Assert.IsTrue(((IBindableCommand)command).CanExecute(null));
+            Assert.IsTrue(result);
         }
 
         [TestMethod]
@@ -56,7 +66,18 @@ namespace Anemonis.UI.ComponentModel.UnitTests
         }
 
         [TestMethod]
-        public void Execute()
+        public void ExecuteWhenPredicateReturnsFalse()
+        {
+            var invoked = false;
+            var command = new BindableCommand<object>(p => invoked = true, p => false);
+
+            ((IBindableCommand)command).Execute(null);
+
+            Assert.IsTrue(invoked);
+        }
+
+        [TestMethod]
+        public void ExecuteWhenPredicateReturnsTrue()
         {
             var invoked = false;
             var command = new BindableCommand<object>(p => invoked = true, p => true);
@@ -79,9 +100,10 @@ namespace Anemonis.UI.ComponentModel.UnitTests
         public void AddObservingObjectWhenPropertyNamesIsNull()
         {
             var command = new BindableCommand<object>(p => { });
+            var bindable = new TestBindableObject<object>(null);
 
             Assert.Throws<ArgumentNullException>(() =>
-                command.AddObservingObject(new TestBindableObject<object>(null), null));
+                command.AddObservingObject(bindable, null));
         }
 
         [TestMethod]
@@ -94,7 +116,7 @@ namespace Anemonis.UI.ComponentModel.UnitTests
         }
 
         [TestMethod]
-        public void ObservingPropertyChanged()
+        public void CanExecuteChangedWhenObservingPropertyChanged()
         {
             var invoked = false;
             var bindable = new TestBindableObject<int>(0);

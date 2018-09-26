@@ -70,7 +70,8 @@ namespace Anemonis.UI.ComponentModel.UnitTests
         [TestMethod]
         public void GetByProperty()
         {
-            var bindable = new TestBindableObject<int>(new TestTargetObject<int>(1));
+            var target = new TestTargetObject<int>(1);
+            var bindable = new TestBindableObject<int>(target);
             var value = bindable.BindablePropertyValue;
 
             Assert.AreEqual(1, value);
@@ -79,7 +80,8 @@ namespace Anemonis.UI.ComponentModel.UnitTests
         [TestMethod]
         public void SetByProperty()
         {
-            var bindable = new TestBindableObject<int>(new TestTargetObject<int>(0));
+            var target = new TestTargetObject<int>(0);
+            var bindable = new TestBindableObject<int>(target);
 
             Assert.PropertyChanged(bindable, o => o.BindablePropertyValue, 1);
 
@@ -91,7 +93,8 @@ namespace Anemonis.UI.ComponentModel.UnitTests
         [TestMethod]
         public void SetByPropertyWhenValueIsTheSame()
         {
-            var bindable = new TestBindableObject<int>(new TestTargetObject<int>(1));
+            var target = new TestTargetObject<int>(1);
+            var bindable = new TestBindableObject<int>(target);
 
             Assert.PropertyNotChanged(bindable, o => o.BindablePropertyValue, 1);
 
@@ -104,7 +107,8 @@ namespace Anemonis.UI.ComponentModel.UnitTests
         public void SetByPropertyWithCallback()
         {
             var invoked = false;
-            var bindable = new TestBindableObject<int>(new TestTargetObject<int>(0), () => invoked = true);
+            var target = new TestTargetObject<int>(0);
+            var bindable = new TestBindableObject<int>(target, () => invoked = true);
 
             Assert.PropertyChanged(bindable, o => o.BindablePropertyValue, 1);
 
@@ -118,7 +122,8 @@ namespace Anemonis.UI.ComponentModel.UnitTests
         public void SetByPropertyWithCallbackWhenValueIsTheSame()
         {
             var invoked = false;
-            var bindable = new TestBindableObject<int>(new TestTargetObject<int>(1), () => invoked = true);
+            var target = new TestTargetObject<int>(1);
+            var bindable = new TestBindableObject<int>(target, () => invoked = true);
 
             Assert.PropertyNotChanged(bindable, o => o.BindablePropertyValue, 1);
 
@@ -132,11 +137,12 @@ namespace Anemonis.UI.ComponentModel.UnitTests
         public void RaisePropertyChanged()
         {
             var bindable = new TestBindableObject<int>(0);
+            var propertyName = nameof(TestBindableObject<int>.BindableFieldValue);
 
             Assert.PropertyChanged(bindable, o => o.BindableFieldValue, 1);
 
             bindable.FieldValue = 1;
-            bindable.InvokeRaisePropertyChanged(nameof(TestBindableObject<int>.BindableFieldValue));
+            bindable.InvokeRaisePropertyChanged(propertyName);
         }
     }
 }
