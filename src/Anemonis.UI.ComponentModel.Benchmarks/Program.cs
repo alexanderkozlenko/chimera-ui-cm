@@ -27,6 +27,7 @@ namespace Anemonis.UI.ComponentModel.Benchmarks
             configuration.Set(SummaryStyle.Default.WithTimeUnit(TimeUnit.Nanosecond).WithSizeUnit(SizeUnit.B));
 
             BenchmarkRunner.Run<BindableObjectBenchmarks>(configuration);
+            BenchmarkRunner.Run<BindableCommandBenchmarks>(configuration);
         }
     }
 }
