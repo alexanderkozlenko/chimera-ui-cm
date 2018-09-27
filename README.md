@@ -1,8 +1,14 @@
 ## Anemonis.UI.ComponentModel
 
-A set of basic components for building XAML-based UI using Model-View-ViewModel pattern.
+A set of basic components for building XAML-based UI using `model-view-viewmodel` pattern.
 
 [![NuGet package](https://img.shields.io/nuget/v/Anemonis.UI.ComponentModel.svg?style=flat-square)](https://www.nuget.org/packages/Anemonis.UI.ComponentModel)
+
+### Important Features
+
+- The bindable object as a simple base type for view models.
+- The bindable command as a simple and extensible command implementation.
+- The event broker as a simple messaging bus for UI events based on the `publish–subscribe` pattern.
 
 ### Important Features: Bindable Object
 
@@ -15,6 +21,10 @@ A set of basic components for building XAML-based UI using Model-View-ViewModel 
 
 - The component supports working with a synchronization context.
 - The component supports automatic state refresh based on properties update.
+
+### Important Features: Event Broker
+
+- Event subscription is based on channel name and data type.
 
 ### Usage Examples: Bindable Object
 
@@ -75,23 +85,46 @@ public class MyBindableObject : BindableObject
     public MyBindableObject()
     {
         _command = new BindableCommand<string>(CommandAction);
-        _command.AddObservingObject(this, nameof(Value2));
+        _command.SubscribePropertyChanged(this, nameof(Value));
     }
 
     private void CommandAction(string parameter)
     {
     }
 
-    public int Value1
+    public int Value
     {
         get => GetValue(ref _value);
         set => SetValue(ref _value, value);
     }
+}
+```
 
-    public int Value2
+### Usage Examples: Event Broker
+
+```cs
+public class MyBindableObject : BindableObject
+{
+    private readonly IDataEventBroker _events;
+
+    public MyBindableObject(IDataEventBroker events)
     {
-        get => GetValue(ref _value);
-        set => SetValue(ref _value, value);
+        _events = events;
+    }
+
+    private void SubscribeToEvents()
+    {
+        _events.Subscribe("channel-1", OnChannelEvent);
+    }
+
+    private void UnsubscribeFromEvents()
+    {
+        _events.Unsubscribe("channel-1", OnChannelEvent);
+    }
+
+    private void OnChannelEvent(double value)
+    {
+        _events.Publish("channel-2", "value: " + value);
     }
 }
 ```

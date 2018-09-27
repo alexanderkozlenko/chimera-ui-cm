@@ -100,7 +100,7 @@ namespace Anemonis.UI.ComponentModel
         }
 
         /// <summary>Raises an event that the command should be required for its state.</summary>
-        public void RaiseCanExecuteChanged()
+        public virtual void RaiseCanExecuteChanged()
         {
             var synchronizationContext = _synchronizationContext;
 

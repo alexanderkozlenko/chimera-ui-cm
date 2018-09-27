@@ -28,6 +28,7 @@ namespace Anemonis.UI.ComponentModel.Benchmarks
 
             BenchmarkRunner.Run<BindableObjectBenchmarks>(configuration);
             BenchmarkRunner.Run<BindableCommandBenchmarks>(configuration);
+            BenchmarkRunner.Run<DataEventBrokerBenchmarks>(configuration);
         }
     }
 }

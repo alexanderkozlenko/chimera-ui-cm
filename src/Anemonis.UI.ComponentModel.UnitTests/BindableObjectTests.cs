@@ -10,9 +10,9 @@ namespace Anemonis.UI.ComponentModel.UnitTests
         public void GetByField()
         {
             var bindable = new TestBindableObject<int>(1);
-            var value = bindable.BindableFieldValue;
+            var result = bindable.BindableFieldValue;
 
-            Assert.AreEqual(1, value);
+            Assert.AreEqual(1, result);
         }
 
         [TestMethod]
@@ -56,15 +56,15 @@ namespace Anemonis.UI.ComponentModel.UnitTests
         [TestMethod]
         public void SetByFieldWithCallbackWhenValueIsTheSame()
         {
-            var invoked = false;
-            var bindable = new TestBindableObject<int>(1, () => invoked = true);
+            var result = false;
+            var bindable = new TestBindableObject<int>(1, () => result = true);
 
             Assert.PropertyNotChanged(bindable, o => o.BindableFieldValue, 1);
 
             bindable.BindableFieldValue = 1;
 
             Assert.AreEqual(1, bindable.FieldValue);
-            Assert.IsFalse(invoked);
+            Assert.IsFalse(result);
         }
 
         [TestMethod]
@@ -72,9 +72,9 @@ namespace Anemonis.UI.ComponentModel.UnitTests
         {
             var target = new TestTargetObject<int>(1);
             var bindable = new TestBindableObject<int>(target);
-            var value = bindable.BindablePropertyValue;
+            var result = bindable.BindablePropertyValue;
 
-            Assert.AreEqual(1, value);
+            Assert.AreEqual(1, result);
         }
 
         [TestMethod]
@@ -106,31 +106,31 @@ namespace Anemonis.UI.ComponentModel.UnitTests
         [TestMethod]
         public void SetByPropertyWithCallback()
         {
-            var invoked = false;
+            var result = false;
             var target = new TestTargetObject<int>(0);
-            var bindable = new TestBindableObject<int>(target, () => invoked = true);
+            var bindable = new TestBindableObject<int>(target, () => result = true);
 
             Assert.PropertyChanged(bindable, o => o.BindablePropertyValue, 1);
 
             bindable.BindablePropertyValue = 1;
 
             Assert.AreEqual(1, bindable.PropertyValue);
-            Assert.IsTrue(invoked);
+            Assert.IsTrue(result);
         }
 
         [TestMethod]
         public void SetByPropertyWithCallbackWhenValueIsTheSame()
         {
-            var invoked = false;
+            var result = false;
             var target = new TestTargetObject<int>(1);
-            var bindable = new TestBindableObject<int>(target, () => invoked = true);
+            var bindable = new TestBindableObject<int>(target, () => result = true);
 
             Assert.PropertyNotChanged(bindable, o => o.BindablePropertyValue, 1);
 
             bindable.BindablePropertyValue = 1;
 
             Assert.AreEqual(1, bindable.PropertyValue);
-            Assert.IsFalse(invoked);
+            Assert.IsFalse(result);
         }
 
         [TestMethod]

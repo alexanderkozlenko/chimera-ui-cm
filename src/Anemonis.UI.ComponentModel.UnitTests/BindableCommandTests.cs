@@ -32,8 +32,9 @@ namespace Anemonis.UI.ComponentModel.UnitTests
         public void CanExecuteWhenPredicateIsNull()
         {
             var command = new BindableCommand<object>(p => { });
+            var result = ((IBindableCommand)command).CanExecute(null);
 
-            Assert.IsTrue(((IBindableCommand)command).CanExecute(null));
+            Assert.IsTrue(result);
         }
 
         [TestMethod]
@@ -57,34 +58,34 @@ namespace Anemonis.UI.ComponentModel.UnitTests
         [TestMethod]
         public void ExecuteWhenPredicateIsNull()
         {
-            var invoked = false;
-            var command = new BindableCommand<object>(p => invoked = true);
+            var result = false;
+            var command = new BindableCommand<object>(p => result = true);
 
             ((IBindableCommand)command).Execute(null);
 
-            Assert.IsTrue(invoked);
+            Assert.IsTrue(result);
         }
 
         [TestMethod]
         public void ExecuteWhenPredicateReturnsFalse()
         {
-            var invoked = false;
-            var command = new BindableCommand<object>(p => invoked = true, p => false);
+            var result = false;
+            var command = new BindableCommand<object>(p => result = true, p => false);
 
             ((IBindableCommand)command).Execute(null);
 
-            Assert.IsTrue(invoked);
+            Assert.IsTrue(result);
         }
 
         [TestMethod]
         public void ExecuteWhenPredicateReturnsTrue()
         {
-            var invoked = false;
-            var command = new BindableCommand<object>(p => invoked = true, p => true);
+            var result = false;
+            var command = new BindableCommand<object>(p => result = true, p => true);
 
             ((IBindableCommand)command).Execute(null);
 
-            Assert.IsTrue(invoked);
+            Assert.IsTrue(result);
         }
 
         [TestMethod]
@@ -118,15 +119,15 @@ namespace Anemonis.UI.ComponentModel.UnitTests
         [TestMethod]
         public void CanExecuteChangedWhenObservingPropertyChanged()
         {
-            var invoked = false;
+            var result = false;
             var bindable = new TestBindableObject<int>(0);
             var command = new BindableCommand<object>(p => { });
 
             command.SubscribePropertyChanged(bindable);
-            command.CanExecuteChanged += (sender, e) => invoked = true;
+            command.CanExecuteChanged += (sender, e) => result = true;
             bindable.BindableFieldValue = 1;
 
-            Assert.IsTrue(invoked);
+            Assert.IsTrue(result);
         }
     }
 }
