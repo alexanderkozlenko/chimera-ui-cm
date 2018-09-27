@@ -164,6 +164,16 @@ namespace Anemonis.UI.ComponentModel
             callback?.Invoke();
         }
 
+        /// <summary>Subscribes the current bindable object to the required events.</summary>
+        public virtual void SubscribeBindable()
+        {
+        }
+
+        /// <summary>Unsubscribes the current bindable object from the required events.</summary>
+        public virtual void UnsubscribeBindable()
+        {
+        }
+
         /// <summary>Releases all subscriptions to the property changed event.</summary>
         public virtual void Dispose()
         {

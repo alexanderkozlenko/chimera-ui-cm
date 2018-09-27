@@ -8,7 +8,7 @@ namespace Anemonis.UI.ComponentModel
     /// <summary>Represents a UI data events broker.</summary>
     public sealed class DataEventBroker : IDataEventBroker
     {
-        private readonly IDictionary<string, IDictionary<object, Type>> _subscriptions = new Dictionary<string, IDictionary<object, Type>>(StringComparer.Ordinal);
+        private readonly IDictionary<string, ISet<object>> _subscriptions = new Dictionary<string, ISet<object>>(StringComparer.Ordinal);
         private readonly object _subscriptionsLockRoot = new object();
 
         /// <summary>Subscribes to channel events.</summary>
@@ -31,12 +31,12 @@ namespace Anemonis.UI.ComponentModel
             {
                 if (!_subscriptions.TryGetValue(channelName, out var channelSubscriptions))
                 {
-                    channelSubscriptions = new Dictionary<object, Type>();
+                    channelSubscriptions = new HashSet<object>();
 
                     _subscriptions.Add(channelName, channelSubscriptions);
                 }
 
-                channelSubscriptions.Add(eventHandler, typeof(T));
+                channelSubscriptions.Add(eventHandler);
             }
         }
 
@@ -85,7 +85,7 @@ namespace Anemonis.UI.ComponentModel
                 throw new ArgumentNullException(nameof(channelName));
             }
 
-            var channelSubscriptionsArray = default(KeyValuePair<object, Type>[]);
+            var channelSubscriptionsArray = default(object[]);
 
             lock (_subscriptionsLockRoot)
             {
@@ -94,7 +94,7 @@ namespace Anemonis.UI.ComponentModel
                     return;
                 }
 
-                channelSubscriptionsArray = new KeyValuePair<object, Type>[channelSubscriptions.Count];
+                channelSubscriptionsArray = new object[channelSubscriptions.Count];
                 channelSubscriptions.CopyTo(channelSubscriptionsArray, 0);
             }
 
@@ -102,27 +102,21 @@ namespace Anemonis.UI.ComponentModel
 
             for (var i = 0; i < channelSubscriptionsArray.Length; i++)
             {
-                var eventHandlerInfo = channelSubscriptionsArray[i];
-
-                if (typeof(T) != eventHandlerInfo.Value)
+                if (channelSubscriptionsArray[i] is Action<T> eventHandler)
                 {
-                    continue;
-                }
-
-                var eventHandler = (Action<T>)eventHandlerInfo.Key;
-
-                try
-                {
-                    eventHandler.Invoke(value);
-                }
-                catch (Exception e)
-                {
-                    if (exceptions == null)
+                    try
                     {
-                        exceptions = new List<Exception>();
+                        eventHandler.Invoke(value);
                     }
+                    catch (Exception e)
+                    {
+                        if (exceptions == null)
+                        {
+                            exceptions = new List<Exception>();
+                        }
 
-                    exceptions.Add(e);
+                        exceptions.Add(e);
+                    }
                 }
             }
 

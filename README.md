@@ -29,11 +29,11 @@ A set of basic components for building XAML-based UI using `model-view-viewmodel
 ### Usage Examples: Bindable Object
 
 ```cs
-public class MyBindableObject : BindableObject
+public class BindableComponent : BindableObject
 {
     private int _value;
 
-    private void OnPropertyUpdate()
+    private void OnValueUpdated()
     {
     }
 
@@ -45,17 +45,17 @@ public class MyBindableObject : BindableObject
 
     public int Value2
     {
-        get => GetValue(ref _value, nameof(OnPropertyUpdate));
-        set => SetValue(ref _value, value, nameof(OnPropertyUpdate));
+        get => GetValue(ref _value, nameof(OnValueUpdated));
+        set => SetValue(ref _value, value, nameof(OnValueUpdated));
     }
 }
 ```
 ```cs
-public class MyBindableObject : BindableObject
+public class BindableComponent : BindableObject
 {
-    private MyTargetObject _target;
+    private TargetObject _target;
 
-    private void OnPropertyUpdate()
+    private void OnValueUpdated()
     {
     }
 
@@ -67,8 +67,8 @@ public class MyBindableObject : BindableObject
 
     public int Value2
     {
-        get => GetValue(_target, nameof(_target.Value), 0, nameof(OnPropertyUpdate));
-        set => SetValue(_target, nameof(_target.Value), value, nameof(OnPropertyUpdate));
+        get => GetValue(_target, nameof(_target.Value), 0, nameof(OnValueUpdated));
+        set => SetValue(_target, nameof(_target.Value), value, nameof(OnValueUpdated));
     }
 }
 ```
@@ -76,19 +76,23 @@ public class MyBindableObject : BindableObject
 ### Usage Examples: Bindable Command
 
 ```cs
-public class MyBindableObject : BindableObject
+public class BindableComponent : BindableObject
 {
     private readonly IBindableCommand _command;
 
     private int _value;
 
-    public MyBindableObject()
+    public BindableComponent()
     {
-        _command = new BindableCommand<string>(CommandAction);
+        _command = new BindableCommand<string>(ExecuteCommand);
+    }
+
+    public override void SubscribeBindable()
+    {
         _command.SubscribePropertyChanged(this, nameof(Value));
     }
 
-    private void CommandAction(string parameter)
+    private void ExecuteCommand(string parameter)
     {
     }
 
@@ -103,21 +107,21 @@ public class MyBindableObject : BindableObject
 ### Usage Examples: Event Broker
 
 ```cs
-public class MyBindableObject : BindableObject
+public class BindableComponent : BindableObject
 {
     private readonly IDataEventBroker _events;
 
-    public MyBindableObject(IDataEventBroker events)
+    public BindableComponent(IDataEventBroker events)
     {
         _events = events;
     }
 
-    private void SubscribeToEvents()
+    public override void SubscribeBindable()
     {
         _events.Subscribe("channel-1", OnChannelEvent);
     }
 
-    private void UnsubscribeFromEvents()
+    public override void UnsubscribeBindable()
     {
         _events.Unsubscribe("channel-1", OnChannelEvent);
     }
