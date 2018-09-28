@@ -56,7 +56,7 @@ namespace Anemonis.UI.ComponentModel
 
             lock (_observablesLockRoot)
             {
-                if (!_observables.TryGetValue(sender as INotifyPropertyChanged, out var propertyNames))
+                if (!_observables.TryGetValue((INotifyPropertyChanged)sender, out var propertyNames))
                 {
                     return;
                 }
