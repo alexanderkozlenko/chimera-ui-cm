@@ -1,6 +1,6 @@
 ## Anemonis.UI.ComponentModel
 
-A set of basic components for building XAML-based UI using `model-view-viewmodel` pattern.
+A set of basic components for building XAML-based UI using the `model-view-viewmodel` pattern.
 
 [![NuGet package](https://img.shields.io/nuget/v/Anemonis.UI.ComponentModel.svg?style=flat-square)](https://www.nuget.org/packages/Anemonis.UI.ComponentModel)
 
