@@ -35,15 +35,13 @@ namespace Anemonis.UI.ComponentModel
 
             lock (_syncRoot)
             {
-                var observers = _observers;
-
-                if (observers == null)
+                if (_observers == null)
                 {
                     return;
                 }
 
-                observerArray = new IObserver<PropertyChangedEventArgs>[observers.Count];
-                observers.CopyTo(observerArray, 0);
+                observerArray = new IObserver<PropertyChangedEventArgs>[_observers.Count];
+                _observers.CopyTo(observerArray, 0);
             }
 
             if ((synchronizationContext == null) || (synchronizationContext == SynchronizationContext.Current))

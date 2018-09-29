@@ -32,7 +32,6 @@ namespace Anemonis.UI.ComponentModel
                 if (!_subscriptions.TryGetValue(channelName, out var channelSubscriptions))
                 {
                     channelSubscriptions = new HashSet<object>(ReferenceEqualityComparer.Instance);
-
                     _subscriptions.Add(channelName, channelSubscriptions);
                 }
 

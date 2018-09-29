@@ -37,15 +37,18 @@ namespace Anemonis.UI.ComponentModel
 
         private void OnObservingPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+            var observable = sender as INotifyPropertyChanged;
+
+            if (observable == null)
+            {
+                return;
+            }
+
             var handleEvent = false;
 
             lock (_syncRoot)
             {
-                if (!_observables.TryGetValue((INotifyPropertyChanged)sender, out var propertyNames))
-                {
-                    return;
-                }
-                if (e.PropertyName == null)
+                if (!_observables.TryGetValue(observable, out var propertyNames))
                 {
                     return;
                 }
@@ -54,7 +57,7 @@ namespace Anemonis.UI.ComponentModel
 
                 if (!handleEvent)
                 {
-                    var propertyName = e.PropertyName;
+                    var propertyName = e?.PropertyName;
 
                     for (var i = 0; i < propertyNames.Length; i++)
                     {
@@ -90,15 +93,13 @@ namespace Anemonis.UI.ComponentModel
 
             lock (_syncRoot)
             {
-                var observers = _observers;
-
-                if (observers == null)
+                if (_observers == null)
                 {
                     return;
                 }
 
-                observerArray = new IObserver<EventArgs>[observers.Count];
-                observers.CopyTo(observerArray, 0);
+                observerArray = new IObserver<EventArgs>[_observers.Count];
+                _observers.CopyTo(observerArray, 0);
             }
 
             if ((synchronizationContext == null) || (synchronizationContext == SynchronizationContext.Current))
@@ -129,7 +130,6 @@ namespace Anemonis.UI.ComponentModel
                 }
 
                 _observables[observable] = null;
-
                 observable.PropertyChanged += OnObservingPropertyChanged;
             }
         }
@@ -157,7 +157,6 @@ namespace Anemonis.UI.ComponentModel
                 }
 
                 _observables[observable] = propertyNames;
-
                 observable.PropertyChanged += OnObservingPropertyChanged;
             }
         }
@@ -180,7 +179,6 @@ namespace Anemonis.UI.ComponentModel
                 }
 
                 observable.PropertyChanged -= OnObservingPropertyChanged;
-
                 _observables.Remove(observable);
 
                 if (_observables.Count == 0)
