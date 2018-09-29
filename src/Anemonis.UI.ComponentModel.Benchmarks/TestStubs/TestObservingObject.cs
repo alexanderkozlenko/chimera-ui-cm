@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel;
 
-namespace Anemonis.UI.ComponentModel.Benchmarks.TestObjects
+namespace Anemonis.UI.ComponentModel.Benchmarks.TestStubs
 {
-    internal sealed class TestObservableObject : INotifyPropertyChanged
+    internal sealed class TestObservingObject : INotifyPropertyChanged
     {
         public void RaisePropertyChanged(string propertyName)
         {

@@ -1,34 +1,19 @@
-﻿using System;
-
-namespace Anemonis.UI.ComponentModel.UnitTests.TestObjects
+﻿namespace Anemonis.UI.ComponentModel.Benchmarks.TestStubs
 {
     internal sealed class TestBindableObject<T> : BindableObject
     {
         private readonly TestTargetObject<T> _target;
-        private readonly Action _callback;
 
         private T _value;
 
-        public TestBindableObject(T value, Action callback = null)
+        public TestBindableObject(T value)
         {
             _value = value;
-            _callback = callback;
         }
 
-        public TestBindableObject(TestTargetObject<T> target, Action callback = null)
+        public TestBindableObject(TestTargetObject<T> target)
         {
             _target = target;
-            _callback = callback;
-        }
-
-        public void InvokeRaisePropertyChanged(string propertyName)
-        {
-            RaisePropertyChanged(propertyName);
-        }
-
-        private void OnValueUpdated()
-        {
-            _callback?.Invoke();
         }
 
         public T FieldValue
@@ -40,7 +25,7 @@ namespace Anemonis.UI.ComponentModel.UnitTests.TestObjects
         public T BindableFieldValue
         {
             get => GetValue(ref _value);
-            set => SetValue(ref _value, value, OnValueUpdated);
+            set => SetValue(ref _value, value);
         }
 
         public T PropertyValue
@@ -52,7 +37,7 @@ namespace Anemonis.UI.ComponentModel.UnitTests.TestObjects
         public T BindablePropertyValue
         {
             get => GetValue(_target, nameof(TestTargetObject<T>.Value), default(T));
-            set => SetValue(_target, nameof(TestTargetObject<T>.Value), value, OnValueUpdated);
+            set => SetValue(_target, nameof(TestTargetObject<T>.Value), value);
         }
     }
 }

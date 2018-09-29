@@ -1,4 +1,4 @@
-using Anemonis.UI.ComponentModel.UnitTests.TestObjects;
+using Anemonis.UI.ComponentModel.UnitTests.TestStubs;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Anemonis.UI.ComponentModel.UnitTests

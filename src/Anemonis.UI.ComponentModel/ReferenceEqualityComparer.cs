@@ -5,22 +5,21 @@ using System.Runtime.CompilerServices;
 
 namespace Anemonis.UI.ComponentModel
 {
-    internal sealed class ReferenceEqualityComparer<T> : IEqualityComparer<T>
-         where T : class
+    internal sealed class ReferenceEqualityComparer : IEqualityComparer<object>
     {
-        private static readonly ReferenceEqualityComparer<T> _instance = new ReferenceEqualityComparer<T>();
+        private static readonly IEqualityComparer<object> _instance = new ReferenceEqualityComparer();
 
-        public bool Equals(T x, T y)
+        bool IEqualityComparer<object>.Equals(object x, object y)
         {
             return object.ReferenceEquals(x, y);
         }
 
-        public int GetHashCode(T obj)
+        int IEqualityComparer<object>.GetHashCode(object obj)
         {
             return RuntimeHelpers.GetHashCode(obj);
         }
 
-        public static ReferenceEqualityComparer<T> Instance
+        public static IEqualityComparer<object> Instance
         {
             get => _instance;
         }

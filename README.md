@@ -13,6 +13,7 @@ A set of basic components for building XAML-based UI using the `model-view-viewm
 ### Important Features: Bindable Object
 
 - The component supports working with a synchronization context.
+- The component supports publishing events to an observer.
 - The `GetValue` method uses the specified default value if the target object is `null`.
 - The `SetValue` method does nothing if the target object is `null`.
 - The `SetValue` method can invoke an optional callback if the value was changed.
@@ -20,7 +21,8 @@ A set of basic components for building XAML-based UI using the `model-view-viewm
 ### Important Features: Bindable Command
 
 - The component supports working with a synchronization context.
-- The component supports automatic state refresh based on properties update.
+- The component supports publishing events to an observer.
+- The component supports automatic state update based on an update of another object.
 
 ### Important Features: Event Broker
 
@@ -78,18 +80,18 @@ public class BindableComponent : BindableObject
 ```cs
 public class BindableComponent : BindableObject
 {
-    private readonly IBindableCommand _command;
+    private readonly IObservableCommand _command;
 
     private int _value;
 
     public BindableComponent()
     {
-        _command = new BindableCommand<string>(ExecuteCommand);
+        _command = new ObservableCommand<string>(ExecuteCommand);
     }
 
-    public override void SubscribeBindable()
+    public override void Subscribe()
     {
-        _command.SubscribePropertyChanged(this, nameof(Value));
+        _command.Subscribe(this, nameof(Value));
     }
 
     private void ExecuteCommand(string parameter)
@@ -107,7 +109,7 @@ public class BindableComponent : BindableObject
 ### Usage Examples: Event Broker
 
 ```cs
-public class BindableComponent : BindableObject
+public class BindableComponent : ObservableObject
 {
     private readonly IDataEventBroker _events;
 
@@ -116,19 +118,19 @@ public class BindableComponent : BindableObject
         _events = events;
     }
 
-    public override void SubscribeBindable()
+    public override void Subscribe()
     {
-        _events.Subscribe("channel-1", OnChannelEvent);
+        _events.Subscribe("pipe-1", OnChannelEvent);
     }
 
-    public override void UnsubscribeBindable()
+    public override void Unsubscribe()
     {
-        _events.Unsubscribe("channel-1", OnChannelEvent);
+        _events.Unsubscribe("pipe-1", OnChannelEvent);
     }
 
-    private void OnChannelEvent(double value)
+    private void OnChannelEvent(DataEventArgs args)
     {
-        _events.Publish("channel-2", "value: " + value);
+        _events.Publish("pipe-2", $"Channel: {args.ChannelName}, Value: {args.Value}");
     }
 }
 ```

@@ -1,5 +1,4 @@
 ﻿using System;
-using Anemonis.UI.ComponentModel.UnitTests.TestObjects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Anemonis.UI.ComponentModel.UnitTests
@@ -89,43 +88,13 @@ namespace Anemonis.UI.ComponentModel.UnitTests
         }
 
         [TestMethod]
-        public void SubscribePropertyChangedWhenObservableIsNull()
-        {
-            var command = new BindableCommand<object>(p => { });
-
-            Assert.Throws<ArgumentNullException>(() =>
-                command.SubscribePropertyChanged(null));
-        }
-
-        [TestMethod]
-        public void SubscribePropertyChangedWhenPropertyNamesIsNull()
-        {
-            var command = new BindableCommand<object>(p => { });
-            var bindable = new TestBindableObject<object>(null);
-
-            Assert.Throws<ArgumentNullException>(() =>
-                command.SubscribePropertyChanged(bindable, null));
-        }
-
-        [TestMethod]
-        public void UnsubscribePropertyChangedWhenObservableIsNull()
-        {
-            var command = new BindableCommand<object>(p => { });
-
-            Assert.Throws<ArgumentNullException>(() =>
-                command.UnsubscribePropertyChanged(null));
-        }
-
-        [TestMethod]
-        public void CanExecuteChangedWhenObservingPropertyChanged()
+        public void RaiseCanExecuteChanged()
         {
             var result = false;
-            var bindable = new TestBindableObject<int>(0);
-            var command = new BindableCommand<object>(p => { });
+            var command = new ObservableCommand<object>(p => { });
 
-            command.SubscribePropertyChanged(bindable);
             command.CanExecuteChanged += (sender, e) => result = true;
-            bindable.BindableFieldValue = 1;
+            command.RaiseCanExecuteChanged();
 
             Assert.IsTrue(result);
         }

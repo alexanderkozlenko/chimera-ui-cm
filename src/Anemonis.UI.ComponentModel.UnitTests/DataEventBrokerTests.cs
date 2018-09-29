@@ -12,7 +12,7 @@ namespace Anemonis.UI.ComponentModel.UnitTests
             var broker = new DataEventBroker();
 
             Assert.Throws<ArgumentNullException>(() =>
-                broker.Subscribe<object>(null, e => { }));
+                broker.Subscribe<object>(null, a => { }));
         }
 
         [TestMethod]
@@ -21,7 +21,17 @@ namespace Anemonis.UI.ComponentModel.UnitTests
             var broker = new DataEventBroker();
 
             Assert.Throws<ArgumentNullException>(() =>
-                broker.Subscribe<object>("channel-name", null));
+                broker.Subscribe<object>("pipe", null));
+        }
+
+        [TestMethod]
+        public void SubscribeWhenEventHandlerIsSubscribed()
+        {
+            var broker = new DataEventBroker();
+            var eventHandler = (Action<DataEventArgs<object>>)(a => { });
+
+            broker.Subscribe("pipe", eventHandler);
+            broker.Subscribe("pipe", eventHandler);
         }
 
         [TestMethod]
@@ -30,7 +40,7 @@ namespace Anemonis.UI.ComponentModel.UnitTests
             var broker = new DataEventBroker();
 
             Assert.Throws<ArgumentNullException>(() =>
-                broker.Unsubscribe<object>(null, e => { }));
+                broker.Unsubscribe<object>(null, a => { }));
         }
 
         [TestMethod]
@@ -39,7 +49,16 @@ namespace Anemonis.UI.ComponentModel.UnitTests
             var broker = new DataEventBroker();
 
             Assert.Throws<ArgumentNullException>(() =>
-                broker.Unsubscribe<object>("channel-name", null));
+                broker.Unsubscribe<object>("pipe", null));
+        }
+
+        [TestMethod]
+        public void UnsubscribeWhenEventHandlerIsUnsubscribed()
+        {
+            var broker = new DataEventBroker();
+            var eventHandler = (Action<DataEventArgs<object>>)(a => { });
+
+            broker.Unsubscribe("pipe", eventHandler);
         }
 
         [TestMethod]
@@ -52,79 +71,86 @@ namespace Anemonis.UI.ComponentModel.UnitTests
         }
 
         [TestMethod]
+        public void PublishWhenThereAreNoSubscribers()
+        {
+            var broker = new DataEventBroker();
+
+            broker.Publish("pipe", 42);
+        }
+
+        [TestMethod]
         public void Publish()
         {
-            var result = false;
+            var result = default(string);
             var broker = new DataEventBroker();
-            var eventHandler = (Action<string>)(e => result = true);
+            var eventHandler = (Action<DataEventArgs<int>>)(a => result = a.ChannelName + "-" + a.Value);
 
-            broker.Subscribe("channel-name", eventHandler);
-            broker.Publish<string>("channel-name", "value");
+            broker.Subscribe("pipe", eventHandler);
+            broker.Publish("pipe", 42);
 
-            Assert.IsTrue(result);
+            Assert.AreEqual("pipe-42", result);
         }
 
         [TestMethod]
-        public void PublishWhenChannelCountGreaterThanOne()
+        public void PublishWhenChannelCountIsGreaterThanOne()
         {
             var result1 = false;
             var result2 = false;
             var broker = new DataEventBroker();
-            var eventHandler1 = (Action<object>)(e => result1 = true);
-            var eventHandler2 = (Action<object>)(e => result2 = true);
+            var eventHandler1 = (Action<DataEventArgs<object>>)(v => result1 = true);
+            var eventHandler2 = (Action<DataEventArgs<object>>)(v => result2 = true);
 
-            broker.Subscribe("channel-name-1", eventHandler1);
-            broker.Subscribe("channel-name-2", eventHandler2);
-            broker.Publish<object>("channel-name-1", null);
+            broker.Subscribe("pipe-1", eventHandler1);
+            broker.Subscribe("pipe-2", eventHandler2);
+            broker.Publish<object>("pipe-1", null);
 
             Assert.IsTrue(result1);
             Assert.IsFalse(result2);
         }
 
         [TestMethod]
-        public void PublishWhenChannelValueTypeGreaterThanOne()
+        public void PublishWhenChannelDataTypeIsGreaterThanOne()
         {
             var result1 = false;
             var result2 = false;
             var broker = new DataEventBroker();
-            var eventHandler1 = (Action<string>)(e => result1 = true);
-            var eventHandler2 = (Action<int>)(e => result2 = true);
+            var eventHandler1 = (Action<DataEventArgs<string>>)(v => result1 = true);
+            var eventHandler2 = (Action<DataEventArgs<int>>)(v => result2 = true);
 
-            broker.Subscribe("channel-name", eventHandler1);
-            broker.Subscribe("channel-name", eventHandler2);
-            broker.Publish<string>("channel-name", null);
+            broker.Subscribe("pipe", eventHandler1);
+            broker.Subscribe("pipe", eventHandler2);
+            broker.Publish<string>("pipe", null);
 
             Assert.IsTrue(result1);
             Assert.IsFalse(result2);
         }
 
         [TestMethod]
-        public void PublishWhenSubscriberUnsubscribed()
+        public void PublishWhenSubscriberIsUnsubscribed()
         {
             var result = false;
             var broker = new DataEventBroker();
-            var eventHandler = (Action<object>)(e => result = true);
+            var eventHandler = (Action<DataEventArgs<object>>)(v => result = true);
 
-            broker.Subscribe("channel-name", eventHandler);
-            broker.Unsubscribe("channel-name", eventHandler);
-            broker.Publish<object>("channel-name", null);
+            broker.Subscribe("pipe", eventHandler);
+            broker.Unsubscribe("pipe", eventHandler);
+            broker.Publish<object>("pipe", null);
 
             Assert.IsFalse(result);
         }
 
         [TestMethod]
-        public void PublishWithWhenSubscriberThrowException()
+        public void PublishWhenBrokerIsDisposed()
         {
+            var result = false;
             var broker = new DataEventBroker();
-            var eventHandler = (Action<object>)(e => throw new NotSupportedException());
+            var eventHandler = (Action<DataEventArgs<object>>)(v => result = true);
 
-            broker.Subscribe("channel-name", eventHandler);
+            broker.Subscribe("pipe", eventHandler);
+            broker.Dispose();
+            broker.Publish<object>("pipe", null);
 
-            var asserter = Assert.Throws<AggregateException>(() =>
-                broker.Publish<object>("channel-name", null));
-
-            Assert.AreEqual(1, asserter.Exception.InnerExceptions.Count);
-            Assert.IsInstanceOfType(asserter.Exception.InnerExceptions[0], typeof(NotSupportedException));
+            Assert.IsFalse(result);
         }
     }
 }

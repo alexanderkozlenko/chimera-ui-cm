@@ -19,10 +19,8 @@ namespace Anemonis.UI.ComponentModel
         {
         }
 
-        private void UnsafeRaisePropertyChanged(string propertyName)
+        private protected virtual void UnsafeRaisePropertyChanged(string propertyName, SynchronizationContext synchronizationContext)
         {
-            var synchronizationContext = _synchronizationContext;
-
             if ((synchronizationContext == null) || (synchronizationContext == SynchronizationContext.Current))
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -43,7 +41,7 @@ namespace Anemonis.UI.ComponentModel
                 throw new ArgumentNullException(nameof(propertyName));
             }
 
-            UnsafeRaisePropertyChanged(propertyName);
+            UnsafeRaisePropertyChanged(propertyName, _synchronizationContext);
         }
 
         /// <summary>Gets a value from the field.</summary>
@@ -107,7 +105,7 @@ namespace Anemonis.UI.ComponentModel
 
             field = value;
 
-            UnsafeRaisePropertyChanged(outerPropertyName);
+            UnsafeRaisePropertyChanged(outerPropertyName, _synchronizationContext);
 
             callback?.Invoke();
         }
@@ -159,18 +157,18 @@ namespace Anemonis.UI.ComponentModel
 
             propertyInfo.SetValue(target, value);
 
-            UnsafeRaisePropertyChanged(outerPropertyName);
+            UnsafeRaisePropertyChanged(outerPropertyName, _synchronizationContext);
 
             callback?.Invoke();
         }
 
-        /// <summary>Subscribes the current bindable object to the required events.</summary>
-        public virtual void SubscribeBindable()
+        /// <summary>Subscribes the current instance to the required notifications.</summary>
+        public virtual void Subscribe()
         {
         }
 
-        /// <summary>Unsubscribes the current bindable object from the required events.</summary>
-        public virtual void UnsubscribeBindable()
+        /// <summary>Unsubscribes the current instance from the required notifications.</summary>
+        public virtual void Unsubscribe()
         {
         }
 

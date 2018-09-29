@@ -1,4 +1,4 @@
-﻿namespace Anemonis.UI.ComponentModel.Benchmarks.TestObjects
+﻿namespace Anemonis.UI.ComponentModel.UnitTests.TestStubs
 {
     internal sealed class TestTargetObject<T>
     {
