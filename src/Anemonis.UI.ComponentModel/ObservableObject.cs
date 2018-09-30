@@ -70,7 +70,7 @@ namespace Anemonis.UI.ComponentModel
                 _observers.Add(observer);
             }
 
-            return new ObservableObjectSubscribeToken(this, observer);
+            return new ObservableSubscribeToken<PropertyChangedEventArgs>(observer, Unsubscribe);
         }
 
         internal void Unsubscribe(IObserver<PropertyChangedEventArgs> observer)

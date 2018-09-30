@@ -202,7 +202,7 @@ namespace Anemonis.UI.ComponentModel
                 _observers.Add(observer);
             }
 
-            return new ObservableCommandSubscribeToken<T>(this, observer);
+            return new ObservableSubscribeToken<EventArgs>(observer, Unsubscribe);
         }
 
         internal void Unsubscribe(IObserver<EventArgs> observer)
@@ -241,7 +241,7 @@ namespace Anemonis.UI.ComponentModel
                 {
                     var enumerator = _observers.GetEnumerator();
 
-                    while(enumerator.MoveNext())
+                    while (enumerator.MoveNext())
                     {
                         enumerator.Current.OnCompleted();
                     }
