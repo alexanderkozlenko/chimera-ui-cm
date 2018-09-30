@@ -9,7 +9,7 @@ namespace Anemonis.UI.ComponentModel
 {
     internal static class PropertyInfoCache
     {
-        private static readonly IDictionary<PropertyInfoKey, PropertyInfo> _propertyInfoCache = new Dictionary<PropertyInfoKey, PropertyInfo>();
+        private static readonly Dictionary<PropertyInfoKey, PropertyInfo> _propertyInfoCache = new Dictionary<PropertyInfoKey, PropertyInfo>();
 
         private static readonly object _operationLockRoot = new object();
 

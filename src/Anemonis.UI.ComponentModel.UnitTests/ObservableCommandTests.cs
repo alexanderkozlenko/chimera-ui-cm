@@ -46,15 +46,71 @@ namespace Anemonis.UI.ComponentModel.UnitTests
         }
 
         [TestMethod]
-        public void CanExecuteChangedWhenObservingPropertyChanged()
+        public void CanExecuteChangedWhenObservingPropertyChangedAndSenderInNull()
         {
             var result = false;
-            var bindable = new TestBindableObject<int>(0);
+            var observable = new TestObservingObject();
             var command = new ObservableCommand<object>(p => { });
 
-            command.Subscribe(bindable);
+            command.Subscribe(observable);
             command.CanExecuteChanged += (sender, e) => result = true;
-            bindable.BindableFieldValue = 1;
+            observable.RaisePropertyChanged(null, new PropertyChangedEventArgs("Value"));
+
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void CanExecuteChangedWhenObservingPropertyChangedAndArgsAreNull()
+        {
+            var result = false;
+            var observable = new TestObservingObject();
+            var command = new ObservableCommand<object>(p => { });
+
+            command.Subscribe(observable);
+            command.CanExecuteChanged += (sender, e) => result = true;
+            observable.RaisePropertyChanged(observable, null);
+
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void CanExecuteChangedWhenObservingPropertyChangedAndPropertyNameIsNotIsScope()
+        {
+            var result = false;
+            var observable = new TestObservingObject();
+            var command = new ObservableCommand<object>(p => { });
+
+            command.Subscribe(observable, "Value1");
+            command.CanExecuteChanged += (sender, e) => result = true;
+            observable.RaisePropertyChanged(observable, new PropertyChangedEventArgs("Value2"));
+
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void CanExecuteChangedWhenObservingPropertyChangedWhenPropertyNamesAreNotSpecified()
+        {
+            var result = false;
+            var observable = new TestObservingObject();
+            var command = new ObservableCommand<object>(p => { });
+
+            command.Subscribe(observable);
+            command.CanExecuteChanged += (sender, e) => result = true;
+            observable.RaisePropertyChanged(observable, new PropertyChangedEventArgs("Value"));
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void CanExecuteChangedWhenObservingPropertyChangedWhenPropertyNamesAreSpecified()
+        {
+            var result = false;
+            var observable = new TestObservingObject();
+            var command = new ObservableCommand<object>(p => { });
+
+            command.Subscribe(observable, "Value");
+            command.CanExecuteChanged += (sender, e) => result = true;
+            observable.RaisePropertyChanged(observable, new PropertyChangedEventArgs("Value"));
 
             Assert.IsTrue(result);
         }

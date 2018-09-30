@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using Anemonis.UI.ComponentModel.Benchmarks.TestStubs;
 using BenchmarkDotNet.Attributes;
 
@@ -6,6 +7,7 @@ namespace Anemonis.UI.ComponentModel.Benchmarks.TestSuites
 {
     public sealed class ObservableCommandBenchmarks
     {
+        private readonly PropertyChangedEventArgs _observingObjectEventArgs = new PropertyChangedEventArgs("Value");
         private readonly TestObservingObject _observingObject = new TestObservingObject();
         private readonly TestObserverObject<EventArgs> _observerObject = new TestObserverObject<EventArgs>();
         private readonly ObservableCommand<object> _observableCommand0 = new ObservableCommand<object>(p => { });
@@ -45,7 +47,7 @@ namespace Anemonis.UI.ComponentModel.Benchmarks.TestSuites
         [Benchmark(Description = "CanExecuteChanged-PropertyChanged")]
         public void CanExecuteChangedByNotifyPropertyChanged()
         {
-            _observingObject.RaisePropertyChanged("Value");
+            _observingObject.RaisePropertyChanged(_observingObject, _observingObjectEventArgs);
         }
     }
 }

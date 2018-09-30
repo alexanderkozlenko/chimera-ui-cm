@@ -9,7 +9,7 @@ namespace Anemonis.UI.ComponentModel
     public sealed class DataEventBroker : IDataEventBroker
     {
         private readonly object _syncRoot = new object();
-        private readonly IDictionary<string, ISet<object>> _subscriptions = new Dictionary<string, ISet<object>>(StringComparer.Ordinal);
+        private readonly Dictionary<string, HashSet<object>> _subscriptions = new Dictionary<string, HashSet<object>>(StringComparer.Ordinal);
 
         /// <summary>Subscribes to channel events.</summary>
         /// <typeparam name="T">The type of the event data.</typeparam>
@@ -83,24 +83,20 @@ namespace Anemonis.UI.ComponentModel
                 throw new ArgumentNullException(nameof(channelName));
             }
 
-            var eventHandlerArray = default(object[]);
-
             lock (_syncRoot)
             {
-                if (!_subscriptions.TryGetValue(channelName, out var eventHandlers))
+                if (_subscriptions.TryGetValue(channelName, out var eventHandlers))
                 {
-                    return;
-                }
+                    var eventArgs = new DataEventArgs<T>(channelName, value);
+                    var enumerator = eventHandlers.GetEnumerator();
 
-                eventHandlerArray = new object[eventHandlers.Count];
-                eventHandlers.CopyTo(eventHandlerArray, 0);
-            }
-
-            for (var i = 0; i < eventHandlerArray.Length; i++)
-            {
-                if (eventHandlerArray[i] is Action<DataEventArgs<T>> eventHandler)
-                {
-                    eventHandler.Invoke(new DataEventArgs<T>(channelName, value));
+                    while (enumerator.MoveNext())
+                    {
+                        if (enumerator.Current is Action<DataEventArgs<T>> eventHandler)
+                        {
+                            eventHandler.Invoke(eventArgs);
+                        }
+                    }
                 }
             }
         }

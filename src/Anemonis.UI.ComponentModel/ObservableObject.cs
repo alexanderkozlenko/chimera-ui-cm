@@ -12,18 +12,20 @@ namespace Anemonis.UI.ComponentModel
     {
         private readonly object _syncRoot = new object();
 
-        private ISet<IObserver<PropertyChangedEventArgs>> _observers;
+        private HashSet<IObserver<PropertyChangedEventArgs>> _observers;
 
         /// <summary>Initializes a new instance of the <see cref="ObservableObject" /> class.</summary>
         protected ObservableObject()
         {
         }
 
-        private void UnsafeRaisePropertyChanged(IObserver<PropertyChangedEventArgs>[] observers, PropertyChangedEventArgs args)
+        private void UnsafeRaisePropertyChanged(HashSet<IObserver<PropertyChangedEventArgs>> observers, PropertyChangedEventArgs args)
         {
-            for (var i = 0; i < observers.Length; i++)
+            var enumerator = observers.GetEnumerator();
+
+            while (enumerator.MoveNext())
             {
-                observers[i].OnNext(args);
+                enumerator.Current.OnNext(args);
             }
         }
 
@@ -31,26 +33,19 @@ namespace Anemonis.UI.ComponentModel
         {
             base.UnsafeRaisePropertyChanged(propertyName, synchronizationContext);
 
-            var observerArray = default(IObserver<PropertyChangedEventArgs>[]);
-
             lock (_syncRoot)
             {
-                if (_observers == null)
+                if (_observers != null)
                 {
-                    return;
+                    if ((synchronizationContext == null) || (synchronizationContext == SynchronizationContext.Current))
+                    {
+                        UnsafeRaisePropertyChanged(_observers, new PropertyChangedEventArgs(propertyName));
+                    }
+                    else
+                    {
+                        synchronizationContext.Post(state => UnsafeRaisePropertyChanged(_observers, new PropertyChangedEventArgs(propertyName)), null);
+                    }
                 }
-
-                observerArray = new IObserver<PropertyChangedEventArgs>[_observers.Count];
-                _observers.CopyTo(observerArray, 0);
-            }
-
-            if ((synchronizationContext == null) || (synchronizationContext == SynchronizationContext.Current))
-            {
-                UnsafeRaisePropertyChanged(observerArray, new PropertyChangedEventArgs(propertyName));
-            }
-            else
-            {
-                synchronizationContext.Post(state => UnsafeRaisePropertyChanged(observerArray, new PropertyChangedEventArgs(propertyName)), null);
             }
         }
 
@@ -101,9 +96,11 @@ namespace Anemonis.UI.ComponentModel
             {
                 if (_observers != null)
                 {
-                    foreach (var observer in _observers)
+                    var enumerator = _observers.GetEnumerator();
+
+                    while (enumerator.MoveNext())
                     {
-                        observer.OnCompleted();
+                        enumerator.Current.OnCompleted();
                     }
 
                     _observers = null;

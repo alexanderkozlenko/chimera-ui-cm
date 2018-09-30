@@ -13,8 +13,8 @@ namespace Anemonis.UI.ComponentModel
     {
         private readonly object _syncRoot = new object();
 
-        private ISet<IObserver<EventArgs>> _observers;
-        private IDictionary<INotifyPropertyChanged, string[]> _observables;
+        private HashSet<IObserver<EventArgs>> _observers;
+        private Dictionary<INotifyPropertyChanged, string[]> _observables;
 
         /// <summary>Initializes a new instance of the <see cref="ObservableCommand{T}" /> class.</summary>
         /// <param name="actionMethod">The method to execute when the command is executed.</param>
@@ -39,7 +39,7 @@ namespace Anemonis.UI.ComponentModel
         {
             var observable = sender as INotifyPropertyChanged;
 
-            if (observable == null)
+            if ((observable == null) || (e == null))
             {
                 return;
             }
@@ -57,7 +57,7 @@ namespace Anemonis.UI.ComponentModel
 
                 if (!handleEvent)
                 {
-                    var propertyName = e?.PropertyName;
+                    var propertyName = e.PropertyName;
 
                     for (var i = 0; i < propertyNames.Length; i++)
                     {
@@ -77,11 +77,13 @@ namespace Anemonis.UI.ComponentModel
             }
         }
 
-        private void UnsafeRaiseCanExecuteChanged(IObserver<EventArgs>[] observers, EventArgs args)
+        private void UnsafeRaiseCanExecuteChanged(HashSet<IObserver<EventArgs>> observers, EventArgs args)
         {
-            for (var i = 0; i < observers.Length; i++)
+            var enumerator = observers.GetEnumerator();
+
+            while (enumerator.MoveNext())
             {
-                observers[i].OnNext(args);
+                enumerator.Current.OnNext(args);
             }
         }
 
@@ -89,26 +91,19 @@ namespace Anemonis.UI.ComponentModel
         {
             base.UnsafeRaiseCanExecuteChanged(synchronizationContext);
 
-            var observerArray = default(IObserver<EventArgs>[]);
-
             lock (_syncRoot)
             {
-                if (_observers == null)
+                if (_observers != null)
                 {
-                    return;
+                    if ((synchronizationContext == null) || (synchronizationContext == SynchronizationContext.Current))
+                    {
+                        UnsafeRaiseCanExecuteChanged(_observers, EventArgs.Empty);
+                    }
+                    else
+                    {
+                        synchronizationContext.Post(state => UnsafeRaiseCanExecuteChanged(_observers, EventArgs.Empty), null);
+                    }
                 }
-
-                observerArray = new IObserver<EventArgs>[_observers.Count];
-                _observers.CopyTo(observerArray, 0);
-            }
-
-            if ((synchronizationContext == null) || (synchronizationContext == SynchronizationContext.Current))
-            {
-                UnsafeRaiseCanExecuteChanged(observerArray, EventArgs.Empty);
-            }
-            else
-            {
-                synchronizationContext.Post(state => UnsafeRaiseCanExecuteChanged(observerArray, EventArgs.Empty), null);
             }
         }
 
@@ -173,17 +168,15 @@ namespace Anemonis.UI.ComponentModel
 
             lock (_syncRoot)
             {
-                if (_observables == null)
+                if (_observables != null)
                 {
-                    return;
-                }
+                    observable.PropertyChanged -= OnObservingPropertyChanged;
+                    _observables.Remove(observable);
 
-                observable.PropertyChanged -= OnObservingPropertyChanged;
-                _observables.Remove(observable);
-
-                if (_observables.Count == 0)
-                {
-                    _observables = null;
+                    if (_observables.Count == 0)
+                    {
+                        _observables = null;
+                    }
                 }
             }
         }
@@ -235,18 +228,22 @@ namespace Anemonis.UI.ComponentModel
             {
                 if (_observables != null)
                 {
-                    foreach (var observable in _observables.Keys)
+                    var enumerator = _observables.Keys.GetEnumerator();
+
+                    while (enumerator.MoveNext())
                     {
-                        observable.PropertyChanged -= OnObservingPropertyChanged;
+                        enumerator.Current.PropertyChanged -= OnObservingPropertyChanged;
                     }
 
                     _observables = null;
                 }
                 if (_observers != null)
                 {
-                    foreach (var observer in _observers)
+                    var enumerator = _observers.GetEnumerator();
+
+                    while(enumerator.MoveNext())
                     {
-                        observer.OnCompleted();
+                        enumerator.Current.OnCompleted();
                     }
 
                     _observers = null;
