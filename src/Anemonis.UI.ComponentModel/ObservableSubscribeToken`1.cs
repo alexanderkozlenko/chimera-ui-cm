@@ -5,10 +5,7 @@ using System;
 namespace Anemonis.UI.ComponentModel
 {
     internal sealed class ObservableSubscribeToken<T> : IDisposable
-        where T : EventArgs
     {
-        private readonly object _syncRoot = new object();
-
         private IObserver<T> _observer;
         private Action<IObserver<T>> _unsubscribe;
 
@@ -20,12 +17,9 @@ namespace Anemonis.UI.ComponentModel
 
         public void Dispose()
         {
-            lock (_syncRoot)
-            {
-                _unsubscribe?.Invoke(_observer);
-                _unsubscribe = null;
-                _observer = null;
-            }
+            _unsubscribe?.Invoke(_observer);
+            _unsubscribe = null;
+            _observer = null;
         }
     }
 }

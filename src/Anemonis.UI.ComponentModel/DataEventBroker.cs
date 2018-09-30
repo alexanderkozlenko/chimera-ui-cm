@@ -11,6 +11,11 @@ namespace Anemonis.UI.ComponentModel
         private readonly object _syncRoot = new object();
         private readonly Dictionary<string, HashSet<object>> _subscriptions = new Dictionary<string, HashSet<object>>(StringComparer.Ordinal);
 
+        /// <summary>Initializes a new instance of the <see cref="DataEventBroker" /> class.</summary>
+        public DataEventBroker()
+        {
+        }
+
         /// <summary>Subscribes to channel events.</summary>
         /// <typeparam name="T">The type of the event data.</typeparam>
         /// <param name="channelName">The name of the event channel.</param>
