@@ -8,13 +8,17 @@ namespace Anemonis.UI.ComponentModel.Benchmarks.TestSuites
 
         public DataEventBrokerBenchmarks()
         {
-            _broker.Subscribe<object>("channel-name", e => { });
+            _broker.Subscribe<object>("pipe", OnDataEvent);
+        }
+
+        private void OnDataEvent(DataEventArgs<object> args)
+        {
         }
 
         [Benchmark(Description = "Publish")]
-        public void GetByField()
+        public void Publish()
         {
-            _broker.Publish<object>("channel-name", null);
+            _broker.Publish<object>("pipe", null);
         }
     }
 }
