@@ -74,8 +74,7 @@ namespace Anemonis.UI.ComponentModel
                 return defaultValue;
             }
 
-            var propertyInfoKey = new PropertyInfoKey(typeof(TTarget), propertyName);
-            var propertyInfo = PropertyInfoCache.GetPropertyInfo(propertyInfoKey);
+            var propertyInfo = PropertyInfoCache<TTarget>.GetPropertyInfo(propertyName);
 
             if (!propertyInfo.CanRead)
             {
@@ -136,8 +135,7 @@ namespace Anemonis.UI.ComponentModel
                 return;
             }
 
-            var propertyInfoKey = new PropertyInfoKey(typeof(TTarget), propertyName);
-            var propertyInfo = PropertyInfoCache.GetPropertyInfo(propertyInfoKey);
+            var propertyInfo = PropertyInfoCache<TTarget>.GetPropertyInfo(propertyName);
 
             if (!propertyInfo.CanRead)
             {
