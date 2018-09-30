@@ -8,7 +8,7 @@ namespace Anemonis.UI.ComponentModel
 {
     /// <summary>Represents a bindable command component.</summary>
     /// <typeparam name="T">The type of the parameter for action and predicate.</typeparam>
-    public class BindableCommand<T> : IBindableCommand
+    public partial class BindableCommand<T> : IBindableCommand
     {
         private readonly Action<T> _actionMethod;
         private readonly Predicate<T> _predicateMethod;
@@ -63,7 +63,9 @@ namespace Anemonis.UI.ComponentModel
             }
             else
             {
-                synchronizationContext.Post(state => UnsafeRaiseCanExecuteChanged(), null);
+                var adapter = new SynchronizationContextAdapter(UnsafeRaiseCanExecuteChanged);
+
+                synchronizationContext.Post(adapter.Post, null);
             }
         }
 

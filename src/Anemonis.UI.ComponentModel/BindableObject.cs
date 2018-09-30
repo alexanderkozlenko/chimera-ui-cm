@@ -10,7 +10,7 @@ using Anemonis.UI.ComponentModel.Resources;
 namespace Anemonis.UI.ComponentModel
 {
     /// <summary>Represents a bindable object component.</summary>
-    public abstract class BindableObject : IBindableObject
+    public abstract partial class BindableObject : IBindableObject
     {
         private SynchronizationContext _synchronizationContext;
 
@@ -27,7 +27,9 @@ namespace Anemonis.UI.ComponentModel
             }
             else
             {
-                synchronizationContext.Post(state => UnsafeRaisePropertyChanged(propertyName), null);
+                var adapter = new SynchronizationContextAdapter(UnsafeRaisePropertyChanged, propertyName);
+
+                synchronizationContext.Post(adapter.Post, null);
             }
         }
 
