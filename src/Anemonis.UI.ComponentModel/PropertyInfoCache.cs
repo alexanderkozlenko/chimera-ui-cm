@@ -9,9 +9,8 @@ namespace Anemonis.UI.ComponentModel
 {
     internal static class PropertyInfoCache
     {
+        private static readonly object _syncRoot = new object();
         private static readonly Dictionary<PropertyInfoKey, PropertyInfo> _propertyInfoCache = new Dictionary<PropertyInfoKey, PropertyInfo>();
-
-        private static readonly object _operationLockRoot = new object();
 
         private static PropertyInfo FindPropertyInfo(in PropertyInfoKey propertyInfoKey)
         {
@@ -33,7 +32,7 @@ namespace Anemonis.UI.ComponentModel
 
         public static PropertyInfo GetPropertyInfo(in PropertyInfoKey propertyInfoKey)
         {
-            lock (_operationLockRoot)
+            lock (_syncRoot)
             {
                 if (!_propertyInfoCache.TryGetValue(propertyInfoKey, out var propertyInfo))
                 {

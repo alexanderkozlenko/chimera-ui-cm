@@ -120,15 +120,15 @@ public class BindableComponent : ObservableObject
 
     public override void Subscribe()
     {
-        _events.Subscribe("pipe-1", OnChannelEvent);
+        _events.Subscribe("pipe-1", OnDataEvent);
     }
 
     public override void Unsubscribe()
     {
-        _events.Unsubscribe("pipe-1", OnChannelEvent);
+        _events.Unsubscribe("pipe-1", OnDataEvent);
     }
 
-    private void OnChannelEvent(DataEventArgs args)
+    private void OnDataEvent(DataEventArgs<double> args)
     {
         _events.Publish("pipe-2", $"Channel: {args.ChannelName}, Value: {args.Value}");
     }
