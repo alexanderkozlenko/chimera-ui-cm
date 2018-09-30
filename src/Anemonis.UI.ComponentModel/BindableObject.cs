@@ -19,16 +19,21 @@ namespace Anemonis.UI.ComponentModel
         {
         }
 
-        private protected virtual void UnsafeRaisePropertyChanged(string propertyName, SynchronizationContext synchronizationContext)
+        private void UnsafeRaisePropertyChanged(string propertyName, SynchronizationContext synchronizationContext)
         {
             if ((synchronizationContext == null) || (synchronizationContext == SynchronizationContext.Current))
             {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+                UnsafeRaisePropertyChanged(propertyName);
             }
             else
             {
-                synchronizationContext.Post(state => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName)), null);
+                synchronizationContext.Post(state => UnsafeRaisePropertyChanged(propertyName), null);
             }
+        }
+
+        private protected virtual void UnsafeRaisePropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         /// <summary>Raises the event about a changed property.</summary>

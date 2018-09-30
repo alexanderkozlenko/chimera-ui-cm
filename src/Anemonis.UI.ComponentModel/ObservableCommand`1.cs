@@ -77,31 +77,19 @@ namespace Anemonis.UI.ComponentModel
             }
         }
 
-        private void UnsafeRaiseCanExecuteChanged(HashSet<IObserver<EventArgs>> observers, EventArgs args)
+        private protected sealed override void UnsafeRaiseCanExecuteChanged()
         {
-            var enumerator = observers.GetEnumerator();
-
-            while (enumerator.MoveNext())
-            {
-                enumerator.Current.OnNext(args);
-            }
-        }
-
-        private protected sealed override void UnsafeRaiseCanExecuteChanged(SynchronizationContext synchronizationContext)
-        {
-            base.UnsafeRaiseCanExecuteChanged(synchronizationContext);
+            base.UnsafeRaiseCanExecuteChanged();
 
             lock (_syncRoot)
             {
                 if (_observers != null)
                 {
-                    if ((synchronizationContext == null) || (synchronizationContext == SynchronizationContext.Current))
+                    var enumerator = _observers.GetEnumerator();
+
+                    while (enumerator.MoveNext())
                     {
-                        UnsafeRaiseCanExecuteChanged(_observers, EventArgs.Empty);
-                    }
-                    else
-                    {
-                        synchronizationContext.Post(state => UnsafeRaiseCanExecuteChanged(_observers, EventArgs.Empty), null);
+                        enumerator.Current.OnNext(EventArgs.Empty);
                     }
                 }
             }

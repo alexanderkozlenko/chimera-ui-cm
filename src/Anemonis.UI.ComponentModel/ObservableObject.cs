@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Threading;
 
 namespace Anemonis.UI.ComponentModel
 {
@@ -19,31 +18,20 @@ namespace Anemonis.UI.ComponentModel
         {
         }
 
-        private void UnsafeRaisePropertyChanged(HashSet<IObserver<PropertyChangedEventArgs>> observers, PropertyChangedEventArgs args)
+        private protected sealed override void UnsafeRaisePropertyChanged(string propertyName)
         {
-            var enumerator = observers.GetEnumerator();
-
-            while (enumerator.MoveNext())
-            {
-                enumerator.Current.OnNext(args);
-            }
-        }
-
-        private protected sealed override void UnsafeRaisePropertyChanged(string propertyName, SynchronizationContext synchronizationContext)
-        {
-            base.UnsafeRaisePropertyChanged(propertyName, synchronizationContext);
+            base.UnsafeRaisePropertyChanged(propertyName);
 
             lock (_syncRoot)
             {
                 if (_observers != null)
                 {
-                    if ((synchronizationContext == null) || (synchronizationContext == SynchronizationContext.Current))
+                    var eventArgs = new PropertyChangedEventArgs(propertyName);
+                    var enumerator = _observers.GetEnumerator();
+
+                    while (enumerator.MoveNext())
                     {
-                        UnsafeRaisePropertyChanged(_observers, new PropertyChangedEventArgs(propertyName));
-                    }
-                    else
-                    {
-                        synchronizationContext.Post(state => UnsafeRaisePropertyChanged(_observers, new PropertyChangedEventArgs(propertyName)), null);
+                        enumerator.Current.OnNext(eventArgs);
                     }
                 }
             }

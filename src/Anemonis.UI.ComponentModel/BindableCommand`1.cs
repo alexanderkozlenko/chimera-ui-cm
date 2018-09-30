@@ -55,16 +55,21 @@ namespace Anemonis.UI.ComponentModel
             _actionMethod.Invoke((T)parameter);
         }
 
-        private protected virtual void UnsafeRaiseCanExecuteChanged(SynchronizationContext synchronizationContext)
+        private void UnsafeRaiseCanExecuteChanged(SynchronizationContext synchronizationContext)
         {
             if ((synchronizationContext == null) || (synchronizationContext == SynchronizationContext.Current))
             {
-                CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+                UnsafeRaiseCanExecuteChanged();
             }
             else
             {
-                synchronizationContext.Post(state => CanExecuteChanged?.Invoke(this, EventArgs.Empty), null);
+                synchronizationContext.Post(state => UnsafeRaiseCanExecuteChanged(), null);
             }
+        }
+
+        private protected virtual void UnsafeRaiseCanExecuteChanged()
+        {
+            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>Raises an event that the command should be required for its state.</summary>
