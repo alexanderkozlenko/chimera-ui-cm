@@ -14,12 +14,15 @@ namespace Anemonis.UI.ComponentModel.Benchmarks.TestSuites
         private readonly ObservableCommand<object> _observableCommand1 = new ObservableCommand<object>(p => { });
         private readonly ObservableCommand<object> _observableCommand2 = new ObservableCommand<object>(p => { });
         private readonly ObservableCommand<object> _observableCommand3 = new ObservableCommand<object>(p => { });
+        private readonly ObservableCommand<object> _observableCommand4 = new ObservableCommand<object>(p => { });
 
         public ObservableCommandBenchmarks()
         {
             _observableCommand1.CanExecuteChanged += OnCanExecuteChanged;
             _observableCommand2.Subscribe(_observerObject);
-            _observableCommand3.Subscribe(_observingObject);
+            _observableCommand3.CanExecuteChanged += OnCanExecuteChanged;
+            _observableCommand3.Subscribe(_observerObject);
+            _observableCommand4.Subscribe(_observingObject);
         }
 
         private void OnCanExecuteChanged(object sender, EventArgs e)
@@ -33,15 +36,21 @@ namespace Anemonis.UI.ComponentModel.Benchmarks.TestSuites
         }
 
         [Benchmark(Description = "RaiseCanExecuteChanged-NPC=Y-OBS=N")]
-        public void RaisePropertyChangedWithEventSubscribers()
+        public void RaisePropertyChangedWithEventSubscriber()
         {
             _observableCommand1.RaiseCanExecuteChanged();
         }
 
         [Benchmark(Description = "RaiseCanExecuteChanged-NPC=N-OBS=Y")]
-        public void RaisePropertyChangedWithObserverSubscribers()
+        public void RaisePropertyChangedWithObserverSubscriber()
         {
             _observableCommand2.RaiseCanExecuteChanged();
+        }
+
+        [Benchmark(Description = "RaiseCanExecuteChanged-NPC=Y-OBS=Y")]
+        public void RaisePropertyChangedWithEventAndObserverSubscribers()
+        {
+            _observableCommand3.RaiseCanExecuteChanged();
         }
 
         [Benchmark(Description = "CanExecuteChanged-PropertyChanged")]

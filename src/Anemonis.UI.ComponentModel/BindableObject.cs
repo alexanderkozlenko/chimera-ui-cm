@@ -27,15 +27,29 @@ namespace Anemonis.UI.ComponentModel
             }
             else
             {
-                var adapter = new SynchronizationContextAdapter(UnsafeRaisePropertyChanged, propertyName);
+                var adapter = new DispatcherCallbackAdapter(UnsafeRaisePropertyChanged, propertyName);
 
                 synchronizationContext.Post(adapter.Post, null);
             }
         }
 
-        private protected virtual void UnsafeRaisePropertyChanged(string propertyName)
+        private protected PropertyChangedEventArgs CreatePropertyChangedEventArgs(string propertyName)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            return new PropertyChangedEventArgs(propertyName);
+        }
+
+        private protected virtual PropertyChangedEventArgs UnsafeRaisePropertyChanged(string propertyName)
+        {
+            var eventArgs = default(PropertyChangedEventArgs);
+            var eventHandler = PropertyChanged;
+
+            if (eventHandler != null)
+            {
+                eventArgs = CreatePropertyChangedEventArgs(propertyName);
+                eventHandler.Invoke(this, eventArgs);
+            }
+
+            return eventArgs;
         }
 
         /// <summary>Raises the event about a changed property.</summary>
@@ -81,14 +95,14 @@ namespace Anemonis.UI.ComponentModel
                 return defaultValue;
             }
 
-            var propertyInfo = PropertyInfoCache<TTarget>.GetPropertyInfo(propertyName);
+            var (propertyGetAccessor, propertySetAccessor) = PropertyAccessorsCache<TTarget>.GetPropertyAccessors<TValue>(propertyName);
 
-            if (!propertyInfo.CanRead)
+            if (propertyGetAccessor == null)
             {
                 throw new InvalidOperationException(string.Format(Strings.GetString("bindable_object.property_info.no_get_accessor"), propertyName));
             }
 
-            return (TValue)propertyInfo.GetValue(target);
+            return propertyGetAccessor.Invoke(target);
         }
 
         /// <summary>Sets the value to the field if it differs and notify listeners.</summary>
@@ -142,25 +156,25 @@ namespace Anemonis.UI.ComponentModel
                 return;
             }
 
-            var propertyInfo = PropertyInfoCache<TTarget>.GetPropertyInfo(propertyName);
+            var (propertyGetAccessor, propertySetAccessor) = PropertyAccessorsCache<TTarget>.GetPropertyAccessors<TValue>(propertyName);
 
-            if (!propertyInfo.CanRead)
+            if (propertyGetAccessor == null)
             {
                 throw new InvalidOperationException(string.Format(Strings.GetString("bindable_object.property_info.no_get_accessor"), propertyName));
             }
-            if (!propertyInfo.CanWrite)
+            if (propertySetAccessor == null)
             {
                 throw new InvalidOperationException(string.Format(Strings.GetString("bindable_object.property_info.no_set_accessor"), propertyName));
             }
 
-            var propertyValue = (TValue)propertyInfo.GetValue(target);
+            var propertyValue = propertyGetAccessor.Invoke(target);
 
             if (EqualityComparer<TValue>.Default.Equals(value, propertyValue))
             {
                 return;
             }
 
-            propertyInfo.SetValue(target, value);
+            propertySetAccessor.Invoke(target, value);
 
             UnsafeRaisePropertyChanged(outerPropertyName, _synchronizationContext);
 

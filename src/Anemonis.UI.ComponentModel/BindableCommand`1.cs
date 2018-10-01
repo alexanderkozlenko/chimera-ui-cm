@@ -55,6 +55,11 @@ namespace Anemonis.UI.ComponentModel
             _actionMethod.Invoke((T)parameter);
         }
 
+        private protected EventArgs CreateCanExecuteChangedEventArgs()
+        {
+            return EventArgs.Empty;
+        }
+
         private void UnsafeRaiseCanExecuteChanged(SynchronizationContext synchronizationContext)
         {
             if ((synchronizationContext == null) || (synchronizationContext == SynchronizationContext.Current))
@@ -63,15 +68,24 @@ namespace Anemonis.UI.ComponentModel
             }
             else
             {
-                var adapter = new SynchronizationContextAdapter(UnsafeRaiseCanExecuteChanged);
+                var adapter = new DispatcherCallbackAdapter(UnsafeRaiseCanExecuteChanged);
 
                 synchronizationContext.Post(adapter.Post, null);
             }
         }
 
-        private protected virtual void UnsafeRaiseCanExecuteChanged()
+        private protected virtual EventArgs UnsafeRaiseCanExecuteChanged()
         {
-            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+            var eventArgs = default(EventArgs);
+            var eventHandler = CanExecuteChanged;
+
+            if (eventHandler != null)
+            {
+                eventArgs = CreateCanExecuteChangedEventArgs();
+                eventHandler.Invoke(this, eventArgs);
+            }
+
+            return eventArgs;
         }
 
         /// <summary>Raises an event that the command should be required for its state.</summary>

@@ -1,6 +1,6 @@
 ## Anemonis.UI.ComponentModel
 
-A set of basic components for building XAML-based UI using the `model-view-viewmodel` pattern.
+A set of high-performance and memory-efficient basic components for building XAML-based UI using `model-view-viewmodel` and `publish–subscribe` patterns.
 
 [![NuGet package](https://img.shields.io/nuget/v/Anemonis.UI.ComponentModel.svg?style=flat-square)](https://www.nuget.org/packages/Anemonis.UI.ComponentModel)
 
@@ -8,7 +8,7 @@ A set of basic components for building XAML-based UI using the `model-view-viewm
 
 - The bindable object as a simple base type for view models.
 - The bindable command as a simple and extensible command implementation.
-- The event broker as a simple messaging bus for UI events based on the `publish–subscribe` pattern.
+- The event broker as a simple messaging bus for UI events.
 
 ### Important Features: Bindable Object
 

@@ -18,15 +18,19 @@ namespace Anemonis.UI.ComponentModel
         {
         }
 
-        private protected sealed override void UnsafeRaisePropertyChanged(string propertyName)
+        private protected sealed override PropertyChangedEventArgs UnsafeRaisePropertyChanged(string propertyName)
         {
-            base.UnsafeRaisePropertyChanged(propertyName);
+            var eventArgs = base.UnsafeRaisePropertyChanged(propertyName);
 
             lock (_syncRoot)
             {
                 if (_observers != null)
                 {
-                    var eventArgs = new PropertyChangedEventArgs(propertyName);
+                    if (eventArgs == null)
+                    {
+                        eventArgs = CreatePropertyChangedEventArgs(propertyName);
+                    }
+
                     var enumerator = _observers.GetEnumerator();
 
                     while (enumerator.MoveNext())
@@ -35,6 +39,8 @@ namespace Anemonis.UI.ComponentModel
                     }
                 }
             }
+
+            return eventArgs;
         }
 
         /// <summary>Notifies the current instance that an observer is to receive notifications about property changed.</summary>

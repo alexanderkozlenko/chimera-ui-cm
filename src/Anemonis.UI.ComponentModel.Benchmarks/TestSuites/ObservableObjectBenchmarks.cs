@@ -10,11 +10,14 @@ namespace Anemonis.UI.ComponentModel.Benchmarks.TestSuites
         private readonly TestObservableObject _observableObject0 = new TestObservableObject();
         private readonly TestObservableObject _observableObject1 = new TestObservableObject();
         private readonly TestObservableObject _observableObject2 = new TestObservableObject();
+        private readonly TestObservableObject _observableObject3 = new TestObservableObject();
 
         public ObservableObjectBenchmarks()
         {
             _observableObject1.PropertyChanged += OnPropertyChanged;
             _observableObject2.Subscribe(_observerObject);
+            _observableObject3.PropertyChanged += OnPropertyChanged;
+            _observableObject3.Subscribe(_observerObject);
         }
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -28,15 +31,21 @@ namespace Anemonis.UI.ComponentModel.Benchmarks.TestSuites
         }
 
         [Benchmark(Description = "RaisePropertyChanged-NPC=Y-OBS=N")]
-        public void RaisePropertyChangedWithEventSubscribers()
+        public void RaisePropertyChangedWithEventSubscriber()
         {
             _observableObject1.InvokeRaisePropertyChanged("Value");
         }
 
         [Benchmark(Description = "RaisePropertyChanged-NPC=N-OBS=Y")]
-        public void RaisePropertyChangedWithObserverSubscribers()
+        public void RaisePropertyChangedWithObserverSubscriber()
         {
             _observableObject2.InvokeRaisePropertyChanged("Value");
+        }
+
+        [Benchmark(Description = "RaisePropertyChanged-NPC=Y-OBS=Y")]
+        public void RaisePropertyChangedWithEventAndObserverSubscribers()
+        {
+            _observableObject3.InvokeRaisePropertyChanged("Value");
         }
     }
 }

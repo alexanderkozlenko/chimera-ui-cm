@@ -77,22 +77,29 @@ namespace Anemonis.UI.ComponentModel
             }
         }
 
-        private protected sealed override void UnsafeRaiseCanExecuteChanged()
+        private protected sealed override EventArgs UnsafeRaiseCanExecuteChanged()
         {
-            base.UnsafeRaiseCanExecuteChanged();
+            var eventArgs = base.UnsafeRaiseCanExecuteChanged();
 
             lock (_syncRoot)
             {
                 if (_observers != null)
                 {
+                    if (eventArgs == null)
+                    {
+                        eventArgs = CreateCanExecuteChangedEventArgs();
+                    }
+
                     var enumerator = _observers.GetEnumerator();
 
                     while (enumerator.MoveNext())
                     {
-                        enumerator.Current.OnNext(EventArgs.Empty);
+                        enumerator.Current.OnNext(eventArgs);
                     }
                 }
             }
+
+            return eventArgs;
         }
 
         /// <summary>Subscribes for property changed events of an object to trigger the event for command state re-querying.</summary>

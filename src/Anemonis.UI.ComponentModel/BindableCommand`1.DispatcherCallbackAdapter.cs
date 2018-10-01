@@ -6,11 +6,11 @@ namespace Anemonis.UI.ComponentModel
 {
     public partial class BindableCommand<T>
     {
-        private readonly struct SynchronizationContextAdapter
+        private readonly struct DispatcherCallbackAdapter
         {
-            private readonly Action _callback;
+            private readonly Func<EventArgs> _callback;
 
-            public SynchronizationContextAdapter(Action callback)
+            public DispatcherCallbackAdapter(Func<EventArgs> callback)
             {
                 _callback = callback;
             }
