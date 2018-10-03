@@ -47,7 +47,7 @@ namespace Anemonis.UI.ComponentModel
 
                     if (propertyInfo == null)
                     {
-                        throw new MissingMemberException(string.Format(Strings.GetString("property_info_cache.property_not_found"), typeof(TTarget), propertyName));
+                        throw new MissingMemberException(string.Format(Strings.GetString("property_accessor_cache.property_not_found"), typeof(TTarget), propertyName));
                     }
 
                     if (propertyInfo.CanRead)

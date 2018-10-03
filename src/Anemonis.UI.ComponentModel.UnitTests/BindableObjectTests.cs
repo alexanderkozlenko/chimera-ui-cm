@@ -1,3 +1,4 @@
+using System;
 using Anemonis.UI.ComponentModel.UnitTests.TestStubs;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -68,6 +69,17 @@ namespace Anemonis.UI.ComponentModel.UnitTests
         }
 
         [TestMethod]
+        public void GetByPropertyWhenPropertyNameIsInvalid()
+        {
+            var target = new TestTargetObject<int>(0);
+            var bindable = new TestBindableObject<int>(target);
+            var value = default(int);
+
+            Assert.Throws<MissingMemberException>(() =>
+                value = bindable.InvalidBindablePropertyValue);
+        }
+
+        [TestMethod]
         public void GetByProperty()
         {
             var target = new TestTargetObject<int>(1);
@@ -78,16 +90,13 @@ namespace Anemonis.UI.ComponentModel.UnitTests
         }
 
         [TestMethod]
-        public void SetByProperty()
+        public void SetByPropertyWhenPropertyNameIsInvalid()
         {
             var target = new TestTargetObject<int>(0);
             var bindable = new TestBindableObject<int>(target);
 
-            Assert.PropertyChanged(bindable, o => o.BindablePropertyValue, 1);
-
-            bindable.BindablePropertyValue = 1;
-
-            Assert.AreEqual(1, bindable.PropertyValue);
+            Assert.Throws<MissingMemberException>(() =>
+                bindable.InvalidBindablePropertyValue = 1);
         }
 
         [TestMethod]
@@ -131,6 +140,19 @@ namespace Anemonis.UI.ComponentModel.UnitTests
 
             Assert.AreEqual(1, bindable.PropertyValue);
             Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void SetByProperty()
+        {
+            var target = new TestTargetObject<int>(0);
+            var bindable = new TestBindableObject<int>(target);
+
+            Assert.PropertyChanged(bindable, o => o.BindablePropertyValue, 1);
+
+            bindable.BindablePropertyValue = 1;
+
+            Assert.AreEqual(1, bindable.PropertyValue);
         }
 
         [TestMethod]

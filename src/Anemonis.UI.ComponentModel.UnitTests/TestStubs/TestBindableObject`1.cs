@@ -54,5 +54,11 @@ namespace Anemonis.UI.ComponentModel.UnitTests.TestStubs
             get => GetValue(_target, nameof(TestTargetObject<T>.Value), default(T));
             set => SetValue(_target, nameof(TestTargetObject<T>.Value), value, OnValueUpdated);
         }
+
+        public T InvalidBindablePropertyValue
+        {
+            get => GetValue(_target, nameof(TestTargetObject<T>.Value) + "_", default(T));
+            set => SetValue(_target, nameof(TestTargetObject<T>.Value) + "_", value, OnValueUpdated);
+        }
     }
 }

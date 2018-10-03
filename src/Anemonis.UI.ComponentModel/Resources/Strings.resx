@@ -123,7 +123,7 @@
   <data name="bindable_object.property_info.no_set_accessor" xml:space="preserve">
     <value>The property "{0}" does not provide the set accessor</value>
   </data>
-  <data name="property_info_cache.property_not_found" xml:space="preserve">
+  <data name="property_accessor_cache.property_not_found" xml:space="preserve">
     <value>The type {0} does not have the property "{1}"</value>
   </data>
 </root>
