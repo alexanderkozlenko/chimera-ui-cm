@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace Anemonis.UI.ComponentModel
 {
     /// <summary>Represents a data events broker.</summary>
-    public sealed class DataEventBroker : IDataEventBroker
+    public class DataEventBroker : IDataEventBroker
     {
         private readonly object _syncRoot = new object();
         private readonly Dictionary<string, HashSet<object>> _subscriptions = new Dictionary<string, HashSet<object>>(StringComparer.Ordinal);
@@ -81,7 +81,7 @@ namespace Anemonis.UI.ComponentModel
         /// <param name="channelName">The name of the event channel.</param>
         /// <param name="value">The event data.</param>
         /// <exception cref="ArgumentNullException"><paramref name="channelName" /> is <see langword="null" />.</exception>
-        public void Publish<T>(string channelName, T value)
+        public virtual void Publish<T>(string channelName, T value)
         {
             if (channelName == null)
             {

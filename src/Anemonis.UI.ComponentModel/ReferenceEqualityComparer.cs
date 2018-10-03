@@ -7,7 +7,7 @@ namespace Anemonis.UI.ComponentModel
 {
     internal sealed class ReferenceEqualityComparer : IEqualityComparer<object>
     {
-        private static readonly IEqualityComparer<object> _instance = new ReferenceEqualityComparer();
+        public static readonly IEqualityComparer<object> Instance = new ReferenceEqualityComparer();
 
         bool IEqualityComparer<object>.Equals(object x, object y)
         {
@@ -17,11 +17,6 @@ namespace Anemonis.UI.ComponentModel
         int IEqualityComparer<object>.GetHashCode(object obj)
         {
             return RuntimeHelpers.GetHashCode(obj);
-        }
-
-        public static IEqualityComparer<object> Instance
-        {
-            get => _instance;
         }
     }
 }
