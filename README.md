@@ -4,34 +4,43 @@ A set of high-performance and memory-efficient basic components for building XAM
 
 [![NuGet package](https://img.shields.io/nuget/v/Anemonis.UI.ComponentModel.svg?style=flat-square)](https://www.nuget.org/packages/Anemonis.UI.ComponentModel)
 
-### Important Features
-
-- The bindable object as a simple base type for view models.
-- The bindable command as a simple and extensible command implementation.
-- The event broker as a simple messaging bus for UI events.
+| Component | Purpose |
+| --- | --- |
+| `BindableObject` | A minimal implementation of the `INotifyPropertyChanged` interface |
+| `ObservableObject` | An extended version of the `BindableObject` type |
+| `BindableCommand` | A minimal implementation of the `ICommand` interface |
+| `ObservableCommand` | An extended version of the `BindableCommand` type |
+| `DataEventBroker` | A minimal and extendable implementation of the `publish–subscribe` broker |
 
 ### Important Features: Bindable Object
 
 - The component supports working with a synchronization context.
-- The component supports publishing events to an observer.
 - The `GetValue` method uses the specified default value if the target object is `null`.
 - The `SetValue` method does nothing if the target object is `null`.
 - The `SetValue` method can invoke an optional callback if the value was changed.
 
+### Important Features: Observable Object
+
+- The component supports publishing events to an observer.
+
 ### Important Features: Bindable Command
 
 - The component supports working with a synchronization context.
+- The component supports strongly-typed command parameters.
+
+### Important Features: Observable Command
+
 - The component supports publishing events to an observer.
-- The component supports automatic state update based on an update of another object.
+- The component supports automatic state update based on events from bindable objects.
 
 ### Important Features: Event Broker
 
 - Event subscription is based on channel name and data type.
 
-### Usage Examples: Bindable Object
+### Usage Examples: Observable Object
 
 ```cs
-public class BindableComponent : BindableObject
+public class EntityViewModel : ObservableObject
 {
     private int _value;
 
@@ -53,9 +62,9 @@ public class BindableComponent : BindableObject
 }
 ```
 ```cs
-public class BindableComponent : BindableObject
+public class EntityViewModel : ObservableObject
 {
-    private TargetObject _target;
+    private EntityModel _entity;
 
     private void OnValueUpdated()
     {
@@ -63,28 +72,28 @@ public class BindableComponent : BindableObject
 
     public int Value1
     {
-        get => GetValue(_target, nameof(_target.Value), 0);
-        set => SetValue(_target, nameof(_target.Value), value);
+        get => GetValue(_entity, nameof(_entity.Value), 0);
+        set => SetValue(_entity, nameof(_entity.Value), value);
     }
 
     public int Value2
     {
-        get => GetValue(_target, nameof(_target.Value), 0, nameof(OnValueUpdated));
-        set => SetValue(_target, nameof(_target.Value), value, nameof(OnValueUpdated));
+        get => GetValue(_entity, nameof(_entity.Value), 0, nameof(OnValueUpdated));
+        set => SetValue(_entity, nameof(_entity.Value), value, nameof(OnValueUpdated));
     }
 }
 ```
 
-### Usage Examples: Bindable Command
+### Usage Examples: Observable Command
 
 ```cs
-public class BindableComponent : BindableObject
+public class EntityViewModel : ObservableObject
 {
     private readonly IObservableCommand _command;
 
     private int _value;
 
-    public BindableComponent()
+    public EntityViewModel()
     {
         _command = new ObservableCommand<string>(ExecuteCommand);
     }
@@ -109,11 +118,11 @@ public class BindableComponent : BindableObject
 ### Usage Examples: Event Broker
 
 ```cs
-public class BindableComponent : ObservableObject
+public class EntityViewModel : ObservableObject
 {
     private readonly IDataEventBroker _events;
 
-    public BindableComponent(IDataEventBroker events)
+    public EntityViewModel(IDataEventBroker events)
     {
         _events = events;
     }
