@@ -10,14 +10,14 @@ A set of high-performance and memory-efficient basic components for building XAM
 | `ObservableObject` | An extended version of the `BindableObject` type |
 | `BindableCommand` | A minimal implementation of the `ICommand` interface |
 | `ObservableCommand` | An extended version of the `BindableCommand` type |
-| `DataEventBroker` | A minimal and extendable implementation of the `publish–subscribe` broker |
+| `DataEventBroker` | A minimal implementation of the `publish–subscribe` message bus |
 
 ### Important Features: Bindable Object
 
 - The component supports working with a synchronization context.
 - The `GetValue` method uses the specified default value if the target object is `null`.
 - The `SetValue` method does nothing if the target object is `null`.
-- The `SetValue` method can invoke an optional callback if the value was changed.
+- The `SetValue` method can invoke an optional callback if the value has been changed.
 
 ### Important Features: Observable Object
 
@@ -43,6 +43,7 @@ A set of high-performance and memory-efficient basic components for building XAM
 public class EntityViewModel : ObservableObject
 {
     private int _value;
+    private EntityModel _entity;
 
     private void OnValueUpdated()
     {
@@ -59,24 +60,14 @@ public class EntityViewModel : ObservableObject
         get => GetValue(ref _value, nameof(OnValueUpdated));
         set => SetValue(ref _value, value, nameof(OnValueUpdated));
     }
-}
-```
-```cs
-public class EntityViewModel : ObservableObject
-{
-    private EntityModel _entity;
 
-    private void OnValueUpdated()
-    {
-    }
-
-    public int Value1
+    public int EntityValue1
     {
         get => GetValue(_entity, nameof(_entity.Value), 0);
         set => SetValue(_entity, nameof(_entity.Value), value);
     }
 
-    public int Value2
+    public int EntityValue2
     {
         get => GetValue(_entity, nameof(_entity.Value), 0, nameof(OnValueUpdated));
         set => SetValue(_entity, nameof(_entity.Value), value, nameof(OnValueUpdated));
