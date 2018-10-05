@@ -8,8 +8,8 @@ A set of high-performance and memory-efficient basic components for building XAM
 | --- | --- |
 | `BindableObject` | A minimal implementation of the `INotifyPropertyChanged` interface |
 | `ObservableObject` | An extended version of the `BindableObject` type |
-| `BindableCommand` | A minimal implementation of the `ICommand` interface |
-| `ObservableCommand` | An extended version of the `BindableCommand` type |
+| `BindableCommand<T>` | A minimal implementation of the `ICommand` interface |
+| `ObservableCommand<T>` | An extended version of the `BindableCommand<T>` type |
 | `DataEventBroker` | A minimal implementation of the `publish–subscribe` message bus |
 
 ### Important Features: Bindable Object
