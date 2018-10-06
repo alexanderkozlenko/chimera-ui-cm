@@ -31,7 +31,7 @@ namespace Anemonis.UI.ComponentModel.UnitTests
         public void CanExecuteWhenPredicateIsNull()
         {
             var command = new BindableCommand<object>(p => { });
-            var result = ((IBindableCommand)command).CanExecute(null);
+            var result = command.CanExecute(null);
 
             Assert.IsTrue(result);
         }
@@ -40,7 +40,7 @@ namespace Anemonis.UI.ComponentModel.UnitTests
         public void CanExecuteWhenPredicateReturnsFalse()
         {
             var command = new BindableCommand<object>(p => { }, p => false);
-            var result = ((IBindableCommand)command).CanExecute(null);
+            var result = command.CanExecute(null);
 
             Assert.IsFalse(result);
         }
@@ -49,7 +49,7 @@ namespace Anemonis.UI.ComponentModel.UnitTests
         public void CanExecuteWhenPredicateReturnsTrue()
         {
             var command = new BindableCommand<object>(p => { }, p => true);
-            var result = ((IBindableCommand)command).CanExecute(null);
+            var result = command.CanExecute(null);
 
             Assert.IsTrue(result);
         }
@@ -60,7 +60,7 @@ namespace Anemonis.UI.ComponentModel.UnitTests
             var result = false;
             var command = new BindableCommand<object>(p => result = true);
 
-            ((IBindableCommand)command).Execute(null);
+            command.Execute(null);
 
             Assert.IsTrue(result);
         }
@@ -71,7 +71,7 @@ namespace Anemonis.UI.ComponentModel.UnitTests
             var result = false;
             var command = new BindableCommand<object>(p => result = true, p => false);
 
-            ((IBindableCommand)command).Execute(null);
+            command.Execute(null);
 
             Assert.IsTrue(result);
         }
@@ -82,7 +82,7 @@ namespace Anemonis.UI.ComponentModel.UnitTests
             var result = false;
             var command = new BindableCommand<object>(p => result = true, p => true);
 
-            ((IBindableCommand)command).Execute(null);
+            command.Execute(null);
 
             Assert.IsTrue(result);
         }

@@ -2,7 +2,6 @@
 
 using System;
 using System.Threading;
-using System.Windows.Input;
 
 namespace Anemonis.UI.ComponentModel
 {
@@ -43,16 +42,6 @@ namespace Anemonis.UI.ComponentModel
             }
 
             _predicateMethod = predicateMethod;
-        }
-
-        bool ICommand.CanExecute(object parameter)
-        {
-            return (_predicateMethod == null) || (_predicateMethod.Invoke((T)parameter));
-        }
-
-        void ICommand.Execute(object parameter)
-        {
-            _actionMethod.Invoke((T)parameter);
         }
 
         private protected EventArgs CreateCanExecuteChangedEventArgs()
@@ -98,6 +87,21 @@ namespace Anemonis.UI.ComponentModel
         public virtual void Dispose()
         {
             CanExecuteChanged = null;
+        }
+
+        /// <summary>Determines whether the command can execute in its current state.</summary>
+        /// <param name="parameter">Data used by the command. If the command does not require data to be passed, this object can be set to <see langword="null" />.</param>
+        /// <returns><see langword="true" /> if this command can be executed; otherwise, <see langword="false" />.</returns>
+        public bool CanExecute(object parameter)
+        {
+            return (_predicateMethod == null) || (_predicateMethod.Invoke((T)parameter));
+        }
+
+        /// <summary>Invokes the command.</summary>
+        /// <param name="parameter">Data used by the command. If the command does not require data to be passed, this object can be set to <see langword="null" />.</param>
+        public void Execute(object parameter)
+        {
+            _actionMethod.Invoke((T)parameter);
         }
 
         /// <summary>Gets or sets the synchronization context for interaction with UI.</summary>
