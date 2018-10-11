@@ -1,8 +1,10 @@
-## Anemonis.UI.ComponentModel
+# Anemonis.UI.ComponentModel
 
 A set of high-performance and memory-efficient basic components for building XAML-based UI using `model-view-viewmodel` and `publish–subscribe` patterns.
 
 [![NuGet package](https://img.shields.io/nuget/v/Anemonis.UI.ComponentModel.svg?style=flat-square)](https://www.nuget.org/packages/Anemonis.UI.ComponentModel)
+
+## Project Details
 
 | Component | Purpose |
 | --- | --- |
@@ -12,32 +14,32 @@ A set of high-performance and memory-efficient basic components for building XAM
 | `ObservableCommand<T>` | An extended version of the `BindableCommand<T>` type |
 | `DataEventBroker` | A minimal implementation of the `publish–subscribe` message bus |
 
-### Important Features: Bindable Object
+## Project Details: Bindable Object
 
 - The component supports working with a synchronization context.
 - The `GetValue` method uses the specified default value if the target object is `null`.
 - The `SetValue` method does nothing if the target object is `null`.
 - The `SetValue` method can invoke an optional callback if the value has been changed.
 
-### Important Features: Observable Object
+## Project Details: Observable Object
 
 - The component supports publishing events to an observer.
 
-### Important Features: Bindable Command
+## Project Details: Bindable Command
 
 - The component supports working with a synchronization context.
 - The component supports strongly-typed command parameters.
 
-### Important Features: Observable Command
+## Project Details: Observable Command
 
 - The component supports publishing events to an observer.
 - The component supports automatic state update based on events from bindable objects.
 
-### Important Features: Event Broker
+## Project Details: Event Broker
 
 - Event subscription is based on channel name and data type.
 
-### Usage Examples: Observable Object
+## Code Examples: Observable Object
 
 ```cs
 public class EntityViewModel : ObservableObject
@@ -75,7 +77,7 @@ public class EntityViewModel : ObservableObject
 }
 ```
 
-### Usage Examples: Observable Command
+## Code Examples: Observable Command
 
 ```cs
 public class EntityViewModel : ObservableObject
@@ -106,7 +108,7 @@ public class EntityViewModel : ObservableObject
 }
 ```
 
-### Usage Examples: Event Broker
+## Code Examples: Event Broker
 
 ```cs
 public class EntityViewModel : ObservableObject
@@ -135,6 +137,11 @@ public class EntityViewModel : ObservableObject
 }
 ```
 
-### Usage Examples
+## Code Examples
 
 - Example of GUI application for .NET Core: https://github.com/alexanderkozlenko/avalonia-puzzle-15
+
+## Quicklinks
+
+- [Contributing Guidelines](./CONTRIBUTING.md)
+- [Code of Conduct](./CODE_OF_CONDUCT.md)
