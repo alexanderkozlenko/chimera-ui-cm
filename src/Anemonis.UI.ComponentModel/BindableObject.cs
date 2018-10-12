@@ -95,7 +95,7 @@ namespace Anemonis.UI.ComponentModel
                 return defaultValue;
             }
 
-            var (propertyGetAccessor, propertySetAccessor) = PropertyAccessorsCache<TTarget>.GetPropertyAccessors<TValue>(propertyName);
+            var (propertyGetAccessor, _) = PropertyAccessorsCache<TTarget>.GetPropertyAccessors<TValue>(propertyName);
 
             if (propertyGetAccessor == null)
             {
