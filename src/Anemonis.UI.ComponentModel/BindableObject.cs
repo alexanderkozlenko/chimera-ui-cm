@@ -10,7 +10,7 @@ using Anemonis.UI.ComponentModel.Resources;
 namespace Anemonis.UI.ComponentModel
 {
     /// <summary>Represents a bindable object component.</summary>
-    public abstract partial class BindableObject : IBindableObject
+    public abstract partial class BindableObject : IBindableObject, IDisposable
     {
         private SynchronizationContext _synchronizationContext;
 

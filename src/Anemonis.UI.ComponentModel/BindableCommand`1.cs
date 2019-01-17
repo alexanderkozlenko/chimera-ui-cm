@@ -7,7 +7,7 @@ namespace Anemonis.UI.ComponentModel
 {
     /// <summary>Represents a bindable command component.</summary>
     /// <typeparam name="T">The type of the parameter for action and predicate.</typeparam>
-    public partial class BindableCommand<T> : IBindableCommand
+    public partial class BindableCommand<T> : IBindableCommand, IDisposable
     {
         private readonly Action<T> _actionMethod;
         private readonly Predicate<T> _predicateMethod;

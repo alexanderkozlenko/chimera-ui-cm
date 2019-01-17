@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace Anemonis.UI.ComponentModel
 {
     /// <summary>Represents a data events broker.</summary>
-    public class DataEventBroker : IDataEventBroker
+    public class DataEventBroker : IDataEventBroker, IDisposable
     {
         private readonly object _syncRoot = new object();
         private readonly Dictionary<string, HashSet<object>> _subscriptions = new Dictionary<string, HashSet<object>>(StringComparer.Ordinal);

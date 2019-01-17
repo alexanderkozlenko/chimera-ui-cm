@@ -5,7 +5,7 @@ using System;
 namespace Anemonis.UI.ComponentModel
 {
     /// <summary>Defines a data events broker.</summary>
-    public interface IDataEventBroker : IDisposable
+    public interface IDataEventBroker
     {
         /// <summary>Subscribes to channel events.</summary>
         /// <typeparam name="T">The type of event data.</typeparam>
