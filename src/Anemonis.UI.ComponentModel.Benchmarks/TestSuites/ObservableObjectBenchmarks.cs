@@ -7,6 +7,7 @@ namespace Anemonis.UI.ComponentModel.Benchmarks.TestSuites
     public sealed class ObservableObjectBenchmarks
     {
         private readonly TestObserverObject<PropertyChangedEventArgs> _observerObject = new TestObserverObject<PropertyChangedEventArgs>();
+        private readonly TestObservableObject _observableObject = new TestObservableObject();
         private readonly TestObservableObject _observableObject0 = new TestObservableObject();
         private readonly TestObservableObject _observableObject1 = new TestObservableObject();
         private readonly TestObservableObject _observableObject2 = new TestObservableObject();
@@ -22,6 +23,12 @@ namespace Anemonis.UI.ComponentModel.Benchmarks.TestSuites
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+        }
+
+        [Benchmark(Description = "Subscribe-Unsubscribe")]
+        public void SubscribeUnsubscribe()
+        {
+            _observableObject.Subscribe(_observerObject).Dispose();
         }
 
         [Benchmark(Description = "RaisePropertyChanged-NPC=N-OBS=N")]
