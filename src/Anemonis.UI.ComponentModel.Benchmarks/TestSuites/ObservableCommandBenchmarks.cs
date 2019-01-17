@@ -10,6 +10,7 @@ namespace Anemonis.UI.ComponentModel.Benchmarks.TestSuites
         private readonly PropertyChangedEventArgs _observingObjectEventArgs = new PropertyChangedEventArgs("Value");
         private readonly TestObservingObject _observingObject = new TestObservingObject();
         private readonly TestObserverObject<EventArgs> _observerObject = new TestObserverObject<EventArgs>();
+        private readonly ObservableCommand<object> _observableCommand = new ObservableCommand<object>(p => { });
         private readonly ObservableCommand<object> _observableCommand0 = new ObservableCommand<object>(p => { });
         private readonly ObservableCommand<object> _observableCommand1 = new ObservableCommand<object>(p => { });
         private readonly ObservableCommand<object> _observableCommand2 = new ObservableCommand<object>(p => { });
@@ -27,6 +28,12 @@ namespace Anemonis.UI.ComponentModel.Benchmarks.TestSuites
 
         private void OnCanExecuteChanged(object sender, EventArgs e)
         {
+        }
+
+        [Benchmark(Description = "Subscribe-Unsubscribe")]
+        public void SubscribeUnsubscribe()
+        {
+            _observableCommand.Subscribe(_observerObject).Dispose();
         }
 
         [Benchmark(Description = "RaiseCanExecuteChanged-NPC=N-OBS=N")]
