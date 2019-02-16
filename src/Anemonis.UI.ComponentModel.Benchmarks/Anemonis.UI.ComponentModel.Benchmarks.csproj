@@ -7,7 +7,7 @@
     <DeterministicSourcePaths>false</DeterministicSourcePaths>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="BenchmarkDotNet" Version="0.11.3" />
+    <PackageReference Include="BenchmarkDotNet" Version="0.11.4" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Anemonis.UI.ComponentModel\Anemonis.UI.ComponentModel.csproj" />
