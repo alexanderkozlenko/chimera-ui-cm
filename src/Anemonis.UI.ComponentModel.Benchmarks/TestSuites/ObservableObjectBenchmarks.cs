@@ -4,7 +4,7 @@ using BenchmarkDotNet.Attributes;
 
 namespace Anemonis.UI.ComponentModel.Benchmarks.TestSuites
 {
-    public sealed class ObservableObjectBenchmarks
+    public class ObservableObjectBenchmarks
     {
         private readonly TestObserverObject<PropertyChangedEventArgs> _observerObject = new TestObserverObject<PropertyChangedEventArgs>();
         private readonly TestObservableObject _observableObject = new TestObservableObject();

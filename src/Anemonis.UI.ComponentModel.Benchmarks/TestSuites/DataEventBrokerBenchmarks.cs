@@ -2,7 +2,7 @@
 
 namespace Anemonis.UI.ComponentModel.Benchmarks.TestSuites
 {
-    public sealed class DataEventBrokerBenchmarks
+    public class DataEventBrokerBenchmarks
     {
         private readonly DataEventBroker _broker = new DataEventBroker();
 

@@ -3,7 +3,7 @@ using BenchmarkDotNet.Attributes;
 
 namespace Anemonis.UI.ComponentModel.Benchmarks.TestSuites
 {
-    public sealed class BindableObjectBenchmarks
+    public class BindableObjectBenchmarks
     {
         private readonly TestBindableObject<bool> _bindableObject1 = new TestBindableObject<bool>(false);
         private readonly TestBindableObject<bool> _bindableObject2 = new TestBindableObject<bool>(new TestTargetObject<bool>(false));
