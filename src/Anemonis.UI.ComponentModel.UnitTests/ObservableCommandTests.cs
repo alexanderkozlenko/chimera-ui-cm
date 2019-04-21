@@ -1,6 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
+
 using Anemonis.UI.ComponentModel.UnitTests.TestStubs;
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Anemonis.UI.ComponentModel.UnitTests
@@ -42,7 +44,7 @@ namespace Anemonis.UI.ComponentModel.UnitTests
             var command = new ObservableCommand<object>(p => { });
 
             Assert.Throws<ArgumentNullException>(() =>
-                command.Unsubscribe(default(INotifyPropertyChanged)));
+                command.Unsubscribe(null));
         }
 
         [TestMethod]

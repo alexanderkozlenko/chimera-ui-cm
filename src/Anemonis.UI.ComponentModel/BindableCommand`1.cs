@@ -94,7 +94,7 @@ namespace Anemonis.UI.ComponentModel
         /// <returns><see langword="true" /> if this command can be executed; otherwise, <see langword="false" />.</returns>
         public bool CanExecute(object parameter)
         {
-            return (_predicateMethod == null) || (_predicateMethod.Invoke((T)parameter));
+            return (_predicateMethod == null) || _predicateMethod.Invoke((T)parameter);
         }
 
         /// <summary>Invokes the command.</summary>

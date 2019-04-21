@@ -2,17 +2,15 @@
 {
     internal sealed class TestTargetObject<T>
     {
-        private T _value;
-
         public TestTargetObject(T value)
         {
-            _value = value;
+            Value = value;
         }
 
         public T Value
         {
-            get => _value;
-            set => _value = value;
+            get;
+            set;
         }
     }
 }

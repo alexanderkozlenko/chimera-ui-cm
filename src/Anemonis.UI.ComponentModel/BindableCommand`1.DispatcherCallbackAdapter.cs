@@ -2,6 +2,8 @@
 
 using System;
 
+#pragma warning disable IDE0060
+
 namespace Anemonis.UI.ComponentModel
 {
     public partial class BindableCommand<T>
@@ -22,3 +24,5 @@ namespace Anemonis.UI.ComponentModel
         }
     }
 }
+
+#pragma warning restore IDE0060

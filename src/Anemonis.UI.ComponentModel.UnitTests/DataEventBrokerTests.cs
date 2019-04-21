@@ -1,5 +1,8 @@
 ﻿using System;
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+#pragma warning disable IDE0039
 
 namespace Anemonis.UI.ComponentModel.UnitTests
 {
@@ -154,3 +157,5 @@ namespace Anemonis.UI.ComponentModel.UnitTests
         }
     }
 }
+
+#pragma warning restore IDE0039

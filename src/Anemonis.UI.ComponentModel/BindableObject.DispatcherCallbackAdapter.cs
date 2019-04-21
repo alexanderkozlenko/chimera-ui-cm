@@ -3,6 +3,8 @@
 using System;
 using System.ComponentModel;
 
+#pragma warning disable IDE0060
+
 namespace Anemonis.UI.ComponentModel
 {
     public partial class BindableObject
@@ -25,3 +27,5 @@ namespace Anemonis.UI.ComponentModel
         }
     }
 }
+
+#pragma warning restore IDE0060

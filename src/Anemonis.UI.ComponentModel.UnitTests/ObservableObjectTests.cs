@@ -1,6 +1,7 @@
 ﻿using System;
-using System.ComponentModel;
+
 using Anemonis.UI.ComponentModel.UnitTests.TestStubs;
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Anemonis.UI.ComponentModel.UnitTests
@@ -14,7 +15,7 @@ namespace Anemonis.UI.ComponentModel.UnitTests
             var observable = new TestObservableObject<object>();
 
             Assert.Throws<ArgumentNullException>(() =>
-                observable.Subscribe(default(IObserver<PropertyChangedEventArgs>)));
+                observable.Subscribe(null));
         }
 
         [TestMethod]

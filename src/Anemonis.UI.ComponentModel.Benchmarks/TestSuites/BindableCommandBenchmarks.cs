@@ -1,4 +1,5 @@
 ﻿using System;
+
 using BenchmarkDotNet.Attributes;
 
 namespace Anemonis.UI.ComponentModel.Benchmarks.TestSuites
@@ -16,15 +17,6 @@ namespace Anemonis.UI.ComponentModel.Benchmarks.TestSuites
 
         private void OnCanExecuteChanged(object sender, EventArgs e)
         {
-        }
-
-        private void CommandAction(object parameter)
-        {
-        }
-
-        private bool CommandPredicate(object parameter)
-        {
-            return true;
         }
 
         [Benchmark(Description = "CanExecute")]

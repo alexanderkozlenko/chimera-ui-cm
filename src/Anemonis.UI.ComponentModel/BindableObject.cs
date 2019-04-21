@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading;
+
 using Anemonis.UI.ComponentModel.Resources;
 
 namespace Anemonis.UI.ComponentModel

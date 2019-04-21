@@ -1,4 +1,5 @@
 ﻿using System;
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Anemonis.UI.ComponentModel.UnitTests
@@ -10,14 +11,14 @@ namespace Anemonis.UI.ComponentModel.UnitTests
         public void ConstructorWhenActionIsNull()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                new BindableCommand<object>(default(Action<object>)));
+                new BindableCommand<object>(null));
         }
 
         [TestMethod]
         public void ConstructorWithPredicateWhenActionIsNull()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                new BindableCommand<object>(default(Action<object>), p => true));
+                new BindableCommand<object>(null, p => true));
         }
 
         [TestMethod]

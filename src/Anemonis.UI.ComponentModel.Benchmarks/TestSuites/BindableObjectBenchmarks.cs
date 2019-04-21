@@ -1,4 +1,5 @@
 ﻿using Anemonis.UI.ComponentModel.Benchmarks.TestStubs;
+
 using BenchmarkDotNet.Attributes;
 
 namespace Anemonis.UI.ComponentModel.Benchmarks.TestSuites
