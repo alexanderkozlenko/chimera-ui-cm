@@ -2,6 +2,8 @@
 
 using System.Windows.Input;
 
+#pragma warning disable CA1030
+
 namespace Anemonis.UI.ComponentModel
 {
     /// <summary>Defines a bindable command component.</summary>
@@ -11,3 +13,5 @@ namespace Anemonis.UI.ComponentModel
         void RaiseCanExecuteChanged();
     }
 }
+
+#pragma warning restore CA1030

@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Reflection;
 
 using Anemonis.UI.ComponentModel.Resources;
@@ -48,7 +49,7 @@ namespace Anemonis.UI.ComponentModel
 
                     if (propertyInfo == null)
                     {
-                        throw new MissingMemberException(string.Format(Strings.GetString("property_accessor_cache.property_not_found"), typeof(TTarget), propertyName));
+                        throw new MissingMemberException(string.Format(CultureInfo.CurrentCulture, Strings.GetString("property_accessor_cache.property_not_found"), typeof(TTarget), propertyName));
                     }
 
                     if (propertyInfo.CanRead)

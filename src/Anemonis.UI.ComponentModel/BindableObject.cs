@@ -3,10 +3,13 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Threading;
 
 using Anemonis.UI.ComponentModel.Resources;
+
+#pragma warning disable CA1030, CA1822
 
 namespace Anemonis.UI.ComponentModel
 {
@@ -18,6 +21,12 @@ namespace Anemonis.UI.ComponentModel
         /// <summary>Initializes a new instance of the <see cref="BindableObject" /> class.</summary>
         protected BindableObject()
         {
+        }
+
+        /// <summary />
+        ~BindableObject()
+        {
+            Dispose(false);
         }
 
         private void UnsafeRaisePropertyChanged(string propertyName, SynchronizationContext synchronizationContext)
@@ -51,6 +60,23 @@ namespace Anemonis.UI.ComponentModel
             }
 
             return eventArgs;
+        }
+
+        /// <summary>Releases all subscriptions to the property changed event.</summary>
+        /// <param name="disposing">The value that indicates whether the method call comes from a dispose method (its value is <see langword="true" />) or from a finalizer (its value is <see langword="false" />).</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                PropertyChanged = null;
+            }
+        }
+
+        /// <summary>Releases all subscriptions to the property changed event.</summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         /// <summary>Raises the event about a changed property.</summary>
@@ -100,7 +126,7 @@ namespace Anemonis.UI.ComponentModel
 
             if (propertyGetAccessor == null)
             {
-                throw new InvalidOperationException(string.Format(Strings.GetString("bindable_object.property_info.no_get_accessor"), propertyName));
+                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Strings.GetString("bindable_object.property_info.no_get_accessor"), propertyName));
             }
 
             return propertyGetAccessor.Invoke(target);
@@ -161,11 +187,11 @@ namespace Anemonis.UI.ComponentModel
 
             if (propertyGetAccessor == null)
             {
-                throw new InvalidOperationException(string.Format(Strings.GetString("bindable_object.property_info.no_get_accessor"), propertyName));
+                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Strings.GetString("bindable_object.property_info.no_get_accessor"), propertyName));
             }
             if (propertySetAccessor == null)
             {
-                throw new InvalidOperationException(string.Format(Strings.GetString("bindable_object.property_info.no_set_accessor"), propertyName));
+                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Strings.GetString("bindable_object.property_info.no_set_accessor"), propertyName));
             }
 
             var propertyValue = propertyGetAccessor.Invoke(target);
@@ -192,12 +218,6 @@ namespace Anemonis.UI.ComponentModel
         {
         }
 
-        /// <summary>Releases all subscriptions to the property changed event.</summary>
-        public virtual void Dispose()
-        {
-            PropertyChanged = null;
-        }
-
         /// <summary>Gets or sets the synchronization context for interaction with UI.</summary>
         public SynchronizationContext SynchronizationContext
         {
@@ -209,3 +229,5 @@ namespace Anemonis.UI.ComponentModel
         public event PropertyChangedEventHandler PropertyChanged;
     }
 }
+
+#pragma warning restore CA1030, CA1822

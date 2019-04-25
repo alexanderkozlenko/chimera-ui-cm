@@ -2,6 +2,8 @@
 
 using System.ComponentModel;
 
+#pragma warning disable CA1030
+
 namespace Anemonis.UI.ComponentModel
 {
     /// <summary>Defines a bindable object component.</summary>
@@ -14,3 +16,5 @@ namespace Anemonis.UI.ComponentModel
         void Unsubscribe();
     }
 }
+
+#pragma warning restore CA1030

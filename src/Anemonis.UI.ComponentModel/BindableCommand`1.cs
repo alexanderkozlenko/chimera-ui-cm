@@ -3,6 +3,8 @@
 using System;
 using System.Threading;
 
+#pragma warning disable CA1030
+
 namespace Anemonis.UI.ComponentModel
 {
     /// <summary>Represents a bindable command component.</summary>
@@ -44,6 +46,12 @@ namespace Anemonis.UI.ComponentModel
             _predicateMethod = predicateMethod;
         }
 
+        /// <summary />
+        ~BindableCommand()
+        {
+            Dispose(false);
+        }
+
         private protected EventArgs CreateCanExecuteChangedEventArgs()
         {
             return EventArgs.Empty;
@@ -77,16 +85,27 @@ namespace Anemonis.UI.ComponentModel
             return eventArgs;
         }
 
+        /// <summary>Releases all subscriptions to the command state changed event and to the property changed event of the currently observing objects.</summary>
+        /// <param name="disposing">The value that indicates whether the method call comes from a dispose method (its value is <see langword="true" />) or from a finalizer (its value is <see langword="false" />).</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                CanExecuteChanged = null;
+            }
+        }
+
+        /// <summary>Releases all subscriptions to the command state changed event and to the property changed event of the currently observing objects.</summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
         /// <summary>Raises an event that the command should be required for its state.</summary>
         public virtual void RaiseCanExecuteChanged()
         {
             UnsafeRaiseCanExecuteChanged(_synchronizationContext);
-        }
-
-        /// <summary>Releases all subscriptions to the command state changed event and to the property changed event of the currently observing objects.</summary>
-        public virtual void Dispose()
-        {
-            CanExecuteChanged = null;
         }
 
         /// <summary>Determines whether the command can execute in its current state.</summary>
@@ -114,3 +133,5 @@ namespace Anemonis.UI.ComponentModel
         public virtual event EventHandler CanExecuteChanged;
     }
 }
+
+#pragma warning restore CA1030, CA1822

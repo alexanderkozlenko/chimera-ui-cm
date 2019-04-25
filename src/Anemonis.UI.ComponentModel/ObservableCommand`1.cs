@@ -61,7 +61,7 @@ namespace Anemonis.UI.ComponentModel
 
                     for (var i = 0; i < propertyNames.Length; i++)
                     {
-                        if (string.Equals(propertyNames[i], propertyName))
+                        if (string.Equals(propertyNames[i], propertyName, StringComparison.Ordinal))
                         {
                             handleEvent = true;
 
@@ -100,6 +100,58 @@ namespace Anemonis.UI.ComponentModel
             }
 
             return eventArgs;
+        }
+
+        internal void Unsubscribe(IObserver<EventArgs> observer)
+        {
+            lock (_syncRoot)
+            {
+                if (_observers != null)
+                {
+                    _observers.Remove(observer);
+
+                    if (_observers.Count == 0)
+                    {
+                        _observers = null;
+                    }
+                }
+            }
+        }
+
+        /// <summary>Releases all subscriptions to the command state changed event and to the property changed event of the currently observing objects.</summary>
+        /// <param name="disposing">The value that indicates whether the method call comes from a dispose method (its value is <see langword="true" />) or from a finalizer (its value is <see langword="false" />).</param>
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+
+            if (disposing)
+            {
+                lock (_syncRoot)
+                {
+                    if (_observables != null)
+                    {
+                        var enumerator = _observables.Keys.GetEnumerator();
+
+                        while (enumerator.MoveNext())
+                        {
+                            enumerator.Current.PropertyChanged -= OnObservingPropertyChanged;
+                        }
+
+                        _observables = null;
+                    }
+                    if (_observers != null)
+                    {
+                        var enumerator = _observers.GetEnumerator();
+
+                        while (enumerator.MoveNext())
+                        {
+                            enumerator.Current.OnCompleted();
+                        }
+
+                        _observers = null;
+                    }
+                }
+            }
         }
 
         /// <summary>Subscribes for property changed events of an object to trigger the event for command state re-querying.</summary>
@@ -198,54 +250,6 @@ namespace Anemonis.UI.ComponentModel
             }
 
             return new ObservableSubscribeToken<EventArgs>(observer, Unsubscribe);
-        }
-
-        internal void Unsubscribe(IObserver<EventArgs> observer)
-        {
-            lock (_syncRoot)
-            {
-                if (_observers != null)
-                {
-                    _observers.Remove(observer);
-
-                    if (_observers.Count == 0)
-                    {
-                        _observers = null;
-                    }
-                }
-            }
-        }
-
-        /// <summary>Releases all subscriptions to the command state changed event and to the property changed event of the currently observing objects.</summary>
-        public override void Dispose()
-        {
-            lock (_syncRoot)
-            {
-                if (_observables != null)
-                {
-                    var enumerator = _observables.Keys.GetEnumerator();
-
-                    while (enumerator.MoveNext())
-                    {
-                        enumerator.Current.PropertyChanged -= OnObservingPropertyChanged;
-                    }
-
-                    _observables = null;
-                }
-                if (_observers != null)
-                {
-                    var enumerator = _observers.GetEnumerator();
-
-                    while (enumerator.MoveNext())
-                    {
-                        enumerator.Current.OnCompleted();
-                    }
-
-                    _observers = null;
-                }
-            }
-
-            base.Dispose();
         }
     }
 }

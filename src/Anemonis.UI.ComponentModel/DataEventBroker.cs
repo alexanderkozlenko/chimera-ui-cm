@@ -16,6 +16,32 @@ namespace Anemonis.UI.ComponentModel
         {
         }
 
+        /// <summary />
+        ~DataEventBroker()
+        {
+            Dispose(false);
+        }
+
+        /// <summary>Releases all event subscriptions.</summary>
+        /// <param name="disposing">The value that indicates whether the method call comes from a <see cref="Dispose()"/> method (its value is <see langword="true" />) or from a finalizer (its value is <see langword="false" />).</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                lock (_syncRoot)
+                {
+                    _subscriptions.Clear();
+                }
+            }
+        }
+
+        /// <summary>Releases all event subscriptions.</summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
         /// <summary>Subscribes to channel events.</summary>
         /// <typeparam name="T">The type of the event data.</typeparam>
         /// <param name="channelName">The name of the event channel.</param>
@@ -103,15 +129,6 @@ namespace Anemonis.UI.ComponentModel
                         }
                     }
                 }
-            }
-        }
-
-        /// <summary>Releases all event subscriptions.</summary>
-        public void Dispose()
-        {
-            lock (_syncRoot)
-            {
-                _subscriptions.Clear();
             }
         }
     }
