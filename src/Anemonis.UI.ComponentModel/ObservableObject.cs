@@ -43,6 +43,47 @@ namespace Anemonis.UI.ComponentModel
             return eventArgs;
         }
 
+        internal void Unsubscribe(IObserver<PropertyChangedEventArgs> observer)
+        {
+            lock (_syncRoot)
+            {
+                if (_observers != null)
+                {
+                    _observers.Remove(observer);
+
+                    if (_observers.Count == 0)
+                    {
+                        _observers = null;
+                    }
+                }
+            }
+        }
+
+        /// <summary>Releases all subscriptions to the property changed event.</summary>
+        /// <param name="disposing">The value that indicates whether the method call comes from a dispose method (its value is <see langword="true" />) or from a finalizer (its value is <see langword="false" />).</param>
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+
+            if (disposing)
+            {
+                lock (_syncRoot)
+                {
+                    if (_observers != null)
+                    {
+                        var enumerator = _observers.GetEnumerator();
+
+                        while (enumerator.MoveNext())
+                        {
+                            enumerator.Current.OnCompleted();
+                        }
+
+                        _observers = null;
+                    }
+                }
+            }
+        }
+
         /// <summary>Notifies the current instance that an observer is to receive notifications about property changed.</summary>
         /// <param name="observer">The object that is to receive notifications about property changed.</param>
         /// <returns>A reference to an interface that allows observers to stop receiving notifications about property changed.</returns>
@@ -65,43 +106,6 @@ namespace Anemonis.UI.ComponentModel
             }
 
             return new ObservableSubscribeToken<PropertyChangedEventArgs>(observer, Unsubscribe);
-        }
-
-        internal void Unsubscribe(IObserver<PropertyChangedEventArgs> observer)
-        {
-            lock (_syncRoot)
-            {
-                if (_observers != null)
-                {
-                    _observers.Remove(observer);
-
-                    if (_observers.Count == 0)
-                    {
-                        _observers = null;
-                    }
-                }
-            }
-        }
-
-        /// <summary>Releases all subscriptions to the property changed event.</summary>
-        public override void Dispose()
-        {
-            lock (_syncRoot)
-            {
-                if (_observers != null)
-                {
-                    var enumerator = _observers.GetEnumerator();
-
-                    while (enumerator.MoveNext())
-                    {
-                        enumerator.Current.OnCompleted();
-                    }
-
-                    _observers = null;
-                }
-            }
-
-            base.Dispose();
         }
     }
 }
