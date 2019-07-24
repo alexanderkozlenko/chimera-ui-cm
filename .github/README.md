@@ -4,6 +4,7 @@ A set of high-performance and memory-efficient basic components for building XAM
 
 [![NuGet](https://img.shields.io/nuget/vpre/Anemonis.UI.ComponentModel.svg?style=flat-square)](https://www.nuget.org/packages/Anemonis.UI.ComponentModel)
 [![MyGet](https://img.shields.io/myget/alexanderkozlenko/vpre/Anemonis.UI.ComponentModel.svg?label=myget&style=flat-square)](https://www.myget.org/feed/alexanderkozlenko/package/nuget/Anemonis.UI.ComponentModel)
+[![LGTM](https://img.shields.io/lgtm/alerts/github/alexanderkozlenko/ui-component-model.svg?style=flat-square)](https://lgtm.com/projects/g/alexanderkozlenko/ui-component-model)
 [![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg?style=flat-square)](https://gitter.im/anemonis/ui-component-model)
 
 ## Project Details
