@@ -134,4 +134,4 @@ namespace Anemonis.UI.ComponentModel
     }
 }
 
-#pragma warning restore CA1030, CA1822
+#pragma warning restore CA1030
