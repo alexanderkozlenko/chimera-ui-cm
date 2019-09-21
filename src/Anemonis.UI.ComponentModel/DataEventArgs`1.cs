@@ -12,7 +12,10 @@ namespace Anemonis.UI.ComponentModel
         private readonly string _channelName;
         private readonly T _value;
 
-        internal DataEventArgs(string channelName, T value)
+        /// <summary>Initializes a new instance of the <see cref="DataEventArgs{T}" /> structure.</summary>
+        /// <param name="channelName">The name of the event channel.</param>
+        /// <param name="value">The event data.</param>
+        public DataEventArgs(string channelName, T value)
         {
             _channelName = channelName;
             _value = value;
