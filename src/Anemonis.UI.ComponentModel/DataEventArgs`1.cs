@@ -38,14 +38,16 @@ namespace Anemonis.UI.ComponentModel
         /// <returns>A 32-bit signed integer hash code.</returns>
         public override int GetHashCode()
         {
+            // FNV-1a
+
             unchecked
             {
-                var hashCode = (int)2166136261;
+                var hashCode = HashCode.FNV_OFFSET_BASIS_32;
 
-                hashCode ^= _channelName.GetHashCode();
-                hashCode *= 16777619;
+                hashCode ^= _channelName?.GetHashCode() ?? 0;
+                hashCode *= HashCode.FNV_PRIME_32;
                 hashCode ^= _value.GetHashCode();
-                hashCode *= 16777619;
+                hashCode *= HashCode.FNV_PRIME_32;
 
                 return hashCode;
             }
