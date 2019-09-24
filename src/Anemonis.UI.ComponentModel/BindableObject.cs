@@ -117,7 +117,7 @@ namespace Anemonis.UI.ComponentModel
             {
                 throw new ArgumentNullException(nameof(propertyName));
             }
-            if (target == null)
+            if (target is null)
             {
                 return defaultValue;
             }
@@ -178,7 +178,7 @@ namespace Anemonis.UI.ComponentModel
             {
                 throw new ArgumentNullException(nameof(outerPropertyName));
             }
-            if (target == null)
+            if (target is null)
             {
                 return;
             }
@@ -229,5 +229,3 @@ namespace Anemonis.UI.ComponentModel
         public event PropertyChangedEventHandler PropertyChanged;
     }
 }
-
-#pragma warning restore CA1030, CA1822

@@ -6,8 +6,8 @@ namespace Anemonis.UI.ComponentModel
 {
     internal sealed class ObservableSubscribeToken<T> : IDisposable
     {
-        private IObserver<T> _observer;
-        private Action<IObserver<T>> _callback;
+        private readonly IObserver<T> _observer;
+        private readonly Action<IObserver<T>> _callback;
 
         public ObservableSubscribeToken(IObserver<T> observer, Action<IObserver<T>> callback)
         {
@@ -17,9 +17,7 @@ namespace Anemonis.UI.ComponentModel
 
         public void Dispose()
         {
-            _callback?.Invoke(_observer);
-            _callback = null;
-            _observer = null;
+            _callback.Invoke(_observer);
         }
     }
 }

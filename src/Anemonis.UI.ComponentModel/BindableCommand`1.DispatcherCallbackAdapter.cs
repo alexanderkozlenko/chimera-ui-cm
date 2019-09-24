@@ -24,5 +24,3 @@ namespace Anemonis.UI.ComponentModel
         }
     }
 }
-
-#pragma warning restore IDE0060

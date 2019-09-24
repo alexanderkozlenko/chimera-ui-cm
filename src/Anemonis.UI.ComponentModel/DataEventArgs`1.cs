@@ -41,19 +41,12 @@ namespace Anemonis.UI.ComponentModel
         /// <returns>A 32-bit signed integer hash code.</returns>
         public override int GetHashCode()
         {
-            // FNV-1a
+            var hashCode = new HashCode();
 
-            unchecked
-            {
-                var hashCode = HashCode.FNV_OFFSET_BASIS_32;
+            hashCode.Add(_channelName);
+            hashCode.Add(_value);
 
-                hashCode ^= _channelName?.GetHashCode() ?? 0;
-                hashCode *= HashCode.FNV_PRIME_32;
-                hashCode ^= _value.GetHashCode();
-                hashCode *= HashCode.FNV_PRIME_32;
-
-                return hashCode;
-            }
+            return hashCode.ToHashCode();
         }
 
         /// <summary>Indicates whether the left <see cref="DataEventArgs{T}" /> is equal to the right <see cref="DataEventArgs{T}" />.</summary>
