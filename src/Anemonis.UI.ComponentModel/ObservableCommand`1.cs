@@ -48,6 +48,10 @@ namespace Anemonis.UI.ComponentModel
 
             lock (_syncRoot)
             {
+                if (_observables == null)
+                {
+                    return;
+                }
                 if (!_observables.TryGetValue(observable, out var propertyNames))
                 {
                     return;
@@ -85,10 +89,7 @@ namespace Anemonis.UI.ComponentModel
             {
                 if (_observers != null)
                 {
-                    if (eventArgs == null)
-                    {
-                        eventArgs = CreateCanExecuteChangedEventArgs();
-                    }
+                    eventArgs ??= CreateCanExecuteChangedEventArgs();
 
                     var enumerator = _observers.GetEnumerator();
 
@@ -166,12 +167,9 @@ namespace Anemonis.UI.ComponentModel
 
             lock (_syncRoot)
             {
-                if (_observables == null)
-                {
-                    _observables = new Dictionary<INotifyPropertyChanged, string[]>(ReferenceEqualityComparer.Instance);
-                }
-
+                _observables ??= new Dictionary<INotifyPropertyChanged, string[]>(ReferenceEqualityComparer.Instance);
                 _observables[observable] = null;
+
                 observable.PropertyChanged += OnObservingPropertyChanged;
             }
         }
@@ -193,12 +191,9 @@ namespace Anemonis.UI.ComponentModel
 
             lock (_syncRoot)
             {
-                if (_observables == null)
-                {
-                    _observables = new Dictionary<INotifyPropertyChanged, string[]>(ReferenceEqualityComparer.Instance);
-                }
-
+                _observables ??= new Dictionary<INotifyPropertyChanged, string[]>(ReferenceEqualityComparer.Instance);
                 _observables[observable] = propertyNames;
+
                 observable.PropertyChanged += OnObservingPropertyChanged;
             }
         }
@@ -218,6 +213,7 @@ namespace Anemonis.UI.ComponentModel
                 if (_observables != null)
                 {
                     observable.PropertyChanged -= OnObservingPropertyChanged;
+
                     _observables.Remove(observable);
 
                     if (_observables.Count == 0)
@@ -241,11 +237,7 @@ namespace Anemonis.UI.ComponentModel
 
             lock (_syncRoot)
             {
-                if (_observers == null)
-                {
-                    _observers = new HashSet<IObserver<EventArgs>>(ReferenceEqualityComparer.Instance);
-                }
-
+                _observers ??= new HashSet<IObserver<EventArgs>>(ReferenceEqualityComparer.Instance);
                 _observers.Add(observer);
             }
 

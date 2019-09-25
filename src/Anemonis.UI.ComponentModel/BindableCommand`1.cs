@@ -133,5 +133,3 @@ namespace Anemonis.UI.ComponentModel
         public event EventHandler CanExecuteChanged;
     }
 }
-
-#pragma warning restore CA1030

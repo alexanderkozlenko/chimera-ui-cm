@@ -26,10 +26,7 @@ namespace Anemonis.UI.ComponentModel
             {
                 if (_observers != null)
                 {
-                    if (eventArgs == null)
-                    {
-                        eventArgs = CreatePropertyChangedEventArgs(propertyName);
-                    }
+                    eventArgs ??= CreatePropertyChangedEventArgs(propertyName);
 
                     var enumerator = _observers.GetEnumerator();
 
@@ -97,11 +94,7 @@ namespace Anemonis.UI.ComponentModel
 
             lock (_syncRoot)
             {
-                if (_observers == null)
-                {
-                    _observers = new HashSet<IObserver<PropertyChangedEventArgs>>(ReferenceEqualityComparer.Instance);
-                }
-
+                _observers ??= new HashSet<IObserver<PropertyChangedEventArgs>>(ReferenceEqualityComparer.Instance);
                 _observers.Add(observer);
             }
 

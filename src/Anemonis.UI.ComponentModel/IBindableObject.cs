@@ -16,5 +16,3 @@ namespace Anemonis.UI.ComponentModel
         void Unsubscribe();
     }
 }
-
-#pragma warning restore CA1030

@@ -16,20 +16,25 @@ namespace Anemonis.UI.ComponentModel
 
         private static PropertyInfo FindPropertyInfo(string propertyName)
         {
-            var propertyInfo = default(PropertyInfo);
             var typeInfo = typeof(TTarget).GetTypeInfo();
 
-            while ((propertyInfo == null) && (typeInfo != null))
+            while (true)
             {
-                propertyInfo = typeInfo.GetDeclaredProperty(propertyName);
+                var propertyInfo = typeInfo.GetDeclaredProperty(propertyName);
 
-                if (propertyInfo == null)
+                if (propertyInfo != null)
                 {
-                    typeInfo = typeInfo.BaseType?.GetTypeInfo();
+                    return propertyInfo;
+                }
+                else if (typeInfo.BaseType != null)
+                {
+                    typeInfo = typeInfo.BaseType.GetTypeInfo();
+                }
+                else
+                {
+                    return null;
                 }
             }
-
-            return propertyInfo;
         }
 
         public static (Func<TTarget, TValue> GetAccessor, Action<TTarget, TValue> SetAccessor) GetPropertyAccessors<TValue>(string propertyName)
