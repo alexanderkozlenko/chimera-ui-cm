@@ -1,7 +1,6 @@
 ﻿// © Alexander Kozlenko. Licensed under the MIT License.
 
 using System.Globalization;
-using System.Reflection;
 using System.Resources;
 
 namespace Anemonis.UI.ComponentModel.Resources
@@ -9,7 +8,7 @@ namespace Anemonis.UI.ComponentModel.Resources
     internal static class Strings
     {
         private static readonly ResourceManager _resourceManager =
-            new ResourceManager(typeof(Strings).Namespace + "." + nameof(Strings), typeof(Strings).GetTypeInfo().Assembly);
+            new ResourceManager(typeof(Strings).Namespace + "." + nameof(Strings), typeof(Strings).Assembly);
 
         public static string GetString(string name)
         {
