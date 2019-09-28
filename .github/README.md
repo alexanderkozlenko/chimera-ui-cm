@@ -2,13 +2,11 @@
 
 A set of high-performance and memory-efficient basic components for building XAML-based UI using `model-view-viewmodel` and `publish–subscribe` patterns.
 
-[![NuGet](https://img.shields.io/nuget/vpre/Anemonis.UI.ComponentModel.svg?style=flat-square)](https://www.nuget.org/packages/Anemonis.UI.ComponentModel)
-[![MyGet](https://img.shields.io/myget/alexanderkozlenko/vpre/Anemonis.UI.ComponentModel.svg?label=myget&style=flat-square)](https://www.myget.org/feed/alexanderkozlenko/package/nuget/Anemonis.UI.ComponentModel)
-
-[![Coverage](https://img.shields.io/sonar/coverage/ui-component-model?format=long&server=https%3A%2F%2Fsonarcloud.io&style=flat-square)](https://sonarcloud.io/component_measures?id=ui-component-model&metric=coverage&view=list)
-[![Violations](https://img.shields.io/sonar/violations/ui-component-model?format=long&server=https%3A%2F%2Fsonarcloud.io&style=flat-square)](https://sonarcloud.io/project/issues?id=ui-component-model&resolved=false)
-
-[![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg?style=flat-square)](https://gitter.im/anemonis/ui-component-model)
+| [![](https://img.shields.io/gitter/room/nwjs/nw.js.svg?style=flat-square)](https://gitter.im/anemonis/ui-component-model) | Release | Current |
+|---|---|---|
+| Artifacts | [![](https://img.shields.io/nuget/vpre/Anemonis.UI.ComponentModel.svg?style=flat-square)](https://www.nuget.org/packages/Anemonis.UI.ComponentModel) | [![](https://img.shields.io/myget/alexanderkozlenko/vpre/Anemonis.UI.ComponentModel.svg?label=myget&style=flat-square)](https://www.myget.org/feed/alexanderkozlenko/package/nuget/Anemonis.UI.ComponentModel) |
+| Code Health | | [![](https://img.shields.io/sonar/coverage/ui-component-model?format=long&server=https%3A%2F%2Fsonarcloud.io&style=flat-square)](https://sonarcloud.io/component_measures?id=ui-component-model&metric=coverage&view=list) [![](https://img.shields.io/sonar/violations/ui-component-model?format=long&server=https%3A%2F%2Fsonarcloud.io&style=flat-square)](https://sonarcloud.io/project/issues?id=ui-component-model&resolved=false) |
+| Build Status | | [![](https://img.shields.io/azure-devops/build/alexanderkozlenko/github-pipelines/10?label=master&style=flat-square)](https://dev.azure.com/alexanderkozlenko/github-pipelines/_build?definitionId=10&_a=summary) |
 
 ## Project Details
 
