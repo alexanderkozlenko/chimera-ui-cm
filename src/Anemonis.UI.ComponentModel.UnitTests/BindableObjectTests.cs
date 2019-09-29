@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 
 using Anemonis.UI.ComponentModel.UnitTests.TestStubs;
 
@@ -169,6 +170,17 @@ namespace Anemonis.UI.ComponentModel.UnitTests
 
             bindable.FieldValue = 1;
             bindable.InvokeRaisePropertyChanged(propertyName);
+        }
+
+        [TestMethod]
+        public void Dispose()
+        {
+            var bindable = new TestBindableObject<int>(0);
+
+            bindable.SynchronizationContext = new SynchronizationContext();
+            bindable.Dispose();
+
+            Assert.IsNotNull(bindable.SynchronizationContext);
         }
     }
 }

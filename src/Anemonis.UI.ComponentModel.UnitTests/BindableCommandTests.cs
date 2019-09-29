@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -100,6 +101,17 @@ namespace Anemonis.UI.ComponentModel.UnitTests
             command.RaiseCanExecuteChanged();
 
             Assert.IsTrue(result);
+        }
+
+
+        [TestMethod]
+        public void Dispose()
+        {
+            var command = new ObservableCommand<object>(p => { }, new SynchronizationContext());
+
+            command.Dispose();
+
+            Assert.IsNotNull(command.SynchronizationContext);
         }
     }
 }
