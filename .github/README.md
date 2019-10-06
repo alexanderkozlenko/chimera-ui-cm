@@ -57,13 +57,13 @@ public class EntityViewModel : ObservableObject
 
     public int Value1
     {
-        get => GetValue(ref _value);
+        get => GetValue(_value);
         set => SetValue(ref _value, value);
     }
 
     public int Value2
     {
-        get => GetValue(ref _value, nameof(OnValueUpdated));
+        get => GetValue(_value, nameof(OnValueUpdated));
         set => SetValue(ref _value, value, nameof(OnValueUpdated));
     }
 
@@ -106,7 +106,7 @@ public class EntityViewModel : ObservableObject
 
     public int Value
     {
-        get => GetValue(ref _value);
+        get => GetValue(_value);
         set => SetValue(ref _value, value);
     }
 }
