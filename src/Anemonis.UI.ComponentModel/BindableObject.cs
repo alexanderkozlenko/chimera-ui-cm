@@ -96,7 +96,7 @@ namespace Anemonis.UI.ComponentModel
         /// <typeparam name="TValue">The type of the field.</typeparam>
         /// <param name="field">The field to get a value from.</param>
         /// <returns>The value of the field.</returns>
-        protected TValue GetValue<TValue>(ref TValue field)
+        protected TValue GetValue<TValue>(in TValue field)
         {
             return field;
         }
