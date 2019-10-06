@@ -39,7 +39,7 @@ namespace Anemonis.UI.ComponentModel.UnitTests.TestStubs
 
         public T BindableFieldValue
         {
-            get => GetValue(ref _value);
+            get => GetValue(_value);
             set => SetValue(ref _value, value, OnValueUpdated);
         }
 
