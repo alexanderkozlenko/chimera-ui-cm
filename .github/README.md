@@ -141,10 +141,6 @@ public class EntityViewModel : ObservableObject
 }
 ```
 
-## Code Examples
-
-- Example of GUI application for .NET Core: https://github.com/alexanderkozlenko/avalonia-puzzle-15
-
 ## Quicklinks
 
 - [Contributing Guidelines](./CONTRIBUTING.md)
