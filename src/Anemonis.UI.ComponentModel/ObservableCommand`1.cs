@@ -198,6 +198,26 @@ namespace Anemonis.UI.ComponentModel
             }
         }
 
+        /// <summary>Notifies the current instance that an observer is to receive notifications about command state changed.</summary>
+        /// <param name="observer">The object that is to receive notifications about command state changed.</param>
+        /// <returns>A reference to an interface that allows observers to stop receiving notifications about command state changed.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="observer" /> is <see langword="null" />.</exception>
+        public IDisposable Subscribe(IObserver<EventArgs> observer)
+        {
+            if (observer == null)
+            {
+                throw new ArgumentNullException(nameof(observer));
+            }
+
+            lock (_syncRoot)
+            {
+                _observers ??= new HashSet<IObserver<EventArgs>>(ReferenceEqualityComparer.Instance);
+                _observers.Add(observer);
+            }
+
+            return new ObservableSubscribeToken<EventArgs>(observer, Unsubscribe);
+        }
+
         /// <summary>Unsubscribes from property changed events of an object to trigger the event for command state re-querying.</summary>
         /// <param name="observable">The object to handle property changed events of.</param>
         /// <exception cref="ArgumentNullException"><paramref name="observable" /> is <see langword="null" />.</exception>
@@ -222,26 +242,6 @@ namespace Anemonis.UI.ComponentModel
                     }
                 }
             }
-        }
-
-        /// <summary>Notifies the current instance that an observer is to receive notifications about command state changed.</summary>
-        /// <param name="observer">The object that is to receive notifications about command state changed.</param>
-        /// <returns>A reference to an interface that allows observers to stop receiving notifications about command state changed.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="observer" /> is <see langword="null" />.</exception>
-        public IDisposable Subscribe(IObserver<EventArgs> observer)
-        {
-            if (observer == null)
-            {
-                throw new ArgumentNullException(nameof(observer));
-            }
-
-            lock (_syncRoot)
-            {
-                _observers ??= new HashSet<IObserver<EventArgs>>(ReferenceEqualityComparer.Instance);
-                _observers.Add(observer);
-            }
-
-            return new ObservableSubscribeToken<EventArgs>(observer, Unsubscribe);
         }
     }
 }
