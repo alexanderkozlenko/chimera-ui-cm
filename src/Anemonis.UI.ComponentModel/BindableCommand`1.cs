@@ -95,29 +95,26 @@ namespace Anemonis.UI.ComponentModel
             }
         }
 
-        /// <summary>Releases all subscriptions to the command state changed event and to the property changed event of the currently observing objects.</summary>
+        /// <inheritdoc />
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        /// <summary>Raises an event that the command should be required for its state.</summary>
+        /// <inheritdoc />
         public virtual void RaiseCanExecuteChanged()
         {
             UnsafeRaiseCanExecuteChanged(_synchronizationContext);
         }
 
-        /// <summary>Determines whether the command can execute in its current state.</summary>
-        /// <param name="parameter">Data used by the command. If the command does not require data to be passed, this object can be set to <see langword="null" />.</param>
-        /// <returns><see langword="true" /> if this command can be executed; otherwise, <see langword="false" />.</returns>
+        /// <inheritdoc />
         public bool CanExecute(object parameter)
         {
             return (_predicateMethod == null) || _predicateMethod.Invoke((T)parameter);
         }
 
-        /// <summary>Invokes the command.</summary>
-        /// <param name="parameter">Data used by the command. If the command does not require data to be passed, this object can be set to <see langword="null" />.</param>
+        /// <inheritdoc />
         public void Execute(object parameter)
         {
             _actionMethod.Invoke((T)parameter);

@@ -56,8 +56,7 @@ namespace Anemonis.UI.ComponentModel
             }
         }
 
-        /// <summary>Releases all subscriptions to the property changed event.</summary>
-        /// <param name="disposing">The value that indicates whether the method call comes from a dispose method (its value is <see langword="true" />) or from a finalizer (its value is <see langword="false" />).</param>
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
@@ -81,9 +80,7 @@ namespace Anemonis.UI.ComponentModel
             }
         }
 
-        /// <summary>Notifies the current instance that an observer is to receive notifications about property changed.</summary>
-        /// <param name="observer">The object that is to receive notifications about property changed.</param>
-        /// <returns>A reference to an interface that allows observers to stop receiving notifications about property changed.</returns>
+        /// <inheritdoc />
         /// <exception cref="ArgumentNullException"><paramref name="observer" /> is <see langword="null" />.</exception>
         public IDisposable Subscribe(IObserver<PropertyChangedEventArgs> observer)
         {
