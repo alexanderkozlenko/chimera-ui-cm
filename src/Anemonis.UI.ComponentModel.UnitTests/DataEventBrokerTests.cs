@@ -2,7 +2,8 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-#pragma warning disable IDE0039, IDE0067
+#pragma warning disable IDE0039
+#pragma warning disable IDE0067
 
 namespace Anemonis.UI.ComponentModel.UnitTests
 {
