@@ -9,7 +9,8 @@ using System.Threading;
 
 using Anemonis.UI.ComponentModel.Resources;
 
-#pragma warning disable CA1030, CA1822
+#pragma warning disable CA1030
+#pragma warning disable CA1822
 
 namespace Anemonis.UI.ComponentModel
 {
