@@ -119,8 +119,7 @@ namespace Anemonis.UI.ComponentModel
             }
         }
 
-        /// <summary>Releases all subscriptions to the command state changed event and to the property changed event of the currently observing objects.</summary>
-        /// <param name="disposing">The value that indicates whether the method call comes from a dispose method (its value is <see langword="true" />) or from a finalizer (its value is <see langword="false" />).</param>
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
@@ -155,8 +154,7 @@ namespace Anemonis.UI.ComponentModel
             }
         }
 
-        /// <summary>Subscribes for property changed events of an object to trigger the event for command state re-querying.</summary>
-        /// <param name="observable">The object to handle property changed events of.</param>
+        /// <inheritdoc />
         /// <exception cref="ArgumentNullException"><paramref name="observable" /> is <see langword="null" />.</exception>
         public void Subscribe(INotifyPropertyChanged observable)
         {
@@ -174,9 +172,7 @@ namespace Anemonis.UI.ComponentModel
             }
         }
 
-        /// <summary>Subscribes for property changed events of an object to trigger the event for command state re-querying.</summary>
-        /// <param name="observable">The object to handle property changed events of.</param>
-        /// <param name="propertyNames">The list of property names to handle.</param>
+        /// <inheritdoc />
         /// <exception cref="ArgumentNullException"><paramref name="observable" /> or <paramref name="propertyNames" /> is <see langword="null" />.</exception>
         public void Subscribe(INotifyPropertyChanged observable, params string[] propertyNames)
         {
@@ -218,8 +214,7 @@ namespace Anemonis.UI.ComponentModel
             return new ObservableSubscribeToken<EventArgs>(observer, Unsubscribe);
         }
 
-        /// <summary>Unsubscribes from property changed events of an object to trigger the event for command state re-querying.</summary>
-        /// <param name="observable">The object to handle property changed events of.</param>
+        /// <inheritdoc />
         /// <exception cref="ArgumentNullException"><paramref name="observable" /> is <see langword="null" />.</exception>
         public void Unsubscribe(INotifyPropertyChanged observable)
         {

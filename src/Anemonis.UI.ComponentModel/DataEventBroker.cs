@@ -35,17 +35,14 @@ namespace Anemonis.UI.ComponentModel
             }
         }
 
-        /// <summary>Releases all event subscriptions.</summary>
+        /// <inheritdoc />
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        /// <summary>Subscribes to channel events.</summary>
-        /// <typeparam name="T">The type of the event data.</typeparam>
-        /// <param name="channelName">The name of the event channel.</param>
-        /// <param name="eventHandler">The event handler.</param>
+        /// <inheritdoc />
         /// <exception cref="ArgumentNullException"><paramref name="channelName" /> or <paramref name="eventHandler" /> is <see langword="null" />.</exception>
         public void Subscribe<T>(string channelName, Action<DataEventArgs<T>> eventHandler)
         {
@@ -70,10 +67,7 @@ namespace Anemonis.UI.ComponentModel
             }
         }
 
-        /// <summary>Unsubscribes from channel events.</summary>
-        /// <typeparam name="T">The type of the event data.</typeparam>
-        /// <param name="channelName">The name of the event channel.</param>
-        /// <param name="eventHandler">The event handler.</param>
+        /// <inheritdoc />
         /// <exception cref="ArgumentNullException"><paramref name="channelName" /> or <paramref name="eventHandler" /> is <see langword="null" />.</exception>
         public void Unsubscribe<T>(string channelName, Action<DataEventArgs<T>> eventHandler)
         {
@@ -102,10 +96,7 @@ namespace Anemonis.UI.ComponentModel
             }
         }
 
-        /// <summary>Publishes event data to all channel subscribers.</summary>
-        /// <typeparam name="T">The type of the event data.</typeparam>
-        /// <param name="channelName">The name of the event channel.</param>
-        /// <param name="value">The event data.</param>
+        /// <inheritdoc />
         /// <exception cref="ArgumentNullException"><paramref name="channelName" /> is <see langword="null" />.</exception>
         public virtual void Publish<T>(string channelName, T value)
         {

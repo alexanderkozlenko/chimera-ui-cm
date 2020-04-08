@@ -21,9 +21,7 @@ namespace Anemonis.UI.ComponentModel
             _value = value;
         }
 
-        /// <summary>Indicates whether the current <see cref="DataEventArgs{T}" /> is equal to the specified object.</summary>
-        /// <param name="obj">The object to compare with the current <see cref="DataEventArgs{T}" />.</param>
-        /// <returns><see langword="true" /> if the current <see cref="DataEventArgs{T}" /> is equal to the specified object; otherwise, <see langword="false" />.</returns>
+        /// <inheritdoc />
         public override bool Equals(object obj)
         {
             return (obj is DataEventArgs<T> other) && Equals(other);
@@ -37,8 +35,7 @@ namespace Anemonis.UI.ComponentModel
             return (_channelName == other._channelName) && EqualityComparer<T>.Default.Equals(_value, other._value);
         }
 
-        /// <summary>Returns the hash code for the current <see cref="DataEventArgs{T}" />.</summary>
-        /// <returns>A 32-bit signed integer hash code.</returns>
+        /// <inheritdoc />
         public override int GetHashCode()
         {
             var hashCode = new HashCode();

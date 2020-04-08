@@ -72,7 +72,7 @@ namespace Anemonis.UI.ComponentModel
             }
         }
 
-        /// <summary>Releases all subscriptions to the property changed event.</summary>
+        /// <inheritdoc />
         public void Dispose()
         {
             Dispose(true);
@@ -208,12 +208,12 @@ namespace Anemonis.UI.ComponentModel
             callback?.Invoke();
         }
 
-        /// <summary>Subscribes the current instance to the required notifications.</summary>
+        /// <inheritdoc />
         public virtual void Subscribe()
         {
         }
 
-        /// <summary>Unsubscribes the current instance from the required notifications.</summary>
+        /// <inheritdoc />
         public virtual void Unsubscribe()
         {
         }
