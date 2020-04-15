@@ -194,9 +194,7 @@ namespace Anemonis.UI.ComponentModel
             }
         }
 
-        /// <summary>Notifies the current instance that an observer is to receive notifications about command state changed.</summary>
-        /// <param name="observer">The object that is to receive notifications about command state changed.</param>
-        /// <returns>A reference to an interface that allows observers to stop receiving notifications about command state changed.</returns>
+        /// <inheritdoc />
         /// <exception cref="ArgumentNullException"><paramref name="observer" /> is <see langword="null" />.</exception>
         public IDisposable Subscribe(IObserver<EventArgs> observer)
         {

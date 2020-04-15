@@ -27,9 +27,7 @@ namespace Anemonis.UI.ComponentModel
             return (obj is DataEventArgs<T> other) && Equals(other);
         }
 
-        /// <summary>Indicates whether the current <see cref="DataEventArgs{T}" /> is equal to another <see cref="DataEventArgs{T}" />.</summary>
-        /// <param name="other">A <see cref="DataEventArgs{T}" /> to compare with the current <see cref="DataEventArgs{T}" />.</param>
-        /// <returns><see langword="true" /> if the current <see cref="DataEventArgs{T}" /> is equal to the other <see cref="DataEventArgs{T}" />; otherwise, <see langword="false" />.</returns>
+        /// <inheritdoc />
         public bool Equals(DataEventArgs<T> other)
         {
             return (_channelName == other._channelName) && EqualityComparer<T>.Default.Equals(_value, other._value);
