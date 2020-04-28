@@ -2,6 +2,7 @@
 
 using System;
 
+#pragma warning disable CA1801
 #pragma warning disable IDE0060
 
 namespace Anemonis.UI.ComponentModel

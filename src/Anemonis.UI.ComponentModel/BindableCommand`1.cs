@@ -52,7 +52,7 @@ namespace Anemonis.UI.ComponentModel
             Dispose(false);
         }
 
-        private protected EventArgs CreateCanExecuteChangedEventArgs()
+        private protected static EventArgs CreateCanExecuteChangedEventArgs()
         {
             return EventArgs.Empty;
         }
