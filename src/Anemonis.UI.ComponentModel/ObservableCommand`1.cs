@@ -11,7 +11,7 @@ namespace Anemonis.UI.ComponentModel
     /// <typeparam name="T">The type of the parameter for action and predicate.</typeparam>
     public class ObservableCommand<T> : BindableCommand<T>, IObservableCommand
     {
-        private readonly object _syncRoot = new object();
+        private readonly object _syncRoot = new();
 
         private HashSet<IObserver<EventArgs>> _observers;
         private Dictionary<INotifyPropertyChanged, string[]> _observables;
@@ -39,7 +39,7 @@ namespace Anemonis.UI.ComponentModel
         {
             var observable = sender as INotifyPropertyChanged;
 
-            if ((observable == null) || (e == null))
+            if ((observable is null) || (e is null))
             {
                 return;
             }
@@ -48,7 +48,7 @@ namespace Anemonis.UI.ComponentModel
 
             lock (_syncRoot)
             {
-                if (_observables == null)
+                if (_observables is null)
                 {
                     return;
                 }
@@ -57,7 +57,7 @@ namespace Anemonis.UI.ComponentModel
                     return;
                 }
 
-                handleEvent = propertyNames == null;
+                handleEvent = propertyNames is null;
 
                 if (!handleEvent)
                 {
@@ -87,7 +87,7 @@ namespace Anemonis.UI.ComponentModel
 
             lock (_syncRoot)
             {
-                if (_observers != null)
+                if (_observers is not null)
                 {
                     eventArgs ??= CreateCanExecuteChangedEventArgs();
 
@@ -107,7 +107,7 @@ namespace Anemonis.UI.ComponentModel
         {
             lock (_syncRoot)
             {
-                if (_observers != null)
+                if (_observers is not null)
                 {
                     _observers.Remove(observer);
 
@@ -128,7 +128,7 @@ namespace Anemonis.UI.ComponentModel
             {
                 lock (_syncRoot)
                 {
-                    if (_observables != null)
+                    if (_observables is not null)
                     {
                         var enumerator = _observables.Keys.GetEnumerator();
 
@@ -139,7 +139,7 @@ namespace Anemonis.UI.ComponentModel
 
                         _observables = null;
                     }
-                    if (_observers != null)
+                    if (_observers is not null)
                     {
                         var enumerator = _observers.GetEnumerator();
 
@@ -158,14 +158,14 @@ namespace Anemonis.UI.ComponentModel
         /// <exception cref="ArgumentNullException"><paramref name="observable" /> is <see langword="null" />.</exception>
         public void Subscribe(INotifyPropertyChanged observable)
         {
-            if (observable == null)
+            if (observable is null)
             {
                 throw new ArgumentNullException(nameof(observable));
             }
 
             lock (_syncRoot)
             {
-                _observables ??= new Dictionary<INotifyPropertyChanged, string[]>(ReferenceEqualityComparer.Instance);
+                _observables ??= new(ReferenceEqualityComparer.Instance);
                 _observables[observable] = null;
 
                 observable.PropertyChanged += OnObservingPropertyChanged;
@@ -176,18 +176,18 @@ namespace Anemonis.UI.ComponentModel
         /// <exception cref="ArgumentNullException"><paramref name="observable" /> or <paramref name="propertyNames" /> is <see langword="null" />.</exception>
         public void Subscribe(INotifyPropertyChanged observable, params string[] propertyNames)
         {
-            if (observable == null)
+            if (observable is null)
             {
                 throw new ArgumentNullException(nameof(observable));
             }
-            if (propertyNames == null)
+            if (propertyNames is null)
             {
                 throw new ArgumentNullException(nameof(propertyNames));
             }
 
             lock (_syncRoot)
             {
-                _observables ??= new Dictionary<INotifyPropertyChanged, string[]>(ReferenceEqualityComparer.Instance);
+                _observables ??= new(ReferenceEqualityComparer.Instance);
                 _observables[observable] = propertyNames;
 
                 observable.PropertyChanged += OnObservingPropertyChanged;
@@ -198,14 +198,14 @@ namespace Anemonis.UI.ComponentModel
         /// <exception cref="ArgumentNullException"><paramref name="observer" /> is <see langword="null" />.</exception>
         public IDisposable Subscribe(IObserver<EventArgs> observer)
         {
-            if (observer == null)
+            if (observer is null)
             {
                 throw new ArgumentNullException(nameof(observer));
             }
 
             lock (_syncRoot)
             {
-                _observers ??= new HashSet<IObserver<EventArgs>>(ReferenceEqualityComparer.Instance);
+                _observers ??= new(ReferenceEqualityComparer.Instance);
                 _observers.Add(observer);
             }
 
@@ -216,14 +216,14 @@ namespace Anemonis.UI.ComponentModel
         /// <exception cref="ArgumentNullException"><paramref name="observable" /> is <see langword="null" />.</exception>
         public void Unsubscribe(INotifyPropertyChanged observable)
         {
-            if (observable == null)
+            if (observable is null)
             {
                 throw new ArgumentNullException(nameof(observable));
             }
 
             lock (_syncRoot)
             {
-                if (_observables != null)
+                if (_observables is not null)
                 {
                     observable.PropertyChanged -= OnObservingPropertyChanged;
 

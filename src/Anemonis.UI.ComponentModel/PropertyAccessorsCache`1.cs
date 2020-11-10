@@ -11,8 +11,8 @@ namespace Anemonis.UI.ComponentModel
 {
     internal static class PropertyAccessorsCache<TTarget>
     {
-        private static readonly object _syncRoot = new object();
-        private static readonly Dictionary<string, (object GetAccessor, object SetAccessor)> _propertyAccessorCache = new Dictionary<string, (object, object)>();
+        private static readonly object s_syncRoot = new();
+        private static readonly Dictionary<string, (object GetAccessor, object SetAccessor)> s_propertyAccessorCache = new();
 
         private static PropertyInfo FindPropertyInfo(string propertyName)
         {
@@ -22,11 +22,11 @@ namespace Anemonis.UI.ComponentModel
             {
                 var propertyInfo = type.GetProperty(propertyName);
 
-                if (propertyInfo != null)
+                if (propertyInfo is not null)
                 {
                     return propertyInfo;
                 }
-                else if (type.BaseType != null)
+                else if (type.BaseType is not null)
                 {
                     type = type.BaseType;
                 }
@@ -39,12 +39,12 @@ namespace Anemonis.UI.ComponentModel
 
         public static (Func<TTarget, TValue> GetAccessor, Action<TTarget, TValue> SetAccessor) GetPropertyAccessors<TValue>(string propertyName)
         {
-            lock (_syncRoot)
+            lock (s_syncRoot)
             {
                 var propertyGetAccessor = default(object);
                 var propertySetAccessor = default(object);
 
-                if (_propertyAccessorCache.TryGetValue(propertyName, out var propertyAccessors))
+                if (s_propertyAccessorCache.TryGetValue(propertyName, out var propertyAccessors))
                 {
                     (propertyGetAccessor, propertySetAccessor) = propertyAccessors;
                 }
@@ -52,7 +52,7 @@ namespace Anemonis.UI.ComponentModel
                 {
                     var propertyInfo = FindPropertyInfo(propertyName);
 
-                    if (propertyInfo == null)
+                    if (propertyInfo is null)
                     {
                         throw new MissingMemberException(string.Format(CultureInfo.CurrentCulture, Strings.GetString("property_accessor_cache.property_not_found"), typeof(TTarget), propertyName));
                     }
@@ -66,7 +66,7 @@ namespace Anemonis.UI.ComponentModel
                         propertySetAccessor = propertyInfo.SetMethod.CreateDelegate(typeof(Action<TTarget, TValue>));
                     }
 
-                    _propertyAccessorCache.Add(propertyName, (propertyGetAccessor, propertySetAccessor));
+                    s_propertyAccessorCache.Add(propertyName, (propertyGetAccessor, propertySetAccessor));
                 }
 
                 return ((Func<TTarget, TValue>)propertyGetAccessor, (Action<TTarget, TValue>)propertySetAccessor);

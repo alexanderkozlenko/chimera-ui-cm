@@ -4,8 +4,6 @@ using Anemonis.UI.ComponentModel.UnitTests.TestStubs;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-#pragma warning disable IDE0067
-
 namespace Anemonis.UI.ComponentModel.UnitTests
 {
     [TestClass]

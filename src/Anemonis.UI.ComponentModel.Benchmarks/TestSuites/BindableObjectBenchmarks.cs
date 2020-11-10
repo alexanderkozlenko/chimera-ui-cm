@@ -6,8 +6,8 @@ namespace Anemonis.UI.ComponentModel.Benchmarks.TestSuites
 {
     public class BindableObjectBenchmarks
     {
-        private readonly TestBindableObject<bool> _bindableObject1 = new TestBindableObject<bool>(false);
-        private readonly TestBindableObject<bool> _bindableObject2 = new TestBindableObject<bool>(new TestTargetObject<bool>(false));
+        private readonly TestBindableObject<bool> _bindableObject1 = new(false);
+        private readonly TestBindableObject<bool> _bindableObject2 = new(new TestTargetObject<bool>(false));
 
         [Benchmark(Description = "get-TYPE=F")]
         public bool GetByField()

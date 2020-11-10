@@ -9,7 +9,7 @@ namespace Anemonis.UI.ComponentModel
     /// <summary>Represents a bindable object component with advanced composition abilities.</summary>
     public abstract class ObservableObject : BindableObject, IObservableObject
     {
-        private readonly object _syncRoot = new object();
+        private readonly object _syncRoot = new();
 
         private HashSet<IObserver<PropertyChangedEventArgs>> _observers;
 
@@ -24,7 +24,7 @@ namespace Anemonis.UI.ComponentModel
 
             lock (_syncRoot)
             {
-                if (_observers != null)
+                if (_observers is not null)
                 {
                     eventArgs ??= CreatePropertyChangedEventArgs(propertyName);
 
@@ -44,7 +44,7 @@ namespace Anemonis.UI.ComponentModel
         {
             lock (_syncRoot)
             {
-                if (_observers != null)
+                if (_observers is not null)
                 {
                     _observers.Remove(observer);
 
@@ -65,7 +65,7 @@ namespace Anemonis.UI.ComponentModel
             {
                 lock (_syncRoot)
                 {
-                    if (_observers != null)
+                    if (_observers is not null)
                     {
                         var enumerator = _observers.GetEnumerator();
 
@@ -84,14 +84,14 @@ namespace Anemonis.UI.ComponentModel
         /// <exception cref="ArgumentNullException"><paramref name="observer" /> is <see langword="null" />.</exception>
         public IDisposable Subscribe(IObserver<PropertyChangedEventArgs> observer)
         {
-            if (observer == null)
+            if (observer is null)
             {
                 throw new ArgumentNullException(nameof(observer));
             }
 
             lock (_syncRoot)
             {
-                _observers ??= new HashSet<IObserver<PropertyChangedEventArgs>>(ReferenceEqualityComparer.Instance);
+                _observers ??= new(ReferenceEqualityComparer.Instance);
                 _observers.Add(observer);
             }
 

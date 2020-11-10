@@ -5,8 +5,6 @@ using Anemonis.UI.ComponentModel.UnitTests.TestStubs;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-#pragma warning disable IDE0067
-
 namespace Anemonis.UI.ComponentModel.UnitTests
 {
     [TestClass]
@@ -58,7 +56,7 @@ namespace Anemonis.UI.ComponentModel.UnitTests
 
             command.Subscribe(observable);
             command.CanExecuteChanged += (sender, e) => result = true;
-            observable.RaisePropertyChanged(null, new PropertyChangedEventArgs("Value"));
+            observable.RaisePropertyChanged(null, new("Value"));
 
             Assert.IsFalse(result);
         }
@@ -86,7 +84,7 @@ namespace Anemonis.UI.ComponentModel.UnitTests
 
             command.Subscribe(observable, "Value1");
             command.CanExecuteChanged += (sender, e) => result = true;
-            observable.RaisePropertyChanged(observable, new PropertyChangedEventArgs("Value2"));
+            observable.RaisePropertyChanged(observable, new("Value2"));
 
             Assert.IsFalse(result);
         }
@@ -100,7 +98,7 @@ namespace Anemonis.UI.ComponentModel.UnitTests
 
             command.Subscribe(observable);
             command.CanExecuteChanged += (sender, e) => result = true;
-            observable.RaisePropertyChanged(observable, new PropertyChangedEventArgs("Value"));
+            observable.RaisePropertyChanged(observable, new("Value"));
 
             Assert.IsTrue(result);
         }
@@ -114,7 +112,7 @@ namespace Anemonis.UI.ComponentModel.UnitTests
 
             command.Subscribe(observable, "Value");
             command.CanExecuteChanged += (sender, e) => result = true;
-            observable.RaisePropertyChanged(observable, new PropertyChangedEventArgs("Value"));
+            observable.RaisePropertyChanged(observable, new("Value"));
 
             Assert.IsTrue(result);
         }
