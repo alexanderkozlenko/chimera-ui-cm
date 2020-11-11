@@ -8,12 +8,12 @@ namespace Anemonis.UI.ComponentModel.Benchmarks.TestSuites
 {
     public class ObservableObjectBenchmarks
     {
-        private readonly TestObserverObject<PropertyChangedEventArgs> _observerObject = new TestObserverObject<PropertyChangedEventArgs>();
-        private readonly TestObservableObject _observableObject = new TestObservableObject();
-        private readonly TestObservableObject _observableObject0 = new TestObservableObject();
-        private readonly TestObservableObject _observableObject1 = new TestObservableObject();
-        private readonly TestObservableObject _observableObject2 = new TestObservableObject();
-        private readonly TestObservableObject _observableObject3 = new TestObservableObject();
+        private readonly TestObserverObject<PropertyChangedEventArgs> _observerObject = new();
+        private readonly TestObservableObject _observableObject = new();
+        private readonly TestObservableObject _observableObject0 = new();
+        private readonly TestObservableObject _observableObject1 = new();
+        private readonly TestObservableObject _observableObject2 = new();
+        private readonly TestObservableObject _observableObject3 = new();
 
         public ObservableObjectBenchmarks()
         {

@@ -9,15 +9,15 @@ namespace Anemonis.UI.ComponentModel.Benchmarks.TestSuites
 {
     public class ObservableCommandBenchmarks
     {
-        private readonly PropertyChangedEventArgs _observingObjectEventArgs = new PropertyChangedEventArgs("Value");
-        private readonly TestObservingObject _observingObject = new TestObservingObject();
-        private readonly TestObserverObject<EventArgs> _observerObject = new TestObserverObject<EventArgs>();
-        private readonly ObservableCommand<object> _observableCommand = new ObservableCommand<object>(p => { });
-        private readonly ObservableCommand<object> _observableCommand0 = new ObservableCommand<object>(p => { });
-        private readonly ObservableCommand<object> _observableCommand1 = new ObservableCommand<object>(p => { });
-        private readonly ObservableCommand<object> _observableCommand2 = new ObservableCommand<object>(p => { });
-        private readonly ObservableCommand<object> _observableCommand3 = new ObservableCommand<object>(p => { });
-        private readonly ObservableCommand<object> _observableCommand4 = new ObservableCommand<object>(p => { });
+        private readonly PropertyChangedEventArgs _observingObjectEventArgs = new("Value");
+        private readonly TestObservingObject _observingObject = new();
+        private readonly TestObserverObject<EventArgs> _observerObject = new();
+        private readonly ObservableCommand<object> _observableCommand = new(p => { });
+        private readonly ObservableCommand<object> _observableCommand0 = new(p => { });
+        private readonly ObservableCommand<object> _observableCommand1 = new(p => { });
+        private readonly ObservableCommand<object> _observableCommand2 = new(p => { });
+        private readonly ObservableCommand<object> _observableCommand3 = new(p => { });
+        private readonly ObservableCommand<object> _observableCommand4 = new(p => { });
 
         public ObservableCommandBenchmarks()
         {

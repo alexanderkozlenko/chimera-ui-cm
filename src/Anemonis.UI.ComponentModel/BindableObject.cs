@@ -9,7 +9,6 @@ using System.Threading;
 
 using Anemonis.UI.ComponentModel.Resources;
 
-#pragma warning disable CA1030
 #pragma warning disable CA1822
 
 namespace Anemonis.UI.ComponentModel
@@ -32,7 +31,7 @@ namespace Anemonis.UI.ComponentModel
 
         private void UnsafeRaisePropertyChanged(string propertyName, SynchronizationContext synchronizationContext)
         {
-            if ((synchronizationContext == null) || (synchronizationContext == SynchronizationContext.Current))
+            if ((synchronizationContext is null) || (synchronizationContext == SynchronizationContext.Current))
             {
                 UnsafeRaisePropertyChanged(propertyName);
             }
@@ -46,7 +45,7 @@ namespace Anemonis.UI.ComponentModel
 
         private protected PropertyChangedEventArgs CreatePropertyChangedEventArgs(string propertyName)
         {
-            return new PropertyChangedEventArgs(propertyName);
+            return new(propertyName);
         }
 
         private protected virtual PropertyChangedEventArgs UnsafeRaisePropertyChanged(string propertyName)
@@ -54,7 +53,7 @@ namespace Anemonis.UI.ComponentModel
             var eventArgs = default(PropertyChangedEventArgs);
             var eventHandler = PropertyChanged;
 
-            if (eventHandler != null)
+            if (eventHandler is not null)
             {
                 eventArgs = CreatePropertyChangedEventArgs(propertyName);
                 eventHandler.Invoke(this, eventArgs);
@@ -85,7 +84,7 @@ namespace Anemonis.UI.ComponentModel
         /// <exception cref="ArgumentNullException"><paramref name="propertyName" /> is <see langword="null" />.</exception>
         protected void RaisePropertyChanged(string propertyName)
         {
-            if (propertyName == null)
+            if (propertyName is null)
             {
                 throw new ArgumentNullException(nameof(propertyName));
             }
@@ -114,7 +113,7 @@ namespace Anemonis.UI.ComponentModel
         /// <exception cref="MissingMemberException">The specified property is not found.</exception>
         protected TValue GetValue<TTarget, TValue>(TTarget target, string propertyName, TValue defaultValue)
         {
-            if (propertyName == null)
+            if (propertyName is null)
             {
                 throw new ArgumentNullException(nameof(propertyName));
             }
@@ -125,7 +124,7 @@ namespace Anemonis.UI.ComponentModel
 
             var (propertyGetAccessor, _) = PropertyAccessorsCache<TTarget>.GetPropertyAccessors<TValue>(propertyName);
 
-            if (propertyGetAccessor == null)
+            if (propertyGetAccessor is null)
             {
                 throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Strings.GetString("bindable_object.property_info.no_get_accessor"), propertyName));
             }
@@ -142,7 +141,7 @@ namespace Anemonis.UI.ComponentModel
         /// <exception cref="ArgumentNullException"><paramref name="outerPropertyName" /> is <see langword="null" />.</exception>
         protected void SetValue<TValue>(ref TValue field, TValue value, Action callback = null, [CallerMemberName] string outerPropertyName = null)
         {
-            if (outerPropertyName == null)
+            if (outerPropertyName is null)
             {
                 throw new ArgumentNullException(nameof(outerPropertyName));
             }
@@ -171,11 +170,11 @@ namespace Anemonis.UI.ComponentModel
         /// <exception cref="MissingMemberException">The specified property is not found.</exception>
         protected void SetValue<TTarget, TValue>(TTarget target, string propertyName, TValue value, Action callback = null, [CallerMemberName] string outerPropertyName = null)
         {
-            if (propertyName == null)
+            if (propertyName is null)
             {
                 throw new ArgumentNullException(nameof(propertyName));
             }
-            if (outerPropertyName == null)
+            if (outerPropertyName is null)
             {
                 throw new ArgumentNullException(nameof(outerPropertyName));
             }
@@ -186,11 +185,11 @@ namespace Anemonis.UI.ComponentModel
 
             var (propertyGetAccessor, propertySetAccessor) = PropertyAccessorsCache<TTarget>.GetPropertyAccessors<TValue>(propertyName);
 
-            if (propertyGetAccessor == null)
+            if (propertyGetAccessor is null)
             {
                 throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Strings.GetString("bindable_object.property_info.no_get_accessor"), propertyName));
             }
-            if (propertySetAccessor == null)
+            if (propertySetAccessor is null)
             {
                 throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Strings.GetString("bindable_object.property_info.no_set_accessor"), propertyName));
             }

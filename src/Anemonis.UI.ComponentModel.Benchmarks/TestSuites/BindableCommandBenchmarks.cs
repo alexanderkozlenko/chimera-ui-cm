@@ -6,9 +6,9 @@ namespace Anemonis.UI.ComponentModel.Benchmarks.TestSuites
 {
     public class BindableCommandBenchmarks
     {
-        private readonly BindableCommand<object> _observableCommand0 = new BindableCommand<object>(p => { });
-        private readonly BindableCommand<object> _observableCommand1 = new BindableCommand<object>(p => { });
-        private readonly BindableCommand<object> _observableCommand2 = new BindableCommand<object>(p => { });
+        private readonly BindableCommand<object> _observableCommand0 = new(p => { });
+        private readonly BindableCommand<object> _observableCommand1 = new(p => { });
+        private readonly BindableCommand<object> _observableCommand2 = new(p => { });
 
         public BindableCommandBenchmarks()
         {

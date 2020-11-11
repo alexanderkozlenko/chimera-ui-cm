@@ -5,8 +5,6 @@ using Anemonis.UI.ComponentModel.UnitTests.TestStubs;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-#pragma warning disable IDE0067
-
 namespace Anemonis.UI.ComponentModel.UnitTests
 {
     [TestClass]
@@ -177,7 +175,7 @@ namespace Anemonis.UI.ComponentModel.UnitTests
         {
             var bindable = new TestBindableObject<int>(0);
 
-            bindable.SynchronizationContext = new SynchronizationContext();
+            bindable.SynchronizationContext = new();
             bindable.Dispose();
 
             Assert.IsNotNull(bindable.SynchronizationContext);

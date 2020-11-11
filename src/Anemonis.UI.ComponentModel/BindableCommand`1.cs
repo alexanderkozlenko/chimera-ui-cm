@@ -3,8 +3,6 @@
 using System;
 using System.Threading;
 
-#pragma warning disable CA1030
-
 namespace Anemonis.UI.ComponentModel
 {
     /// <summary>Represents a bindable command component.</summary>
@@ -21,7 +19,7 @@ namespace Anemonis.UI.ComponentModel
         /// <exception cref="ArgumentNullException"><paramref name="actionMethod" /> is <see langword="null" />.</exception>
         public BindableCommand(Action<T> actionMethod, SynchronizationContext synchronizationContext = null)
         {
-            if (actionMethod == null)
+            if (actionMethod is null)
             {
                 throw new ArgumentNullException(nameof(actionMethod));
             }
@@ -38,7 +36,7 @@ namespace Anemonis.UI.ComponentModel
         public BindableCommand(Action<T> actionMethod, Predicate<T> predicateMethod, SynchronizationContext synchronizationContext = null)
             : this(actionMethod, synchronizationContext)
         {
-            if (predicateMethod == null)
+            if (predicateMethod is null)
             {
                 throw new ArgumentNullException(nameof(predicateMethod));
             }
@@ -59,7 +57,7 @@ namespace Anemonis.UI.ComponentModel
 
         private void UnsafeRaiseCanExecuteChanged(SynchronizationContext synchronizationContext)
         {
-            if ((synchronizationContext == null) || (synchronizationContext == SynchronizationContext.Current))
+            if ((synchronizationContext is null) || (synchronizationContext == SynchronizationContext.Current))
             {
                 UnsafeRaiseCanExecuteChanged();
             }
@@ -76,7 +74,7 @@ namespace Anemonis.UI.ComponentModel
             var eventArgs = default(EventArgs);
             var eventHandler = CanExecuteChanged;
 
-            if (eventHandler != null)
+            if (eventHandler is not null)
             {
                 eventArgs = CreateCanExecuteChangedEventArgs();
                 eventHandler.Invoke(this, eventArgs);
@@ -111,7 +109,7 @@ namespace Anemonis.UI.ComponentModel
         /// <inheritdoc />
         public bool CanExecute(object parameter)
         {
-            return (_predicateMethod == null) || _predicateMethod.Invoke((T)parameter);
+            return (_predicateMethod is null) || _predicateMethod.Invoke((T)parameter);
         }
 
         /// <inheritdoc />

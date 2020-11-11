@@ -3,8 +3,6 @@ using System.Threading;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-#pragma warning disable IDE0067
-
 namespace Anemonis.UI.ComponentModel.UnitTests
 {
     [TestClass]
@@ -107,7 +105,7 @@ namespace Anemonis.UI.ComponentModel.UnitTests
         [TestMethod]
         public void Dispose()
         {
-            var command = new ObservableCommand<object>(p => { }, new SynchronizationContext());
+            var command = new ObservableCommand<object>(p => { }, new());
 
             command.Dispose();
 

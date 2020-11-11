@@ -8,8 +8,8 @@ namespace Anemonis.UI.ComponentModel
     /// <summary>Represents a data events broker.</summary>
     public class DataEventBroker : IDataEventBroker, IDisposable
     {
-        private readonly object _syncRoot = new object();
-        private readonly Dictionary<string, HashSet<object>> _subscriptions = new Dictionary<string, HashSet<object>>(StringComparer.Ordinal);
+        private readonly object _syncRoot = new();
+        private readonly Dictionary<string, HashSet<object>> _subscriptions = new(StringComparer.Ordinal);
 
         /// <summary>Initializes a new instance of the <see cref="DataEventBroker" /> class.</summary>
         public DataEventBroker()
@@ -46,11 +46,11 @@ namespace Anemonis.UI.ComponentModel
         /// <exception cref="ArgumentNullException"><paramref name="channelName" /> or <paramref name="eventHandler" /> is <see langword="null" />.</exception>
         public void Subscribe<T>(string channelName, Action<DataEventArgs<T>> eventHandler)
         {
-            if (channelName == null)
+            if (channelName is null)
             {
                 throw new ArgumentNullException(nameof(channelName));
             }
-            if (eventHandler == null)
+            if (eventHandler is null)
             {
                 throw new ArgumentNullException(nameof(eventHandler));
             }
@@ -59,7 +59,7 @@ namespace Anemonis.UI.ComponentModel
             {
                 if (!_subscriptions.TryGetValue(channelName, out var channelSubscriptions))
                 {
-                    channelSubscriptions = new HashSet<object>();
+                    channelSubscriptions = new();
                     _subscriptions.Add(channelName, channelSubscriptions);
                 }
 
@@ -71,11 +71,11 @@ namespace Anemonis.UI.ComponentModel
         /// <exception cref="ArgumentNullException"><paramref name="channelName" /> or <paramref name="eventHandler" /> is <see langword="null" />.</exception>
         public void Unsubscribe<T>(string channelName, Action<DataEventArgs<T>> eventHandler)
         {
-            if (channelName == null)
+            if (channelName is null)
             {
                 throw new ArgumentNullException(nameof(channelName));
             }
-            if (eventHandler == null)
+            if (eventHandler is null)
             {
                 throw new ArgumentNullException(nameof(eventHandler));
             }
@@ -100,7 +100,7 @@ namespace Anemonis.UI.ComponentModel
         /// <exception cref="ArgumentNullException"><paramref name="channelName" /> is <see langword="null" />.</exception>
         public virtual void Publish<T>(string channelName, T value)
         {
-            if (channelName == null)
+            if (channelName is null)
             {
                 throw new ArgumentNullException(nameof(channelName));
             }
