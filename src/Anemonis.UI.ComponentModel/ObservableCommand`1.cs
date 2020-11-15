@@ -37,9 +37,7 @@ namespace Anemonis.UI.ComponentModel
 
         private void OnObservingPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            var observable = sender as INotifyPropertyChanged;
-
-            if ((observable is null) || (e is null))
+            if ((sender is not INotifyPropertyChanged observable) || (e is null))
             {
                 return;
             }
