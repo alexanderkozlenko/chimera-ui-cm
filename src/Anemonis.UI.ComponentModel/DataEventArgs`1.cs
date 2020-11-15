@@ -36,12 +36,7 @@ namespace Anemonis.UI.ComponentModel
         /// <inheritdoc />
         public override int GetHashCode()
         {
-            var hashCode = new HashCode();
-
-            hashCode.Add(_channelName);
-            hashCode.Add(_value);
-
-            return hashCode.ToHashCode();
+            return HashCode.Combine(_channelName, _value);
         }
 
         /// <summary>Indicates whether the left <see cref="DataEventArgs{T}" /> is equal to the right <see cref="DataEventArgs{T}" />.</summary>
